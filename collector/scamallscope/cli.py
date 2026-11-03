@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import boto3
 
-from . import snapshot
+from . import graph, snapshot
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -23,8 +24,30 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--output", type=Path,
                    help="Output file (default: snapshots/<account>-<UTC time>.snapshot.json)")
 
+    g = sub.add_parser("graph", help="Convert a snapshot to graph JSON for the frontend")
+    g.add_argument("snapshot", type=Path, help="Snapshot file from 'collect'")
+    g.add_argument("--output", type=Path, help="Output file (default: <snapshot>.graph.json)")
+
     args = parser.parse_args(argv)
-    return _collect(args)
+    return _collect(args) if args.command == "collect" else _graph(args)
+
+
+def _graph(args: argparse.Namespace) -> int:
+    data = json.loads(args.snapshot.read_text(encoding="utf-8"))
+    result = graph.to_graph(data)
+    name = args.snapshot.name.removesuffix(".json").removesuffix(".snapshot")
+    out = args.output or args.snapshot.with_name(f"{name}.graph.json")
+    snapshot.write_json(result, out)
+
+    meta = result["meta"]
+    nodes = sum(1 for e in result["elements"] if e["group"] == "nodes")
+    print(f"{nodes} nodes, {len(result['elements']) - nodes} edges -> {out}")
+    if meta["dropped_edges"]:
+        print(f"Dropped {meta['dropped_edges']} edges to resources not in the snapshot", file=sys.stderr)
+    if not meta["complete"]:
+        print(f"Snapshot is partial: {len(meta['failed_units'])} failed units", file=sys.stderr)
+        return 2
+    return 0
 
 
 def _collect(args: argparse.Namespace) -> int:

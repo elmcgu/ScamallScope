@@ -1,7 +1,8 @@
 """EC2 networking and compute: VPCs, subnets, security groups, instances.
 
 Read-only calls only: ec2:DescribeVpcs, ec2:DescribeSubnets,
-ec2:DescribeSecurityGroups, ec2:DescribeInstances.
+ec2:DescribeSecurityGroups, ec2:DescribeInstances, ec2:DescribeRouteTables,
+ec2:DescribeInternetGateways.
 """
 
 from __future__ import annotations
@@ -80,8 +81,36 @@ def collect_instances(client: Any, ctx: Context) -> Result:
             resources.append(r)
             if i.get("SubnetId"):
                 links.append(Link(ctx.arn("subnet", i["SubnetId"]), r.arn, "contains"))
-            for g in i.get("SecurityGroups", []):
-                links.append(Link(r.arn, ctx.arn("security-group", g["GroupId"]), "uses"))
+            # Security groups attach to network interfaces; the instance-level list can be incomplete.
+            groups = {g["GroupId"] for g in i.get("SecurityGroups", [])}
+            groups |= {g["GroupId"] for n in i.get("NetworkInterfaces", []) for g in n.get("Groups", [])}
+            for group_id in sorted(groups):
+                links.append(Link(r.arn, ctx.arn("security-group", group_id), "uses"))
+    return resources, links
+
+
+def collect_internet_gateways(client: Any, ctx: Context) -> Result:
+    resources, links = [], []
+    for g in _pages(client, "describe_internet_gateways", "InternetGateways"):
+        r = _resource(ctx, "internet-gateway", g["InternetGatewayId"], g)
+        resources.append(r)
+        for a in g.get("Attachments", []):
+            links.append(Link(r.arn, ctx.arn("vpc", a["VpcId"]), "attached"))
+    return resources, links
+
+
+def collect_route_tables(client: Any, ctx: Context) -> Result:
+    resources, links = [], []
+    for t in _pages(client, "describe_route_tables", "RouteTables"):
+        r = _resource(ctx, "route-table", t["RouteTableId"], t)
+        resources.append(r)
+        links.append(Link(ctx.arn("vpc", t["VpcId"]), r.arn, "contains"))
+        for a in t.get("Associations", []):
+            if a.get("SubnetId"):
+                links.append(Link(r.arn, ctx.arn("subnet", a["SubnetId"]), "routes"))
+        gateways = {x["GatewayId"] for x in t.get("Routes", []) if x.get("GatewayId", "").startswith("igw-")}
+        for igw in sorted(gateways):
+            links.append(Link(r.arn, ctx.arn("internet-gateway", igw), "routes_to"))
     return resources, links
 
 
@@ -91,4 +120,6 @@ COLLECTORS: list[tuple[str, Callable[[Any, Context], Result]]] = [
     ("subnet", collect_subnets),
     ("security-group", collect_security_groups),
     ("instance", collect_instances),
+    ("internet-gateway", collect_internet_gateways),
+    ("route-table", collect_route_tables),
 ]

@@ -1,0 +1,177 @@
+import json
+
+import pytest
+from botocore.exceptions import ClientError
+
+from scamallscope import exposure, graph, snapshot
+
+from test_snapshot import REGION, arn
+
+
+def make_estate(session, *, public_ip=True, igw_route=True, explicit_table=True, open_cidr="0.0.0.0/0"):
+    """VPC + subnet + instance with port 22 allowed from open_cidr and port 443 from 10.0.0.0/8."""
+    ec2 = session.client("ec2", region_name=REGION)
+    vpc = ec2.create_vpc(CidrBlock="10.0.0.0/16")["Vpc"]["VpcId"]
+    subnet = ec2.create_subnet(VpcId=vpc, CidrBlock="10.0.1.0/24")["Subnet"]["SubnetId"]
+    igw = ec2.create_internet_gateway()["InternetGateway"]["InternetGatewayId"]
+    ec2.attach_internet_gateway(InternetGatewayId=igw, VpcId=vpc)
+
+    if explicit_table:
+        table = ec2.create_route_table(VpcId=vpc)["RouteTable"]["RouteTableId"]
+        ec2.associate_route_table(RouteTableId=table, SubnetId=subnet)
+    else:
+        table = ec2.describe_route_tables(
+            Filters=[{"Name": "vpc-id", "Values": [vpc]}, {"Name": "association.main", "Values": ["true"]}]
+        )["RouteTables"][0]["RouteTableId"]
+    if igw_route:
+        ec2.create_route(RouteTableId=table, DestinationCidrBlock="0.0.0.0/0", GatewayId=igw)
+
+    sg = ec2.create_security_group(GroupName="web", Description="web", VpcId=vpc)["GroupId"]
+    ec2.authorize_security_group_ingress(GroupId=sg, IpPermissions=[
+        {"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": open_cidr}]},
+        {"IpProtocol": "tcp", "FromPort": 443, "ToPort": 443, "IpRanges": [{"CidrIp": "10.0.0.0/8"}]},
+    ])
+
+    image = ec2.describe_images(Owners=["amazon"])["Images"][0]["ImageId"]
+    instance = ec2.run_instances(ImageId=image, MinCount=1, MaxCount=1, NetworkInterfaces=[{
+        "DeviceIndex": 0, "SubnetId": subnet, "Groups": [sg], "AssociatePublicIpAddress": public_ip,
+    }])["Instances"][0]["InstanceId"]
+    return {"vpc": vpc, "subnet": subnet, "igw": igw, "table": table, "sg": sg, "instance": instance}
+
+
+def result_for(session, ids):
+    snap = json.loads(json.dumps(snapshot.collect(session, [REGION]).to_dict(), default=str))
+    return exposure.analyse(snap)[arn("instance", ids["instance"])], snap
+
+
+def test_port_open_to_world_with_public_ip_and_igw_route_is_exposed(session):
+    ids = make_estate(session)
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "exposed"
+    assert result["ports"] == [{"protocol": "tcp", "from_port": 22, "to_port": 22,
+                                "family": "ipv4", "security_group": ids["sg"]}]  # 443 is private only
+
+
+def test_main_route_table_is_used_when_subnet_has_no_explicit_one(session):
+    ids = make_estate(session, explicit_table=False)
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "exposed"
+
+
+@pytest.mark.parametrize("kwargs, reason", [
+    ({"public_ip": False}, "no public IP address"),
+    ({"igw_route": False}, "no default route to an internet gateway"),
+    ({"open_cidr": "203.0.113.0/24"}, "no inbound rule open to the internet"),
+])
+def test_not_exposed_when_one_condition_is_missing(session, kwargs, reason):
+    ids = make_estate(session, **kwargs)
+
+    result, _ = result_for(session, ids)
+
+    assert result == {"exposure": "not_exposed", "reason": reason, "ports": []}
+
+
+def test_detached_gateway_does_not_count(session):
+    ids = make_estate(session)
+    session.client("ec2", region_name=REGION).detach_internet_gateway(
+        InternetGatewayId=ids["igw"], VpcId=ids["vpc"])
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "not_exposed"
+
+
+@pytest.mark.parametrize("operation, unit", [
+    ("DescribeRouteTables", "route-table"),
+    ("DescribeInternetGateways", "internet-gateway"),
+    ("DescribeSecurityGroups", "security-group"),
+])
+def test_unknown_when_a_needed_unit_failed(session, operation, unit):
+    ids = make_estate(session)
+
+    def deny(**kwargs):
+        raise ClientError({"Error": {"Code": "UnauthorizedOperation", "Message": "denied"}}, operation)
+
+    session.events.register(f"before-call.ec2.{operation}", deny)
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "unknown"
+    assert unit in result["reason"]
+
+
+def test_stopped_instance_is_not_exposed(session):
+    ids = make_estate(session)
+    session.client("ec2", region_name=REGION).stop_instances(InstanceIds=[ids["instance"]])
+
+    result, _ = result_for(session, ids)
+
+    assert result["reason"] == "instance is not running"
+
+
+def test_graph_shows_exposure_and_new_links(session):
+    ids = make_estate(session)
+    _, snap = result_for(session, ids)
+
+    g = graph.to_graph(snap)
+    nodes = {e["data"]["id"]: e["data"] for e in g["elements"] if e["group"] == "nodes"}
+    edges = {(e["data"]["source"], e["data"]["target"], e["data"]["type"])
+             for e in g["elements"] if e["group"] == "edges"}
+
+    node = nodes[arn("instance", ids["instance"])]
+    assert node["exposure"] == "exposed" and node["exposed_ports"][0]["from_port"] == 22
+    assert (arn("internet-gateway", ids["igw"]), arn("vpc", ids["vpc"]), "attached") in edges
+    assert (arn("route-table", ids["table"]), arn("subnet", ids["subnet"]), "routes") in edges
+    assert (arn("route-table", ids["table"]), arn("internet-gateway", ids["igw"]), "routes_to") in edges
+    assert "network ACLs" in g["meta"]["exposure_checks"]
+
+
+def test_security_group_on_network_interface_creates_uses_link(session):
+    ids = make_estate(session)
+    _, snap = result_for(session, ids)
+
+    links = {(l["source"], l["target"], l["type"]) for l in snap["links"]}
+
+    assert (arn("instance", ids["instance"]), arn("security-group", ids["sg"]), "uses") in links
+
+
+def test_second_interface_with_public_ip_is_checked():
+    """Primary interface is private; a second interface has a public IP and an open group."""
+    region, acct = REGION, "123456789012"
+
+    def res(kind, rid, config):
+        return {"arn": f"arn:aws:ec2:{region}:{acct}:{kind}/{rid}", "id": rid, "type": kind,
+                "region": region, "service": "ec2", "account_id": acct, "name": None, "tags": {}, "config": config}
+
+    snap = {
+        "units": [],
+        "resources": [
+            res("subnet", "subnet-priv", {"SubnetId": "subnet-priv", "VpcId": "vpc-1"}),
+            res("subnet", "subnet-pub", {"SubnetId": "subnet-pub", "VpcId": "vpc-1"}),
+            res("internet-gateway", "igw-1", {"Attachments": [{"VpcId": "vpc-1", "State": "available"}]}),
+            res("route-table", "rtb-main", {"VpcId": "vpc-1", "Associations": [{"Main": True}],
+                                            "Routes": [{"DestinationCidrBlock": "10.0.0.0/16", "GatewayId": "local"}]}),
+            res("route-table", "rtb-pub", {"VpcId": "vpc-1", "Associations": [{"SubnetId": "subnet-pub"}],
+                                           "Routes": [{"DestinationCidrBlock": "0.0.0.0/0", "GatewayId": "igw-1",
+                                                       "State": "active"}]}),
+            res("security-group", "sg-priv", {"IpPermissions": []}),
+            res("security-group", "sg-open", {"IpPermissions": [
+                {"IpProtocol": "-1", "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]}),
+            res("instance", "i-1", {"State": {"Name": "running"}, "SubnetId": "subnet-priv", "NetworkInterfaces": [
+                {"SubnetId": "subnet-priv", "Attachment": {"DeviceIndex": 0}, "Groups": [{"GroupId": "sg-priv"}]},
+                {"SubnetId": "subnet-pub", "Attachment": {"DeviceIndex": 1}, "Groups": [{"GroupId": "sg-open"}],
+                 "Association": {"PublicIp": "198.51.100.7"}},
+            ]}),
+        ],
+        "links": [],
+    }
+
+    result = exposure.analyse(snap)[f"arn:aws:ec2:{region}:{acct}:instance/i-1"]
+
+    assert result["exposure"] == "exposed"
+    assert result["ports"] == [{"protocol": "all", "from_port": None, "to_port": None,
+                                "family": "ipv4", "security_group": "sg-open"}]

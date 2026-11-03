@@ -52,9 +52,13 @@ def collect(session: boto3.Session, regions: list[str]) -> Snapshot:
 
 
 def write(snap: Snapshot, path: Path) -> None:
-    """Write the snapshot as JSON, readable by the owner only (it maps an AWS estate)."""
+    write_json(snap.to_dict(), path)
+
+
+def write_json(obj: Any, path: Path) -> None:
+    """Write JSON readable by the owner only (snapshots and graphs map an AWS estate)."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    data = json.dumps(snap.to_dict(), indent=2, sort_keys=True, default=_json_default)
+    data = json.dumps(obj, indent=2, sort_keys=True, default=_json_default)
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
     with os.fdopen(fd, "w", encoding="utf-8") as f:
         f.write(data + "\n")

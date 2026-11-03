@@ -222,6 +222,9 @@ __marimo__/
 # ScamallScope: never commit real collected data
 snapshots/
 *.snapshot.json
+*.graph.json
+# samples/ holds made-up data only, so its JSON may be committed
+!samples/*.json
 prowler-output/
 
 # Frontend
