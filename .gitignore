@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ScamallScope: never commit real collected data
+snapshots/
+*.snapshot.json
+prowler-output/
+
+# Frontend
+node_modules/
+.vite/
