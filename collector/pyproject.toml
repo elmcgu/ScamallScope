@@ -1,0 +1,21 @@
+[project]
+name = "scamallscope"
+version = "0.1.0"
+description = "Map an AWS estate: read-only collectors, inventory and graph."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = ["boto3>=1.35"]
+
+[project.scripts]
+scamallscope = "scamallscope.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "moto[ec2,sts]>=5"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
