@@ -104,6 +104,7 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
 
 def to_graph(snapshot: dict[str, Any]) -> dict[str, Any]:
     exposed = exposure.analyse(snapshot)
+    internet = exposure.subnet_internet_routes(snapshot)
     nodes = []
     ids = set()
     for r in snapshot["resources"]:
@@ -117,6 +118,9 @@ def to_graph(snapshot: dict[str, Any]) -> dict[str, Any]:
             "tags": r.get("tags", {}),
         }
         data.update(FIELDS.get(r["type"], lambda c: {})(r.get("config", {})))
+        if r["arn"] in internet:
+            # True: public subnet (default route to an internet gateway). None: unknown.
+            data["internet_route"] = internet[r["arn"]]
         if r["arn"] in exposed:
             e = exposed[r["arn"]]
             data.update(exposure=e["exposure"], exposure_reason=e["reason"], exposed_ports=e["ports"])

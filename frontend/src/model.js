@@ -1,5 +1,7 @@
 // Pure data logic for the network view. No DOM and no Cytoscape here, so vitest can test it.
 
+import { iconKind } from "./icons.js";
+
 export const SCHEMA_VERSION = 1;
 
 // "contains" edges that become nesting (child drawn inside parent) instead of lines.
@@ -55,6 +57,8 @@ export function displayLabel(node) {
 
 export function classesFor(node) {
   const c = [`type-${node.type}`];
+  const kind = iconKind(node);
+  if (kind) c.push(`icon-${kind}`);
   if (node.exposure) c.push(`exposure-${node.exposure}`);
   return c.join(" ");
 }
@@ -65,6 +69,30 @@ export function facets(graph) {
     types: [...new Set(nodes.map((n) => n.type))].sort(),
     regions: [...new Set(nodes.map((n) => n.region))].sort(),
   };
+}
+
+export const ALL_REGIONS = "*";
+
+/**
+ * Region to show first: the one with the most exposed or unknown instances, then the most
+ * resources, then by name. One region at a time keeps the view readable on big estates.
+ */
+export function defaultRegion(graph) {
+  const score = new Map();
+  for (const n of nodesOf(graph)) {
+    const [risky, total] = score.get(n.region) ?? [0, 0];
+    const bad = n.exposure === "exposed" || n.exposure === "unknown" ? 1 : 0;
+    score.set(n.region, [risky + bad, total + 1]);
+  }
+  const ranked = [...score.entries()].sort(
+    ([ra, [xa, ta]], [rb, [xb, tb]]) => xb - xa || tb - ta || ra.localeCompare(rb),
+  );
+  return ranked[0]?.[0] ?? ALL_REGIONS;
+}
+
+/** The set of regions for a region choice ("*" means all). */
+export function regionsFor(choice, graph) {
+  return new Set(choice === ALL_REGIONS ? facets(graph).regions : [choice]);
 }
 
 /**

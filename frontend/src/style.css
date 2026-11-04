@@ -24,14 +24,15 @@ aside { overflow: auto; padding: 0.9rem; background: var(--panel); border-right:
 aside h2 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 1rem 0 0.35rem; }
 aside label { display: block; padding: 0.15rem 0; }
 input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); vertical-align: -0.15rem; }
-#search { width: 100%; padding: 0.4rem; font: inherit; background: var(--bg); color: var(--text); border: 2px solid var(--border); border-radius: 6px; }
+#search, #region { width: 100%; padding: 0.4rem; font: inherit; background: var(--bg); color: var(--text); border: 2px solid var(--border); border-radius: 6px; }
 #canvas { position: relative; min-height: 0; }
 #cy { position: absolute; inset: 0; background: var(--bg); }
 #zoom { position: absolute; right: 1rem; bottom: 1rem; display: flex; gap: 0.4rem; }
 #zoom button { min-width: 2.6rem; font-size: 1.1rem; }
 .muted { color: var(--muted); font-size: 0.95rem; }
 .legend { list-style: none; padding: 0; margin: 0; }
-.legend li { padding: 0.15rem 0; }
+.legend li { padding: 0.15rem 0; display: flex; align-items: center; gap: 0.4rem; }
+#type-legend { margin-bottom: 0.5rem; }
 .swatch { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--text); border-radius: 3px; vertical-align: middle; }
 .swatch.exposed { background: var(--exposed); }
 .swatch.unknown { background: var(--unknown); border-style: dashed; }

@@ -230,3 +230,7 @@ prowler-output/
 # Frontend
 node_modules/
 .vite/
+
+# AWS Architecture Icons: AWS terms allow use in diagrams, not redistribution here.
+# Install locally with: cd frontend && npm run icons -- <unzipped icon package>
+frontend/icons/

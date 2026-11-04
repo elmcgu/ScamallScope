@@ -25,6 +25,10 @@
     <main>
       <aside id="filters" aria-label="Filters">
         <section>
+          <h2><label for="region">Region</label></h2>
+          <select id="region"></select>
+        </section>
+        <section>
           <h2>Search</h2>
           <input id="search" type="search" placeholder="Name, id or tag" />
         </section>
@@ -36,11 +40,8 @@
           <div id="types"></div>
         </section>
         <section>
-          <h2>Regions</h2>
-          <div id="regions"></div>
-        </section>
-        <section>
           <h2>Legend</h2>
+          <ul id="type-legend" class="legend" hidden></ul>
           <ul class="legend">
             <li><span class="swatch exposed"></span> ⚠ Exposed to the internet</li>
             <li><span class="swatch unknown"></span> ? Unknown (collection failed)</li>

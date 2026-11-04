@@ -1,7 +1,16 @@
 import cytoscape from "cytoscape";
+import fcose from "cytoscape-fcose";
+import { LAYOUT } from "./layout.js";
+import { ICON_FILES, iconStyles, installedIcons } from "./icons.js";
 import {
-  detailRows, facets, parseGraph, portText, summary, toCyElements, visibleIds, warnings,
+  ALL_REGIONS, defaultRegion, detailRows, facets, parseGraph, portText, regionsFor, summary,
+  toCyElements, visibleIds, warnings,
 } from "./model.js";
+
+cytoscape.use(fcose);
+
+// AWS icons, if installed (npm run icons). Missing icons fall back to the shapes below.
+const ICON_URLS = installedIcons(import.meta.glob("../icons/*.svg", { eager: true, query: "?url", import: "default" }));
 
 // Every value from the graph is untrusted (AWS tags and names). Use textContent only, never innerHTML.
 
@@ -68,14 +77,15 @@ function load(json, source) {
   }
   elements = toCyElements(graph);
   const f = facets(graph);
-  filters = { types: new Set(f.types), regions: new Set(f.regions), onlyExposed: false, search: "" };
+  const region = defaultRegion(graph);
+  filters = { types: new Set(f.types), regions: regionsFor(region, graph), onlyExposed: false, search: "" };
   $("search").value = "";
   $("only-exposed").checked = false;
 
   $("source").textContent = `${source} · account ${graph.meta?.account_id ?? "?"} · ${graph.meta?.collected_at ?? ""}`;
   showWarnings(warnings(graph));
   checkboxes($("types"), f.types, filters.types);
-  checkboxes($("regions"), f.regions, filters.regions);
+  regionChoice($("region"), f.regions, region, graph);
   const s = summary(graph);
   $("summary").textContent =
     `${s.nodes} resources, ${s.edges} links. Instances: ${s.instances}, exposed ${s.exposed}, unknown ${s.unknown}.`;
@@ -83,7 +93,9 @@ function load(json, source) {
   clearDetails();
 
   if (cy) cy.destroy();
-  cy = cytoscape({ container: $("cy"), elements, style: STYLE, wheelSensitivity: 0.3, minZoom: 0.1, maxZoom: 4 });
+  // Exposure rules come last so their red or amber border stays on top of the icon styles.
+  const style = [...STYLE, ...iconStyles(ICON_URLS), ...STYLE.filter((r) => /exposure-|:selected|hidden/.test(r.selector))];
+  cy = cytoscape({ container: $("cy"), elements, style, wheelSensitivity: 0.3, minZoom: 0.1, maxZoom: 4 });
   cy.on("tap", "node", (evt) => showDetails(evt.target.data()));
   cy.on("tap", (evt) => { if (evt.target === cy) clearDetails(); });
   apply();
@@ -97,11 +109,7 @@ function apply() {
     cy.edges().forEach((e) => e.toggleClass("hidden", !(ids.has(e.source().id()) && ids.has(e.target().id()))));
   });
   const visible = cy.elements().not(".hidden");
-  const layout = visible.layout({
-    name: "cose", animate: false, fit: false, nodeDimensionsIncludeLabels: true,
-    idealEdgeLength: 60, nodeRepulsion: 6000, nestingFactor: 0.9, gravity: 40,
-    componentSpacing: 30, numIter: 1500, randomize: true,
-  });
+  const layout = visible.layout(LAYOUT);
   layout.one("layoutstop", () => fitReadable(visible));
   layout.run();
 }
@@ -119,6 +127,16 @@ function zoomBy(factor) {
   if (!cy) return;
   const level = Math.min(cy.maxZoom(), Math.max(cy.minZoom(), cy.zoom() * factor));
   cy.zoom({ level, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } });
+}
+
+function regionChoice(select, regions, chosen, graph) {
+  const options = [[ALL_REGIONS, `All regions (${regions.length})`], ...regions.map((r) => [r, r])];
+  select.replaceChildren(...options.map(([value, text]) => Object.assign(document.createElement("option"), { value, text })));
+  select.value = chosen;
+  select.onchange = () => {
+    filters.regions = regionsFor(select.value, graph);
+    apply();
+  };
 }
 
 function checkboxes(container, values, selected) {
@@ -198,4 +216,21 @@ $("zoom-fit").addEventListener("click", () => cy && cy.fit(cy.elements().not(".h
 $("search").addEventListener("input", (evt) => { if (filters) { filters.search = evt.target.value; apply(); } });
 $("only-exposed").addEventListener("change", (evt) => { if (filters) { filters.onlyExposed = evt.target.checked; apply(); } });
 
+function typeLegend() {
+  const names = {
+    "vpc": "VPC", "subnet-public": "Public subnet", "subnet-private": "Private subnet",
+    "instance": "EC2 instance", "security-group": "Security group", "network-acl": "Network ACL",
+    "route-table": "Route table", "internet-gateway": "Internet gateway",
+  };
+  const items = Object.keys(ICON_FILES).filter((k) => ICON_URLS[k]).map((k) => {
+    const li = document.createElement("li");
+    const img = Object.assign(document.createElement("img"), { src: ICON_URLS[k], alt: "", width: 20, height: 20 });
+    li.append(img, ` ${names[k]}`);
+    return li;
+  });
+  $("type-legend").replaceChildren(...items);
+  $("type-legend").hidden = items.length === 0;
+}
+
+typeLegend();
 showWarnings([]);

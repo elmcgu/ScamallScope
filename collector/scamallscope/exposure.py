@@ -43,6 +43,42 @@ def analyse(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
+def subnet_internet_routes(snapshot: dict[str, Any]) -> dict[str, bool | None]:
+    """{subnet ARN: True if its route table sends 0.0.0.0/0 or ::/0 to an attached internet gateway}.
+
+    None means unknown: a unit the answer needs failed, or no route table was found.
+    """
+    failed = {(u["region"], u["resource_type"]) for u in snapshot["units"] if u["status"] != "ok"}
+    index: dict[tuple[str, str], dict[str, dict[str, Any]]] = defaultdict(dict)
+    for r in snapshot["resources"]:
+        index[(r["region"], r["type"])][r["id"]] = r["config"]
+
+    out: dict[str, bool | None] = {}
+    for r in snapshot["resources"]:
+        if r["type"] != "subnet":
+            continue
+        region, subnet = r["region"], r["config"]
+        if (region, "route-table") in failed or (region, "internet-gateway") in failed \
+                or not subnet.get("SubnetId") or not subnet.get("VpcId"):
+            out[r["arn"]] = None
+            continue
+        table = _route_table(index[(region, "route-table")], subnet["SubnetId"], subnet["VpcId"])
+        if table is None:
+            out[r["arn"]] = None
+            continue
+        gateways = _attached_gateways(index[(region, "internet-gateway")], subnet["VpcId"])
+        out[r["arn"]] = any(_default_route(table, f, gateways) for f in ("ipv4", "ipv6"))
+    return out
+
+
+def _attached_gateways(gateways: dict[str, dict[str, Any]], vpc_id: str) -> set[str]:
+    return {
+        gid for gid, g in gateways.items()
+        if any(a.get("VpcId") == vpc_id and a.get("State") in ("available", "attached")
+               for a in g.get("Attachments", []))
+    }
+
+
 def _result(exposure: str, reason: str, ports: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     return {"exposure": exposure, "reason": reason, "ports": ports or []}
 
@@ -107,11 +143,7 @@ def _interface(region: str, eni: dict[str, Any], index: dict) -> dict[str, Any]:
     if table is None:
         return _result("unknown", "no route table found for subnet")
 
-    gateways = {
-        gid for gid, g in index[(region, "internet-gateway")].items()
-        if any(a.get("VpcId") == vpc_id and a.get("State") in ("available", "attached")
-               for a in g.get("Attachments", []))
-    }
+    gateways = _attached_gateways(index[(region, "internet-gateway")], vpc_id)
     routed = [f for f in families if _default_route(table, f, gateways)]
     if not routed:
         return _result("not_exposed", "no default route to an internet gateway")

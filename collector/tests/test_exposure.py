@@ -267,3 +267,29 @@ def test_only_the_part_of_a_range_the_acl_allows_is_reported(session):
     result, _ = result_for(session, ids)
 
     assert {(p["from_port"], p["to_port"]) for p in result["ports"]} == {(22, 22), (8000, 8049), (8060, 8100)}
+
+
+def test_subnet_internet_route_marks_public_and_private_subnets(session):
+    ids = make_estate(session)
+    ec2 = session.client("ec2", region_name=REGION)
+    private = ec2.create_subnet(VpcId=ids["vpc"], CidrBlock="10.0.2.0/24")["Subnet"]["SubnetId"]
+    _, snap = result_for(session, ids)
+
+    routes = exposure.subnet_internet_routes(snap)
+
+    assert routes[arn("subnet", ids["subnet"])] is True
+    assert routes[arn("subnet", private)] is False  # main table has no internet route
+    nodes = {e["data"]["id"]: e["data"] for e in graph.to_graph(snap)["elements"] if e["group"] == "nodes"}
+    assert nodes[arn("subnet", ids["subnet"])]["internet_route"] is True
+
+
+def test_subnet_internet_route_is_unknown_when_route_tables_failed(session):
+    ids = make_estate(session)
+
+    def deny(**kwargs):
+        raise ClientError({"Error": {"Code": "UnauthorizedOperation", "Message": "denied"}}, "DescribeRouteTables")
+
+    session.events.register("before-call.ec2.DescribeRouteTables", deny)
+    _, snap = result_for(session, ids)
+
+    assert exposure.subnet_internet_routes(snap)[arn("subnet", ids["subnet"])] is None

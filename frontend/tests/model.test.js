@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-  detailRows, displayLabel, facets, parseGraph, portText, resourceId, summary, toCyElements, visibleIds, warnings,
+  ALL_REGIONS, defaultRegion, detailRows, displayLabel, facets, regionsFor, parseGraph, portText, resourceId, summary, toCyElements, visibleIds, warnings,
 } from "../src/model.js";
 
 const sample = parseGraph(readFileSync(new URL("../../samples/demo.graph.json", import.meta.url), "utf8"));
@@ -57,7 +57,7 @@ describe("toCyElements", () => {
 
   it("adds type and exposure classes", () => {
     const web = els.find((e) => e.data.label === "prod-web-1");
-    expect(web.classes).toBe("type-instance exposure-exposed");
+    expect(web.classes).toBe("type-instance icon-instance exposure-exposed");
   });
 });
 
@@ -139,5 +139,30 @@ describe("details", () => {
 
   it("gets the resource id from an ARN", () => {
     expect(resourceId({ id: "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-1" })).toBe("sg-1");
+  });
+});
+
+describe("region choice", () => {
+  const node = (region, exposure) => ({ group: "nodes", data: { id: `${region}-${Math.random()}`, region, exposure } });
+  const graph = (...nodes) => ({ schema_version: 1, elements: nodes });
+
+  it("starts on the region with the most exposed or unknown instances", () => {
+    expect(defaultRegion(sample)).toBe("eu-west-1");
+    const g = graph(node("a"), node("a"), node("a"), node("b", "unknown"));
+    expect(defaultRegion(g)).toBe("b");
+  });
+
+  it("breaks ties by size, then by name", () => {
+    expect(defaultRegion(graph(node("b"), node("a"), node("a")))).toBe("a");
+    expect(defaultRegion(graph(node("b"), node("a")))).toBe("a");
+  });
+
+  it("falls back to all regions for an empty graph", () => {
+    expect(defaultRegion(graph())).toBe(ALL_REGIONS);
+  });
+
+  it("turns a choice into a region set", () => {
+    expect(regionsFor("us-east-1", sample)).toEqual(new Set(["us-east-1"]));
+    expect(regionsFor(ALL_REGIONS, sample)).toEqual(new Set(["eu-west-1", "us-east-1"]));
   });
 });
