@@ -1,4 +1,4 @@
-"""Command line: scamallscope collect."""
+"""Command line: scamallscope collect | graph | inventory | changes | history."""
 
 from __future__ import annotations
 
@@ -7,10 +7,11 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import boto3
 
-from . import graph, snapshot
+from . import graph, inventory, snapshot
 from .model import is_complete
 
 
@@ -29,8 +30,65 @@ def main(argv: list[str] | None = None) -> int:
     g.add_argument("snapshot", type=Path, help="Snapshot file from 'collect'")
     g.add_argument("--output", type=Path, help="Output file (default: <snapshot>.graph.json)")
 
+    def table_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--table", required=True, help="DynamoDB table name (infra/inventory-table.yaml)")
+        p.add_argument("--profile", help="AWS profile for DynamoDB (default: normal boto3 lookup)")
+        p.add_argument("--region", help="Region of the table (default: profile region)")
+
+    i = sub.add_parser("inventory", help="Update the DynamoDB inventory from a snapshot")
+    i.add_argument("snapshot", type=Path, help="Snapshot file from 'collect'")
+    table_args(i)
+
+    ch = sub.add_parser("changes", help="List the changes recorded on one day")
+    ch.add_argument("--date", required=True, help="YYYY-MM-DD (UTC)")
+    table_args(ch)
+
+    h = sub.add_parser("history", help="List the change history of one resource")
+    h.add_argument("--arn", required=True)
+    table_args(h)
+
     args = parser.parse_args(argv)
-    return _collect(args) if args.command == "collect" else _graph(args)
+    commands = {"collect": _collect, "graph": _graph, "inventory": _inventory,
+                "changes": _changes, "history": _history}
+    return commands[args.command](args)
+
+
+def _table(args: argparse.Namespace) -> Any:
+    session = boto3.Session(profile_name=args.profile, region_name=args.region)
+    dynamodb: Any = session.resource("dynamodb")  # boto3's own hints do not cover resources
+    return dynamodb.Table(args.table)
+
+
+def _inventory(args: argparse.Namespace) -> int:
+    snap = json.loads(args.snapshot.read_text(encoding="utf-8"))
+    run = inventory.apply(_table(args), snap)
+    print(f"{run['created']} created, {run['changed']} changed, {run['deleted']} deleted, "
+          f"{run['unchanged']} unchanged ({run['resources']} resources)")
+    if not is_complete(snap):
+        print("Snapshot is partial: resources in failed units were kept, not marked deleted", file=sys.stderr)
+        return 2
+    return 0
+
+
+def _print_changes(items: list[dict]) -> None:
+    for c in items:
+        fields = f" [{', '.join(c['changed_fields'])}]" if c.get("changed_fields") else ""
+        print(f"{c['at']}  {c['kind']:<8} {c['region']:<12} {c['type']:<16} {c.get('name') or '-':<20} {c['arn']}{fields}")
+
+
+def _changes(args: argparse.Namespace) -> int:
+    items = inventory.changes_on(_table(args), args.date)
+    _print_changes(items)
+    print(f"{len(items)} changes on {args.date}")
+    return 0
+
+
+def _history(args: argparse.Namespace) -> int:
+    items = inventory.history(_table(args), args.arn)
+    _print_changes(items)
+    if not items:
+        print("No changes recorded for this ARN")
+    return 0
 
 
 def _graph(args: argparse.Namespace) -> int:

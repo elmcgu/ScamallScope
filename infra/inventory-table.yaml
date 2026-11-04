@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  ScamallScope inventory table: current state, daily change log and run records
+  (docs/decisions/0001-inventory-in-dynamodb.md). Long-form intrinsics only, so tests can
+  read this file with a plain YAML parser and build the same table in moto.
+
+Parameters:
+  TableName:
+    Type: String
+    Default: scamallscope-inventory
+
+Resources:
+  InventoryTable:
+    Type: AWS::DynamoDB::Table
+    # The table is the history. Keep it if the stack is deleted or the table replaced.
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName:
+        Ref: TableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+        - AttributeName: gsi1sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        # Sparse: only change events have gsi1pk, so this index holds history only.
+        - IndexName: by-arn
+          KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+            - AttributeName: gsi1sk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: expires_at
+        Enabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      DeletionProtectionEnabled: true
+      # Encryption at rest is always on. Without SSESpecification it uses an AWS owned key
+      # (no KMS cost). Add SSESpecification with a KMS key if you need your own key policy.
+      Tags:
+        - Key: app
+          Value: scamallscope
+
+Outputs:
+  TableName:
+    Value:
+      Ref: InventoryTable

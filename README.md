@@ -2,7 +2,9 @@
 
 *Scamall* is Irish for "cloud". ScamallScope maps an AWS estate and shows it from different angles: security, networking, cost and hygiene.
 
-> Status: early design. Nothing works yet. Starts with one AWS account; the account ID is kept on every resource so more accounts can be added later.
+> Status: roadmap items 1 to 3 work locally (tested with moto); not yet run against a real account
+> or deployed. Starts with one AWS account; the account ID is kept on every resource so more
+> accounts can be added later.
 
 ## What it does
 

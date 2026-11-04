@@ -13,8 +13,9 @@ scamallscope = "scamallscope.cli:main"
 [dependency-groups]
 dev = [
     "pytest>=8",
-    "moto[ec2,sts]>=5",
+    "moto[dynamodb,ec2,sts]>=5",
     "pyright>=1.1.414",
+    "pyyaml>=6.0.3",
 ]
 
 [build-system]

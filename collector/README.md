@@ -9,6 +9,9 @@ cd collector
 uv sync
 uv run scamallscope collect --profile <read-only-profile> --region eu-west-1
 uv run scamallscope graph snapshots/<file>.snapshot.json   # -> <file>.graph.json
+uv run scamallscope inventory snapshots/<file>.snapshot.json --table scamallscope-inventory
+uv run scamallscope changes --table scamallscope-inventory --date 2026-11-04
+uv run scamallscope history --table scamallscope-inventory --arn <arn>
 uv run pytest
 uv run pyright                      # type check (TypedDict shapes)
 ```
@@ -23,6 +26,17 @@ Only these read-only actions:
 - `sts:GetCallerIdentity`
 - `ec2:DescribeVpcs`, `ec2:DescribeSubnets`, `ec2:DescribeSecurityGroups`, `ec2:DescribeInstances`
 - `ec2:DescribeRouteTables`, `ec2:DescribeInternetGateways`, `ec2:DescribeNetworkAcls`
+
+For the inventory, the identity that runs it also needs, on the table and its index only:
+`dynamodb:Query`, `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:BatchWriteItem`.
+Create the table from `infra/inventory-table.yaml` (CloudFormation).
+
+## Inventory (DynamoDB)
+
+`scamallscope inventory` compares a snapshot with the current state in the table and writes
+only what was created, changed or deleted, plus one change event each and a run record
+(see [decision 0001](../docs/decisions/0001-inventory-in-dynamodb.md)). Exit code `2` when the
+snapshot is partial: resources in failed units are kept, never marked deleted.
 
 ## Snapshot shape
 
