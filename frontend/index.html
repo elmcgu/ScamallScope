@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" style="color-scheme: dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Scripts only from this site. AWS tags are untrusted text: the UI never builds HTML from them. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws:; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>ScamallScope: network view</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ScamallScope</h1>
+      <span id="source">No graph loaded</span>
+      <label class="file">
+        Open graph JSON
+        <input id="file" type="file" accept=".json,application/json" />
+      </label>
+      <button id="sample" type="button">Load sample</button>
+    </header>
+    <div id="warnings" role="alert"></div>
+    <main>
+      <aside id="filters" aria-label="Filters">
+        <section>
+          <h2>Search</h2>
+          <input id="search" type="search" placeholder="Name, id or tag" />
+        </section>
+        <section>
+          <label><input id="only-exposed" type="checkbox" /> Only exposed or unknown</label>
+        </section>
+        <section>
+          <h2>Types</h2>
+          <div id="types"></div>
+        </section>
+        <section>
+          <h2>Regions</h2>
+          <div id="regions"></div>
+        </section>
+        <section>
+          <h2>Legend</h2>
+          <ul class="legend">
+            <li><span class="swatch exposed"></span> ⚠ Exposed to the internet</li>
+            <li><span class="swatch unknown"></span> ? Unknown (collection failed)</li>
+            <li><span class="swatch not-exposed"></span> Not exposed</li>
+          </ul>
+        </section>
+        <p id="summary"></p>
+        <p id="checks" class="muted"></p>
+      </aside>
+      <div id="canvas">
+        <div id="cy" aria-label="Network graph"></div>
+        <div id="zoom" role="group" aria-label="Zoom">
+          <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+          <button id="zoom-out" type="button" aria-label="Zoom out">−</button>
+          <button id="zoom-fit" type="button">Fit all</button>
+        </div>
+      </div>
+      <aside id="details" aria-label="Details">
+        <p class="muted">Click a resource to see its details.</p>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
