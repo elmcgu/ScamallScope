@@ -6,9 +6,11 @@ An instance port is "exposed" when all of these are true:
 2. Its subnet's route table (explicit, or the VPC main table) has a default route
    (0.0.0.0/0 or ::/0) to an internet gateway attached to the VPC.
 3. One of its security groups allows inbound traffic from 0.0.0.0/0 or ::/0.
+4. The subnet's network ACL lets that traffic in from 0.0.0.0/0 or ::/0
+   (see network_acl.py). Only the allowed part of a port range is reported.
 
-Not checked yet: network ACLs, prefix lists that contain 0.0.0.0/0, split default
-routes (for example 0.0.0.0/1 + 128.0.0.0/1), load balancers in front of instances.
+Not checked yet: prefix lists that contain 0.0.0.0/0, split default routes
+(for example 0.0.0.0/1 + 128.0.0.0/1), load balancers in front of instances.
 If a collection unit the check needs failed, the result is "unknown", never "not_exposed".
 """
 
@@ -17,11 +19,14 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
+from . import network_acl
+
 CHECKS = ("security group open to 0.0.0.0/0 or ::/0, public IP, default route to an attached "
-          "internet gateway. Not checked: network ACLs, prefix lists, load balancers.")
+          "internet gateway, inbound network ACL rules. "
+          "Not checked: prefix lists, split default routes, load balancers.")
 
 WORLD = {"ipv4": "0.0.0.0/0", "ipv6": "::/0"}
-NEEDED = ("instance", "subnet", "security-group", "route-table", "internet-gateway")
+NEEDED = ("instance", "subnet", "security-group", "route-table", "internet-gateway", "network-acl")
 
 
 def analyse(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -111,18 +116,57 @@ def _interface(region: str, eni: dict[str, Any], index: dict) -> dict[str, Any]:
     if not routed:
         return _result("not_exposed", "no default route to an internet gateway")
 
-    ports = []
+    acl = network_acl.for_subnet(index[(region, "network-acl")], subnet["SubnetId"], vpc_id)
+    if acl is None:
+        return _result("unknown", "no network ACL found for subnet")
+
+    open_in_sg, ports = False, []
     for group_id in eni["groups"]:
         sg = index[(region, "security-group")].get(group_id)
         if sg is None:
             return _result("unknown", f"security group {group_id} not in snapshot")
         for perm in sg.get("IpPermissions", []):
             for family in routed:
-                if _open_to_world(perm, family):
-                    ports.append(_port(perm, family, group_id))
-    if not ports:
+                if not _open_to_world(perm, family):
+                    continue
+                open_in_sg = True
+                for port in _through_acl(perm, family, acl):
+                    entry = {**port, "family": family, "security_group": group_id,
+                             "network_acl": acl["NetworkAclId"]}
+                    if entry not in ports:
+                        ports.append(entry)
+    if not open_in_sg:
         return _result("not_exposed", "no inbound rule open to the internet")
+    if not ports:
+        return _result("not_exposed", "network ACL blocks the ports the security group opens")
     return _result("exposed", "", ports)
+
+
+def _through_acl(perm: dict[str, Any], family: str, acl: dict[str, Any]) -> list[dict[str, Any]]:
+    """Parts of a security group rule that the network ACL also lets in."""
+    protocol = network_acl.protocol_number(perm.get("IpProtocol"))
+    if protocol == "-1":
+        # All protocols: check the common ones one by one.
+        icmp = "1" if family == "ipv4" else "58"
+        checks = [("6", network_acl.ALL_PORTS), ("17", network_acl.ALL_PORTS), (icmp, None)]
+    elif protocol in network_acl.ICMP:
+        checks = [(protocol, None)]
+    elif protocol in ("6", "17"):
+        checks = [(protocol, (perm.get("FromPort", 0), perm.get("ToPort", 65535)))]
+    else:
+        checks = [(protocol, None)]  # other protocols (e.g. 50 ESP) have no ports
+
+    out = []
+    for proto, ports in checks:
+        for r in network_acl.allowed(acl, proto, ports, family):
+            if r is None:  # no port range: keep the security group's values (ICMP type and code)
+                same = proto == protocol
+                out.append({"protocol": network_acl.protocol_name(proto),
+                            "from_port": perm.get("FromPort") if same else None,
+                            "to_port": perm.get("ToPort") if same else None})
+            else:
+                out.append({"protocol": network_acl.protocol_name(proto), "from_port": r[0], "to_port": r[1]})
+    return out
 
 
 def _route_table(tables: dict[str, dict[str, Any]], subnet_id: str, vpc_id: str) -> dict[str, Any] | None:
@@ -148,14 +192,3 @@ def _open_to_world(perm: dict[str, Any], family: str) -> bool:
     if family == "ipv4":
         return any(x.get("CidrIp") == WORLD["ipv4"] for x in perm.get("IpRanges", []))
     return any(x.get("CidrIpv6") == WORLD["ipv6"] for x in perm.get("Ipv6Ranges", []))
-
-
-def _port(perm: dict[str, Any], family: str, group_id: str) -> dict[str, Any]:
-    protocol = perm.get("IpProtocol")
-    return {
-        "protocol": "all" if protocol == "-1" else protocol,
-        "from_port": perm.get("FromPort"),
-        "to_port": perm.get("ToPort"),
-        "family": family,
-        "security_group": group_id,
-    }

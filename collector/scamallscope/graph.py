@@ -76,6 +76,21 @@ def _route_table(c: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _network_acl(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "is_default": c.get("IsDefault", False),
+        "entries": [
+            {"rule_number": e.get("RuleNumber"),
+             "direction": "outbound" if e.get("Egress") else "inbound",
+             "protocol": e.get("Protocol"),
+             "action": e.get("RuleAction"),
+             "cidr": e.get("CidrBlock") or e.get("Ipv6CidrBlock"),
+             "ports": [e["PortRange"].get("From"), e["PortRange"].get("To")] if e.get("PortRange") else None}
+            for e in sorted(c.get("Entries", []), key=lambda e: (bool(e.get("Egress")), e.get("RuleNumber", 0)))
+        ],
+    }
+
+
 FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "vpc": _vpc,
     "subnet": _subnet,
@@ -83,6 +98,7 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "instance": _instance,
     "internet-gateway": _internet_gateway,
     "route-table": _route_table,
+    "network-acl": _network_acl,
 }
 
 

@@ -2,7 +2,7 @@
 
 Read-only calls only: ec2:DescribeVpcs, ec2:DescribeSubnets,
 ec2:DescribeSecurityGroups, ec2:DescribeInstances, ec2:DescribeRouteTables,
-ec2:DescribeInternetGateways.
+ec2:DescribeInternetGateways, ec2:DescribeNetworkAcls.
 """
 
 from __future__ import annotations
@@ -114,6 +114,18 @@ def collect_route_tables(client: Any, ctx: Context) -> Result:
     return resources, links
 
 
+def collect_network_acls(client: Any, ctx: Context) -> Result:
+    resources, links = [], []
+    for a in _pages(client, "describe_network_acls", "NetworkAcls"):
+        r = _resource(ctx, "network-acl", a["NetworkAclId"], a)
+        resources.append(r)
+        links.append(Link(ctx.arn("vpc", a["VpcId"]), r.arn, "contains"))
+        for assoc in a.get("Associations", []):
+            if assoc.get("SubnetId"):
+                links.append(Link(r.arn, ctx.arn("subnet", assoc["SubnetId"]), "filters"))
+    return resources, links
+
+
 # (resource type, collector). Order matters only for readability of the output.
 COLLECTORS: list[tuple[str, Callable[[Any, Context], Result]]] = [
     ("vpc", collect_vpcs),
@@ -122,4 +134,5 @@ COLLECTORS: list[tuple[str, Callable[[Any, Context], Result]]] = [
     ("instance", collect_instances),
     ("internet-gateway", collect_internet_gateways),
     ("route-table", collect_route_tables),
+    ("network-acl", collect_network_acls),
 ]

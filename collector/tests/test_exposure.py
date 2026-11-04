@@ -50,8 +50,10 @@ def test_port_open_to_world_with_public_ip_and_igw_route_is_exposed(session):
     result, _ = result_for(session, ids)
 
     assert result["exposure"] == "exposed"
-    assert result["ports"] == [{"protocol": "tcp", "from_port": 22, "to_port": 22,
-                                "family": "ipv4", "security_group": ids["sg"]}]  # 443 is private only
+    assert [{k: v for k, v in p.items() if k != "network_acl"} for p in result["ports"]] == [
+        {"protocol": "tcp", "from_port": 22, "to_port": 22, "family": "ipv4", "security_group": ids["sg"]}
+    ]  # 443 is private only
+    assert result["ports"][0]["network_acl"].startswith("acl-")  # the VPC default ACL
 
 
 def test_main_route_table_is_used_when_subnet_has_no_explicit_one(session):
@@ -89,6 +91,7 @@ def test_detached_gateway_does_not_count(session):
     ("DescribeRouteTables", "route-table"),
     ("DescribeInternetGateways", "internet-gateway"),
     ("DescribeSecurityGroups", "security-group"),
+    ("DescribeNetworkAcls", "network-acl"),
 ])
 def test_unknown_when_a_needed_unit_failed(session, operation, unit):
     ids = make_estate(session)
@@ -127,7 +130,10 @@ def test_graph_shows_exposure_and_new_links(session):
     assert (arn("internet-gateway", ids["igw"]), arn("vpc", ids["vpc"]), "attached") in edges
     assert (arn("route-table", ids["table"]), arn("subnet", ids["subnet"]), "routes") in edges
     assert (arn("route-table", ids["table"]), arn("internet-gateway", ids["igw"]), "routes_to") in edges
-    assert "network ACLs" in g["meta"]["exposure_checks"]
+    assert "network ACL" in g["meta"]["exposure_checks"]
+    acl_nodes = [n for n in nodes.values() if n["type"] == "network-acl"]
+    assert any(n["is_default"] and n["entries"] for n in acl_nodes)
+    assert any(e[1] == arn("subnet", ids["subnet"]) and e[2] == "filters" for e in edges)
 
 
 def test_security_group_on_network_interface_creates_uses_link(session):
@@ -158,6 +164,10 @@ def test_second_interface_with_public_ip_is_checked():
             res("route-table", "rtb-pub", {"VpcId": "vpc-1", "Associations": [{"SubnetId": "subnet-pub"}],
                                            "Routes": [{"DestinationCidrBlock": "0.0.0.0/0", "GatewayId": "igw-1",
                                                        "State": "active"}]}),
+            res("network-acl", "acl-1", {"NetworkAclId": "acl-1", "VpcId": "vpc-1", "IsDefault": True,
+                                         "Associations": [], "Entries": [
+                {"RuleNumber": 100, "Egress": False, "Protocol": "-1", "RuleAction": "allow",
+                 "CidrBlock": "0.0.0.0/0"}]}),
             res("security-group", "sg-priv", {"IpPermissions": []}),
             res("security-group", "sg-open", {"IpPermissions": [
                 {"IpProtocol": "-1", "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]}),
@@ -173,5 +183,87 @@ def test_second_interface_with_public_ip_is_checked():
     result = exposure.analyse(snap)[f"arn:aws:ec2:{region}:{acct}:instance/i-1"]
 
     assert result["exposure"] == "exposed"
-    assert result["ports"] == [{"protocol": "all", "from_port": None, "to_port": None,
-                                "family": "ipv4", "security_group": "sg-open"}]
+    # "All protocols" is reported as TCP, UDP and ICMP, as far as the ACL lets them in.
+    assert {(p["protocol"], p["from_port"], p["to_port"]) for p in result["ports"]} == {
+        ("tcp", 0, 65535), ("udp", 0, 65535), ("icmp", None, None)}
+    assert {p["security_group"] for p in result["ports"]} == {"sg-open"}
+
+
+def use_custom_acl(session, ids, entries):
+    """Give the subnet its own network ACL with the given inbound entries."""
+    ec2 = session.client("ec2", region_name=REGION)
+    acl = ec2.create_network_acl(VpcId=ids["vpc"])["NetworkAcl"]["NetworkAclId"]
+    for e in entries:
+        ec2.create_network_acl_entry(NetworkAclId=acl, Egress=False, **e)
+    current = ec2.describe_network_acls(
+        Filters=[{"Name": "association.subnet-id", "Values": [ids["subnet"]]}])["NetworkAcls"][0]
+    assoc = next(a["NetworkAclAssociationId"] for a in current["Associations"] if a["SubnetId"] == ids["subnet"])
+    ec2.replace_network_acl_association(AssociationId=assoc, NetworkAclId=acl)
+    return acl
+
+
+ALLOW_ALL = {"RuleNumber": 100, "Protocol": "-1", "RuleAction": "allow", "CidrBlock": "0.0.0.0/0"}
+
+
+def test_acl_deny_before_allow_blocks_the_port(session):
+    ids = make_estate(session)
+    use_custom_acl(session, ids, [
+        {"RuleNumber": 90, "Protocol": "6", "RuleAction": "deny", "CidrBlock": "0.0.0.0/0",
+         "PortRange": {"From": 22, "To": 22}},
+        ALLOW_ALL,
+    ])
+
+    result, _ = result_for(session, ids)
+
+    assert result == {"exposure": "not_exposed", "ports": [],
+                      "reason": "network ACL blocks the ports the security group opens"}
+
+
+def test_acl_allow_before_deny_lets_the_port_in(session):
+    ids = make_estate(session)
+    acl = use_custom_acl(session, ids, [
+        {"RuleNumber": 50, "Protocol": "6", "RuleAction": "allow", "CidrBlock": "0.0.0.0/0",
+         "PortRange": {"From": 22, "To": 22}},
+        {"RuleNumber": 60, "Protocol": "-1", "RuleAction": "deny", "CidrBlock": "0.0.0.0/0"},
+    ])
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "exposed"
+    assert result["ports"][0]["network_acl"] == acl
+
+
+def test_acl_with_no_matching_allow_denies_by_default(session):
+    ids = make_estate(session)
+    use_custom_acl(session, ids, [])  # only the built-in "*" deny
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "not_exposed"
+
+
+def test_narrow_acl_deny_does_not_close_the_port_to_the_world(session):
+    ids = make_estate(session)
+    use_custom_acl(session, ids, [
+        {"RuleNumber": 10, "Protocol": "-1", "RuleAction": "deny", "CidrBlock": "203.0.113.0/24"},
+        ALLOW_ALL,
+    ])
+
+    result, _ = result_for(session, ids)
+
+    assert result["exposure"] == "exposed"
+
+
+def test_only_the_part_of_a_range_the_acl_allows_is_reported(session):
+    ids = make_estate(session)
+    session.client("ec2", region_name=REGION).authorize_security_group_ingress(
+        GroupId=ids["sg"], IpProtocol="tcp", FromPort=8000, ToPort=8100, CidrIp="0.0.0.0/0")
+    use_custom_acl(session, ids, [
+        {"RuleNumber": 10, "Protocol": "6", "RuleAction": "deny", "CidrBlock": "0.0.0.0/0",
+         "PortRange": {"From": 8050, "To": 8059}},
+        ALLOW_ALL,
+    ])
+
+    result, _ = result_for(session, ids)
+
+    assert {(p["from_port"], p["to_port"]) for p in result["ports"]} == {(22, 22), (8000, 8049), (8060, 8100)}

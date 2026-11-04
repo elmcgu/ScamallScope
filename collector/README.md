@@ -21,14 +21,14 @@ Only these read-only actions:
 
 - `sts:GetCallerIdentity`
 - `ec2:DescribeVpcs`, `ec2:DescribeSubnets`, `ec2:DescribeSecurityGroups`, `ec2:DescribeInstances`
-- `ec2:DescribeRouteTables`, `ec2:DescribeInternetGateways`
+- `ec2:DescribeRouteTables`, `ec2:DescribeInternetGateways`, `ec2:DescribeNetworkAcls`
 
 ## Snapshot shape
 
 - `units`: one entry per (service, resource type, region), `status` `ok` or `error`. A unit with
   `error` means "unknown", never "nothing there".
 - `resources`: `arn`, `account_id`, `region`, `service`, `type`, `id`, `name`, `tags`, `config` (raw API item).
-- `links`: `source` ARN, `target` ARN, `type` (`contains`, `uses`, `attached`, `routes`, `routes_to`).
+- `links`: `source` ARN, `target` ARN, `type` (`contains`, `uses`, `attached`, `routes`, `routes_to`, `filters`).
 
 ## Graph JSON
 
@@ -45,7 +45,13 @@ Each instance node in the graph has `exposure` (`exposed`, `not_exposed` or `unk
 1. the interface has a public IPv4 or IPv6 address,
 2. its subnet's route table (or the VPC main table) has `0.0.0.0/0` or `::/0` to an
    internet gateway attached to the VPC, and
-3. one of its security groups allows inbound traffic from `0.0.0.0/0` or `::/0`.
+3. one of its security groups allows inbound traffic from `0.0.0.0/0` or `::/0`, and
+4. the subnet's network ACL (or the VPC default ACL) lets that traffic in. Inbound rules are
+   checked lowest rule number first and the first match wins. Only rules with source
+   `0.0.0.0/0` or `::/0` count, the same as for security groups. Only the part of a port
+   range that the ACL allows is reported.
 
-`unknown` means a collection unit the check needs failed. Not checked yet: network ACLs,
-prefix lists, split default routes, load balancers.
+`unknown` means a collection unit the check needs failed. Not checked yet: prefix lists,
+split default routes, load balancers, ICMP type and code in network ACL rules.
+Outbound ACL rules are not used: blocking return traffic does not stop a packet reaching
+the instance.
