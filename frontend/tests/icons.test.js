@@ -30,8 +30,8 @@ describe("icons", () => {
 
   it("maps every node kind to a file", () => {
     expect(Object.keys(ICON_FILES).sort()).toEqual([
-      "instance", "internet-gateway", "network-acl", "route-table", "security-group",
-      "subnet-private", "subnet-public", "vpc",
+      "bucket", "function", "group", "instance", "internet-gateway", "network-acl", "policy", "role",
+      "route-table", "security-group", "subnet-private", "subnet-public", "user", "vpc",
     ]);
   });
 

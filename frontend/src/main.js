@@ -24,6 +24,7 @@ const C = {
   bg: "#0d1117", text: "#ffffff", line: "#9ca3af",
   vpc: "#58a6ff", subnet: "#79c0ff", instance: "#e6edf3", sg: "#d2a8ff", acl: "#c297ff",
   rt: "#56d4dd", igw: "#ffd33d", exposed: "#ff5c5c", unknown: "#ffa657",
+  bucket: "#8ddb8c", fn: "#ffa657", iam: "#ff7b9c", admin: "#ffd33d",
 };
 
 const STYLE = [
@@ -47,6 +48,14 @@ const STYLE = [
   { selector: "node.type-network-acl", style: { shape: "hexagon", "background-color": C.acl } },
   { selector: "node.type-route-table", style: { shape: "tag", "background-color": C.rt } },
   { selector: "node.type-internet-gateway", style: { shape: "star", "background-color": C.igw, width: 46, height: 46 } },
+  { selector: "node.type-bucket", style: { shape: "barrel", "background-color": C.bucket } },
+  { selector: "node.type-function", style: { shape: "round-triangle", "background-color": C.fn } },
+  { selector: "node.type-role", style: { shape: "round-pentagon", "background-color": C.iam } },
+  { selector: "node.type-user", style: { shape: "ellipse", "background-color": C.iam } },
+  { selector: "node.type-group", style: { shape: "round-octagon", "background-color": C.iam } },
+  { selector: "node.type-policy", style: { shape: "round-tag", "background-color": C.iam, width: 30, height: 30 } },
+  // Admin principals: yellow double border and a ★ in the label (not colour alone).
+  { selector: "node.admin", style: { "border-width": 5, "border-style": "double", "border-color": C.admin, color: C.admin } },
   { selector: "node.exposure-exposed", style: {
     "background-color": C.exposed, "border-color": "#ffffff", "border-width": 4, color: C.exposed, "font-size": 17,
   } },
@@ -59,6 +68,8 @@ const STYLE = [
   } },
   { selector: "edge[type = 'uses']", style: { "line-color": C.sg, "target-arrow-color": C.sg } },
   { selector: "edge[type = 'routes_to']", style: { "line-color": C.igw, "target-arrow-color": C.igw, width: 3 } },
+  { selector: "edge[type = 'assumes']", style: { "line-color": C.iam, "target-arrow-color": C.iam, "line-style": "dashed" } },
+  { selector: "edge[type = 'attached']", style: { "line-color": C.iam, "target-arrow-color": C.iam } },
   { selector: "edge[type = 'filters']", style: { "line-color": C.acl, "target-arrow-color": C.acl, "line-style": "dashed" } },
   { selector: ".hidden", style: { display: "none" } },
   { selector: "node:selected", style: { "border-width": 6, "border-color": "#ffffff", "overlay-color": "#ffffff", "overlay-opacity": 0.15 } },
@@ -88,8 +99,11 @@ function load(json, source) {
   regionChoice($("region"), f.regions, region, graph);
   const s = summary(graph);
   $("summary").textContent =
-    `${s.nodes} resources, ${s.edges} links. Instances: ${s.instances}, exposed ${s.exposed}, unknown ${s.unknown}.`;
-  $("checks").textContent = graph.meta?.exposure_checks ? `Exposure checks: ${graph.meta.exposure_checks}` : "";
+    `${s.nodes} resources, ${s.edges} links. Exposure checked on ${s.checked}: exposed ${s.exposed}, unknown ${s.unknown}. Admin principals: ${s.admins}.`;
+  $("checks").textContent = [
+    graph.meta?.exposure_checks && `Exposure checks: ${graph.meta.exposure_checks}`,
+    graph.meta?.admin_checks && `Admin checks: ${graph.meta.admin_checks}`,
+  ].filter(Boolean).join(" ");
   clearDetails();
 
   if (cy) cy.destroy();
@@ -170,6 +184,11 @@ function showDetails(node) {
   const panel = $("details");
   const parts = [Object.assign(document.createElement("h2"), { textContent: `${node.type}: ${node.label}` })];
 
+  if (node.admin && node.type !== "policy") {
+    parts.push(Object.assign(document.createElement("p"), {
+      className: "admin-badge", textContent: `★ admin: ${node.admin_reason}`,
+    }));
+  }
   if (node.exposure) {
     parts.push(Object.assign(document.createElement("p"), {
       className: `exposure ${node.exposure}`,
@@ -221,6 +240,8 @@ function typeLegend() {
     "vpc": "VPC", "subnet-public": "Public subnet", "subnet-private": "Private subnet",
     "instance": "EC2 instance", "security-group": "Security group", "network-acl": "Network ACL",
     "route-table": "Route table", "internet-gateway": "Internet gateway",
+    "bucket": "S3 bucket", "function": "Lambda function", "role": "IAM role", "user": "IAM user",
+    "group": "IAM group", "policy": "IAM policy",
   };
   const items = Object.keys(ICON_FILES).filter((k) => ICON_URLS[k]).map((k) => {
     const li = document.createElement("li");

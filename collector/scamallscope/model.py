@@ -77,6 +77,16 @@ def is_complete(snapshot: Snapshot) -> bool:
     return all(u["status"] == "ok" for u in snapshot["units"])
 
 
+GLOBAL = "global"  # region name for global services (IAM, S3 bucket list)
+
+
+def make_resource(arn: str, account_id: str, region: str, service: str, type: str, id: str,
+                  tags: dict[str, str], config: dict[str, Any], name: str | None = None) -> Resource:
+    return {"arn": arn, "account_id": account_id, "region": region, "service": service, "type": type,
+            "id": id, "name": name if name is not None else tags.get("Name"), "tags": tags,
+            "config": json_safe(config)}
+
+
 def link(source: str, target: str, type: str) -> Link:
     return {"source": source, "target": target, "type": type}
 

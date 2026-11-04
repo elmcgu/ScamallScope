@@ -26,6 +26,15 @@ Only these read-only actions:
 - `sts:GetCallerIdentity`
 - `ec2:DescribeVpcs`, `ec2:DescribeSubnets`, `ec2:DescribeSecurityGroups`, `ec2:DescribeInstances`
 - `ec2:DescribeRouteTables`, `ec2:DescribeInternetGateways`, `ec2:DescribeNetworkAcls`
+- `lambda:ListFunctions`, `lambda:ListFunctionUrlConfigs`, `lambda:ListTags`
+- `iam:GetAccountAuthorizationDetails` (returns policy documents; no passwords or access keys)
+- `s3:ListAllMyBuckets`, `s3:GetBucketLocation`, `s3:GetBucketPolicyStatus`, `s3:GetBucketPublicAccessBlock`,
+  `s3:GetBucketAcl`, `s3:GetEncryptionConfiguration`, `s3:GetBucketVersioning`, `s3:GetBucketTagging`,
+  `s3:GetAccountPublicAccessBlock`
+
+IAM and S3 are global: they are collected once per run under the region `global`
+(`snapshot.collect(..., include_global=False)` skips them). Lambda environment variable
+**values are dropped** when collected; only the names are kept.
 
 For the inventory, the identity that runs it also needs, on the table and its index only:
 `dynamodb:Query`, `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:BatchWriteItem`.
@@ -65,6 +74,11 @@ Each instance node in the graph has `exposure` (`exposed`, `not_exposed` or `unk
    checked lowest rule number first and the first match wins. Only rules with source
    `0.0.0.0/0` or `::/0` count, the same as for security groups. Only the part of a port
    range that the ACL allows is reported.
+
+S3 buckets are exposed when AWS's policy status says the bucket policy is public, or the ACL
+grants access to everyone or any AWS account, unless Block Public Access (bucket or account)
+stops it. Lambda functions are exposed when they have a function URL with `AuthType NONE`.
+IAM users, groups and roles get `admin` (see `iam_analysis.py` for what is and is not checked).
 
 `unknown` means a collection unit the check needs failed. Not checked yet: prefix lists,
 split default routes, load balancers, ICMP type and code in network ACL rules.

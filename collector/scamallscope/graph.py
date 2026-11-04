@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
-from . import exposure
+from . import exposure, iam_analysis
 from .model import Snapshot
 
 GRAPH_SCHEMA_VERSION = 1
@@ -92,6 +92,57 @@ def _network_acl(c: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _bucket(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "location": c.get("Region"),
+        "versioning": c.get("Versioning") or "Disabled",
+        "encrypted": bool(c.get("Encryption")),
+        "public_policy": (c.get("PolicyStatus") or {}).get("IsPublic") is True,
+        "public_acl": exposure.public_acl(c),
+        "block_public_access": exposure.block_public_access(c),
+    }
+
+
+def _role(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "path": c.get("Path"),
+        "service_linked": str(c.get("Path", "")).startswith("/aws-service-role/"),
+        "trusted_principals": iam_analysis.trusted_principals(c),
+        "attached_policies": [p["PolicyName"] for p in c.get("AttachedManagedPolicies", [])],
+        "inline_policies": [p.get("PolicyName") for p in c.get("RolePolicyList", [])],
+    }
+
+
+def _user(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "groups": c.get("GroupList", []),
+        "attached_policies": [p["PolicyName"] for p in c.get("AttachedManagedPolicies", [])],
+        "inline_policies": [p.get("PolicyName") for p in c.get("UserPolicyList", [])],
+    }
+
+
+def _group(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "attached_policies": [p["PolicyName"] for p in c.get("AttachedManagedPolicies", [])],
+        "inline_policies": [p.get("PolicyName") for p in c.get("GroupPolicyList", [])],
+    }
+
+
+def _policy(c: dict[str, Any]) -> dict[str, Any]:
+    return {"aws_managed": bool(c.get("AwsManaged")), "attachment_count": c.get("AttachmentCount")}
+
+
+def _function(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "runtime": c.get("Runtime") or c.get("PackageType"),
+        "memory_mb": c.get("MemorySize"),
+        "timeout_s": c.get("Timeout"),
+        "in_vpc": bool((c.get("VpcConfig") or {}).get("SubnetIds")),
+        "url_auth": [u.get("AuthType") for u in c.get("FunctionUrlConfigs") or []],
+        "environment_variable_names": c.get("EnvironmentVariableNames", []),
+    }
+
+
 FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "vpc": _vpc,
     "subnet": _subnet,
@@ -100,12 +151,19 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "internet-gateway": _internet_gateway,
     "route-table": _route_table,
     "network-acl": _network_acl,
+    "bucket": _bucket,
+    "role": _role,
+    "user": _user,
+    "group": _group,
+    "policy": _policy,
+    "function": _function,
 }
 
 
 def to_graph(snapshot: Snapshot) -> dict[str, Any]:
     exposed = exposure.analyse(snapshot)
     internet = exposure.subnet_internet_routes(snapshot)
+    admins = iam_analysis.admin_principals(snapshot)
     nodes = []
     ids = set()
     for r in snapshot["resources"]:
@@ -122,6 +180,11 @@ def to_graph(snapshot: Snapshot) -> dict[str, Any]:
         if r["arn"] in internet:
             # True: public subnet (default route to an internet gateway). None: unknown.
             data["internet_route"] = internet[r["arn"]]
+        if r["service"] == "iam" and r["type"] in ("user", "group", "role"):
+            data["admin"] = r["arn"] in admins
+            data["admin_reason"] = admins.get(r["arn"])
+        if r["type"] == "policy":
+            data["admin"] = iam_analysis.policy_is_admin(r)
         if r["arn"] in exposed:
             e = exposed[r["arn"]]
             data.update(exposure=e["exposure"], exposure_reason=e["reason"], exposed_ports=e["ports"])
@@ -153,6 +216,7 @@ def to_graph(snapshot: Snapshot) -> dict[str, Any]:
             "failed_units": [u for u in snapshot["units"] if u["status"] != "ok"],
             "dropped_edges": dropped,
             "exposure_checks": exposure.CHECKS,
+            "admin_checks": iam_analysis.CHECKS,
         },
         "elements": nodes + edges,
     }

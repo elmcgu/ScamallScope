@@ -22,9 +22,17 @@ from typing import Any
 from . import network_acl
 from .model import Snapshot
 
-CHECKS = ("security group open to 0.0.0.0/0 or ::/0, public IP, default route to an attached "
-          "internet gateway, inbound network ACL rules. "
-          "Not checked: prefix lists, split default routes, load balancers.")
+CHECKS = ("EC2: security group open to 0.0.0.0/0 or ::/0, public IP, default route to an attached "
+          "internet gateway, inbound network ACL rules. S3: public bucket policy (AWS policy status) or "
+          "public ACL, unless Block Public Access (bucket or account) stops it. Lambda: function URL "
+          "with AuthType NONE. Not checked: prefix lists, split default routes, load balancers, "
+          "API Gateway, CloudFront, access points.")
+
+PUBLIC_GRANTEES = {
+    "http://acs.amazonaws.com/groups/global/AllUsers": "everyone",
+    "http://acs.amazonaws.com/groups/global/AuthenticatedUsers": "any AWS account",
+}
+BLOCK_FLAGS = ("BlockPublicAcls", "IgnorePublicAcls", "BlockPublicPolicy", "RestrictPublicBuckets")
 
 WORLD = {"ipv4": "0.0.0.0/0", "ipv6": "::/0"}
 NEEDED = ("instance", "subnet", "security-group", "route-table", "internet-gateway", "network-acl")
@@ -37,11 +45,57 @@ def analyse(snapshot: Snapshot) -> dict[str, dict[str, Any]]:
     for r in snapshot["resources"]:
         index[(r["region"], r["type"])][r["id"]] = r["config"]
 
-    return {
-        r["arn"]: _instance(r["region"], r["config"], index, failed)
-        for r in snapshot["resources"]
-        if r["type"] == "instance"
-    }
+    out: dict[str, dict[str, Any]] = {}
+    for r in snapshot["resources"]:
+        if r["type"] == "instance":
+            out[r["arn"]] = _instance(r["region"], r["config"], index, failed)
+        elif r["type"] == "bucket":
+            out[r["arn"]] = bucket(r["config"])
+        elif r["type"] == "function":
+            out[r["arn"]] = function(r["config"])
+    return out
+
+
+def block_public_access(c: dict[str, Any]) -> dict[str, bool]:
+    """Effective Block Public Access: a flag is on if the bucket or the account sets it."""
+    b, a = c.get("PublicAccessBlock") or {}, c.get("AccountPublicAccessBlock") or {}
+    return {f: bool(b.get(f)) or bool(a.get(f)) for f in BLOCK_FLAGS}
+
+
+def public_acl(c: dict[str, Any]) -> list[str]:
+    return sorted({PUBLIC_GRANTEES[g["Grantee"]["URI"]] for g in c.get("Grants") or []
+                   if g.get("Grantee", {}).get("URI") in PUBLIC_GRANTEES})
+
+
+def bucket(c: dict[str, Any]) -> dict[str, Any]:
+    errors = c.get("DetailErrors") or {}
+    missing = [k for k in ("PolicyStatus", "PublicAccessBlock", "AccountPublicAccessBlock", "Acl") if k in errors]
+    if missing:
+        return _result("unknown", f"could not read: {', '.join(missing)}")
+    bpa = block_public_access(c)
+    policy_public = (c.get("PolicyStatus") or {}).get("IsPublic") is True
+    acl = public_acl(c)
+    reasons = []
+    if policy_public and not bpa["RestrictPublicBuckets"]:
+        reasons.append("bucket policy allows public access")
+    if acl and not bpa["IgnorePublicAcls"]:
+        reasons.append(f"ACL grants access to {' and '.join(acl)}")
+    if reasons:
+        return _result("exposed", "; ".join(reasons))
+    if policy_public or acl:
+        return _result("not_exposed", "public policy or ACL is blocked by Block Public Access")
+    return _result("not_exposed", "no public bucket policy or ACL")
+
+
+def function(c: dict[str, Any]) -> dict[str, Any]:
+    if "FunctionUrlConfigs" in (c.get("DetailErrors") or {}):
+        return _result("unknown", "could not read function URL configuration")
+    urls = c.get("FunctionUrlConfigs") or []
+    if any(u.get("AuthType") == "NONE" for u in urls):
+        return _result("exposed", "function URL with no authentication (AuthType NONE)")
+    if urls:
+        return _result("not_exposed", "function URL requires IAM authentication")
+    return _result("not_exposed", "no function URL (API Gateway and other triggers not checked)")
 
 
 def subnet_internet_routes(snapshot: Snapshot) -> dict[str, bool | None]:

@@ -8,7 +8,8 @@
 
 ## What it does
 
-- **Collects** every resource in an AWS account using read-only Python (boto3) calls.
+- **Collects** resources in an AWS account using read-only Python (boto3) calls: EC2 networking
+  and instances, Lambda, IAM and S3 so far.
 - **Keeps an inventory** in DynamoDB and records what is new, changed or deleted each day.
 - **Links** resources into a graph (VPC → subnet → EC2 → security group, and so on).
 - **Shows** the graph in a web frontend, with views and filters:

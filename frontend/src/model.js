@@ -52,7 +52,7 @@ export function toCyElements(graph) {
 const MARKERS = { exposed: "⚠ ", unknown: "? " };
 
 export function displayLabel(node) {
-  return `${MARKERS[node.exposure] ?? ""}${node.label}`;
+  return `${MARKERS[node.exposure] ?? ""}${node.admin ? "★ " : ""}${node.label}`;
 }
 
 export function classesFor(node) {
@@ -60,6 +60,7 @@ export function classesFor(node) {
   const kind = iconKind(node);
   if (kind) c.push(`icon-${kind}`);
   if (node.exposure) c.push(`exposure-${node.exposure}`);
+  if (node.admin) c.push("admin");
   return c.join(" ");
 }
 
@@ -161,26 +162,39 @@ export function warnings(graph) {
 
 export function summary(graph) {
   const nodes = nodesOf(graph);
-  const instances = nodes.filter((n) => n.type === "instance");
+  const checked = nodes.filter((n) => n.exposure);
   return {
     nodes: nodes.length,
     edges: edgesOf(graph).length,
-    instances: instances.length,
-    exposed: instances.filter((n) => n.exposure === "exposed").length,
-    unknown: instances.filter((n) => n.exposure === "unknown").length,
+    checked: checked.length,
+    exposed: checked.filter((n) => n.exposure === "exposed").length,
+    unknown: checked.filter((n) => n.exposure === "unknown").length,
+    admins: nodes.filter((n) => n.admin && n.type !== "policy").length,
   };
 }
 
 /** Rows [label, value] for the details panel. Values are plain strings; the UI sets them as text. */
 export function detailRows(node) {
-  const skip = new Set(["id", "parent", "label", "exposed_ports", "tags", "ingress", "egress", "routes", "entries"]);
+  const skip = new Set(["id", "parent", "label", "display_label", "exposed_ports", "tags", "ingress", "egress", "routes", "entries"]);
   const rows = [["Name", node.label], ["ARN", node.id]];
   for (const [k, v] of Object.entries(node)) {
-    if (skip.has(k) || v === null || v === undefined || typeof v === "object") continue;
-    rows.push([k, String(v)]);
+    if (skip.has(k) || v === null || v === undefined) continue;
+    const text = valueText(v);
+    if (text !== null) rows.push([k, text]);
   }
   for (const [k, v] of Object.entries(node.tags || {})) rows.push([`tag:${k}`, v]);
   return rows;
+}
+
+/** Plain text for a value: primitives, lists of primitives, and flat objects. Null for anything deeper. */
+function valueText(v) {
+  const flat = (x) => x === null || ["string", "number", "boolean"].includes(typeof x);
+  if (flat(v)) return String(v);
+  if (Array.isArray(v)) return v.every(flat) ? (v.length ? v.join(", ") : "(none)") : null;
+  if (typeof v === "object" && Object.values(v).every(flat)) {
+    return Object.entries(v).map(([k, x]) => `${k}: ${x}`).join(", ");
+  }
+  return null;
 }
 
 export function portText(p) {

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-  ALL_REGIONS, defaultRegion, detailRows, displayLabel, facets, regionsFor, parseGraph, portText, resourceId, summary, toCyElements, visibleIds, warnings,
+  ALL_REGIONS, classesFor, defaultRegion, detailRows, displayLabel, facets, regionsFor, parseGraph, portText, resourceId, summary, toCyElements, visibleIds, warnings,
 } from "../src/model.js";
 
 const sample = parseGraph(readFileSync(new URL("../../samples/demo.graph.json", import.meta.url), "utf8"));
@@ -105,8 +105,9 @@ describe("visibleIds", () => {
 });
 
 describe("summary and warnings", () => {
-  it("counts exposed instances in the sample", () => {
-    expect(summary(sample)).toMatchObject({ instances: 5, exposed: 2, unknown: 0 });
+  it("counts exposure across all checked types, and admin principals", () => {
+    // 5 instances, 3 buckets, 2 functions; exposed: 2 instances, 1 bucket, 1 function.
+    expect(summary(sample)).toMatchObject({ checked: 10, exposed: 4, unknown: 0, admins: 2 });
   });
 
   it("warns about a partial snapshot and dropped links", () => {
@@ -163,6 +164,38 @@ describe("region choice", () => {
 
   it("turns a choice into a region set", () => {
     expect(regionsFor("us-east-1", sample)).toEqual(new Set(["us-east-1"]));
-    expect(regionsFor(ALL_REGIONS, sample)).toEqual(new Set(["eu-west-1", "us-east-1"]));
+    expect(regionsFor(ALL_REGIONS, sample)).toEqual(new Set(["eu-west-1", "global", "us-east-1"]));
   });
 });
+
+describe("admin and details", () => {
+  it("marks admins in the label and classes", () => {
+    expect(displayLabel({ label: "alex", admin: true })).toBe("★ alex");
+    expect(displayLabel({ label: "fn", exposure: "exposed", admin: false })).toBe("⚠ fn");
+    expect(classesFor({ type: "user", admin: true })).toContain("admin");
+  });
+
+  it("shows lists and flat objects as text, and skips deeper data", () => {
+    const rows = Object.fromEntries(detailRows({
+      id: "arn:x", label: "r", type: "role", trusted_principals: ["ec2.amazonaws.com"], inline_policies: [],
+      block_public_access: { IgnorePublicAcls: true }, deep: [{ a: 1 }],
+    }));
+    expect(rows.trusted_principals).toBe("ec2.amazonaws.com");
+    expect(rows.inline_policies).toBe("(none)");
+    expect(rows.block_public_access).toBe("IgnorePublicAcls: true");
+    expect(rows.deep).toBeUndefined();
+  });
+
+  it("the sample has admin, public bucket and public function nodes", () => {
+    const n = Object.fromEntries(nodesOfSample().map((d) => [d.label, d]));
+    expect(n["alex.admin"].admin).toBe(true);
+    expect(n["ci-deployer"].admin).toBe(false);
+    expect(n["demo-site-public"].exposure).toBe("exposed");
+    expect(n["demo-reports"].exposure).toBe("not_exposed");
+    expect(n["orders-webhook"].exposure).toBe("exposed");
+  });
+});
+
+function nodesOfSample() {
+  return sample.elements.filter((e) => e.group === "nodes").map((e) => e.data);
+}

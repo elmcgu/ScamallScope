@@ -15,6 +15,12 @@ export const ICON_FILES = {
   "network-acl": "Res_Amazon-VPC_Network-Access-Control-List_48.svg",
   // AWS has no security group icon; the general white shield is for dark backgrounds.
   "security-group": "Res_Shield_48_Dark.svg",
+  "bucket": "Res_Amazon-Simple-Storage-Service_Bucket_48.svg",
+  "function": "Res_AWS-Lambda_Lambda-Function_48.svg",
+  "role": "Res_AWS-Identity-Access-Management_Role_48.svg",
+  "policy": "Res_AWS-Identity-Access-Management_Permissions_48.svg",
+  "user": "Res_User_48_Dark.svg",
+  "group": "Res_Users_48_Dark.svg",
 };
 
 /** Icon kind for a node: subnets split into public and private by their internet route. */
