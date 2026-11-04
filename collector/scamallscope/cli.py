@@ -11,6 +11,7 @@ from pathlib import Path
 import boto3
 
 from . import graph, snapshot
+from .model import is_complete
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -59,16 +60,16 @@ def _collect(args: argparse.Namespace) -> int:
 
     snap = snapshot.collect(session, regions)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out = args.output or Path("snapshots") / f"{snap.account_id}-{stamp}.snapshot.json"
-    snapshot.write(snap, out)
+    out = args.output or Path("snapshots") / f"{snap['account_id']}-{stamp}.snapshot.json"
+    snapshot.write_json(snap, out)
 
-    for u in snap.units:
-        detail = f"{u.count}" if u.status == "ok" else u.error
-        print(f"{u.region:<15} {u.service}:{u.resource_type:<15} {u.status:<6} {detail}")
-    print(f"{len(snap.resources)} resources, {len(snap.links)} links -> {out}")
+    for u in snap["units"]:
+        detail = f"{u['count']}" if u["status"] == "ok" else u["error"]
+        print(f"{u['region']:<15} {u['service']}:{u['resource_type']:<15} {u['status']:<6} {detail}")
+    print(f"{len(snap['resources'])} resources, {len(snap['links'])} links -> {out}")
 
     # Exit 2 on a partial snapshot so a scheduler can tell it apart from success.
-    return 0 if snap.ok else 2
+    return 0 if is_complete(snap) else 2
 
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ uv sync
 uv run scamallscope collect --profile <read-only-profile> --region eu-west-1
 uv run scamallscope graph snapshots/<file>.snapshot.json   # -> <file>.graph.json
 uv run pytest
+uv run pyright                      # type check (TypedDict shapes)
 ```
 
 The snapshot goes to `snapshots/` (git-ignored) with mode `0600`. Exit code `0` = all units

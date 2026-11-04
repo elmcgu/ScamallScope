@@ -2,15 +2,14 @@ import json
 import stat
 
 from scamallscope import graph, snapshot
+from scamallscope.model import Snapshot
 from scamallscope.cli import main
 
 from test_snapshot import REGION, arn, build_estate
 
 
 def collected(session):
-    """Snapshot as it looks after a JSON round trip, like the CLI reads it."""
-    snap = snapshot.collect(session, [REGION])
-    return json.loads(json.dumps(snap.to_dict(), default=str))
+    return snapshot.collect(session, [REGION])
 
 
 def nodes_and_edges(g):
@@ -59,7 +58,8 @@ def test_raw_config_and_addresses_stay_out(session):
 
 
 def test_edges_to_missing_nodes_are_dropped_and_counted():
-    snap = {
+    snap: Snapshot = {
+        "schema_version": 1, "partition": "aws",
         "account_id": "123456789012", "collected_at": "2026-11-03T00:00:00+00:00", "regions": [REGION],
         "units": [{"service": "ec2", "resource_type": "vpc", "region": REGION, "status": "error",
                    "count": 0, "error": "UnauthorizedOperation: denied"}],

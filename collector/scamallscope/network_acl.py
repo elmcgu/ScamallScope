@@ -27,7 +27,7 @@ ALL_PORTS = (0, 65535)
 Range = tuple[int, int]
 
 
-def protocol_number(protocol: str | None) -> str:
+def protocol_number(protocol: str | int | None) -> str:
     """Security groups use names ("tcp") or numbers; network ACLs use numbers ("6")."""
     p = str(protocol).lower()
     return NUMBERS.get(p, p)
@@ -48,42 +48,41 @@ def for_subnet(acls: dict[str, dict[str, Any]], subnet_id: str, vpc_id: str) -> 
     return default
 
 
-def allowed(acl: dict[str, Any], protocol: str, ports: Range | None, family: str) -> list[Range | None]:
-    """Parts of `ports` that inbound traffic from the whole internet may reach.
-
-    `protocol` is a number string ("6"). `ports` is None for ICMP, where ports do not
-    apply; the result is then [None] if allowed, [] if not.
-    """
-    remaining: list[Range | None] = [ports]
-    result: list[Range | None] = []
-
+def _world_rules(acl: dict[str, Any], protocol: str, family: str) -> list[dict[str, Any]]:
+    """Inbound rules, in evaluation order, that apply to this protocol from the whole internet."""
     rules = sorted((e for e in acl.get("Entries", []) if not e.get("Egress")), key=lambda e: e["RuleNumber"])
-    for rule in rules:
+    key = "CidrBlock" if family == "ipv4" else "Ipv6CidrBlock"
+    return [r for r in rules if r.get(key) == WORLD[family] and str(r.get("Protocol")) in ("-1", protocol)]
+
+
+def allowed_ports(acl: dict[str, Any], protocol: str, ports: Range, family: str) -> list[Range]:
+    """Parts of a TCP or UDP port range (`protocol` "6" or "17") that internet traffic may reach."""
+    remaining: list[Range] = [ports]
+    result: list[Range] = []
+    for rule in _world_rules(acl, protocol, family):
         if not remaining:
             break
-        cidr = rule.get("CidrBlock") if family == "ipv4" else rule.get("Ipv6CidrBlock")
-        if cidr != WORLD[family]:
-            continue
-        rule_protocol = str(rule.get("Protocol"))
-        if rule_protocol not in ("-1", protocol):
-            continue
-
-        if ports is None:  # ICMP: the rule matches the whole protocol
-            matched, remaining = remaining, []
-        else:
-            pr = rule.get("PortRange")
-            rule_range = (pr["From"], pr["To"]) if pr and rule_protocol != "-1" else ALL_PORTS
-            matched, rest = [], []
-            for r in remaining:
-                inside, outside = _split(r, rule_range)
-                matched += inside
-                rest += outside
-            remaining = rest
-
+        pr = rule.get("PortRange")
+        rule_range = (pr["From"], pr["To"]) if pr and str(rule.get("Protocol")) != "-1" else ALL_PORTS
+        matched: list[Range] = []
+        rest: list[Range] = []
+        for r in remaining:
+            inside, outside = _split(r, rule_range)
+            matched += inside
+            rest += outside
+        remaining = rest
         if rule.get("RuleAction") == "allow":
             result += matched
+    return _merge(result)
 
-    return result if ports is None else _merge(result)
+
+def allows_protocol(acl: dict[str, Any], protocol: str, family: str) -> bool:
+    """Whether internet traffic of a protocol without ports (ICMP, ESP, ...) gets in.
+
+    The first matching rule decides for the whole protocol.
+    """
+    rules = _world_rules(acl, protocol, family)
+    return bool(rules) and rules[0].get("RuleAction") == "allow"
 
 
 def _split(r: Range, by: Range) -> tuple[list[Range], list[Range]]:

@@ -4,6 +4,7 @@ import stat
 from botocore.exceptions import ClientError
 
 from scamallscope import snapshot
+from scamallscope.model import is_complete
 from scamallscope.cli import main
 
 REGION = "eu-west-1"
@@ -33,15 +34,15 @@ def test_collects_resources_and_links(session):
 
     snap = snapshot.collect(session, [REGION])
 
-    assert snap.ok
-    assert snap.account_id == "123456789012"
-    by_arn = {r.arn: r for r in snap.resources}
+    assert is_complete(snap)
+    assert snap["account_id"] == "123456789012"
+    by_arn = {r["arn"]: r for r in snap["resources"]}
     for kind, rid in [("vpc", vpc), ("subnet", subnet), ("security-group", sg), ("instance", instance)]:
         assert arn(kind, rid) in by_arn
-        assert by_arn[arn(kind, rid)].account_id == "123456789012"
-    assert by_arn[arn("vpc", vpc)].name == "main"
+        assert by_arn[arn(kind, rid)]["account_id"] == "123456789012"
+    assert by_arn[arn("vpc", vpc)]["name"] == "main"
 
-    links = {(l.source, l.target, l.type) for l in snap.links}
+    links = {(l["source"], l["target"], l["type"]) for l in snap["links"]}
     assert (arn("vpc", vpc), arn("subnet", subnet), "contains") in links
     assert (arn("vpc", vpc), arn("security-group", sg), "contains") in links
     assert (arn("subnet", subnet), arn("instance", instance), "contains") in links
@@ -54,7 +55,7 @@ def test_skips_terminated_instances(session):
 
     snap = snapshot.collect(session, [REGION])
 
-    assert arn("instance", instance) not in {r.arn for r in snap.resources}
+    assert arn("instance", instance) not in {r["arn"] for r in snap["resources"]}
 
 
 def test_failed_call_is_an_error_not_an_empty_list(session):
@@ -68,12 +69,12 @@ def test_failed_call_is_an_error_not_an_empty_list(session):
 
     snap = snapshot.collect(session, [REGION])
 
-    assert not snap.ok
-    units = {u.resource_type: u for u in snap.units}
-    assert units["instance"].status == "error"
-    assert units["instance"].error.startswith("UnauthorizedOperation")
-    assert units["vpc"].status == "ok"  # other units still collected
-    assert not [r for r in snap.resources if r.type == "instance"]
+    assert not is_complete(snap)
+    units = {u["resource_type"]: u for u in snap["units"]}
+    assert units["instance"]["status"] == "error"
+    assert (units["instance"]["error"] or "").startswith("UnauthorizedOperation")
+    assert units["vpc"]["status"] == "ok"  # other units still collected
+    assert not [r for r in snap["resources"] if r["type"] == "instance"]
 
 
 def test_cli_writes_private_json(session, tmp_path, monkeypatch, capsys):
@@ -88,3 +89,14 @@ def test_cli_writes_private_json(session, tmp_path, monkeypatch, capsys):
     data = json.loads(out.read_text())
     assert data["schema_version"] == 1
     assert {r["type"] for r in data["resources"]} >= {"vpc", "subnet", "security-group", "instance"}
+
+
+def test_snapshot_is_plain_json_data(session):
+    """The snapshot dict is already JSON: dates are strings, no custom encoder needed."""
+    build_estate(session)
+
+    snap = snapshot.collect(session, [REGION])
+
+    assert json.loads(json.dumps(snap)) == snap
+    instance = next(r for r in snap["resources"] if r["type"] == "instance")
+    assert isinstance(instance["config"]["LaunchTime"], str)

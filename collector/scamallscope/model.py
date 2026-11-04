@@ -1,15 +1,18 @@
-"""Data model for a snapshot: resources, links and per-unit collection results."""
+"""Shapes of the data, as plain dicts that match the snapshot JSON exactly.
+
+TypedDict only describes the keys for type checking (pyright). At runtime these are
+ordinary dicts: no classes, no methods. Functions that work on them live beside them.
+"""
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
-from typing import Any
+from datetime import date, datetime
+from typing import Any, Literal, TypedDict
 
 SCHEMA_VERSION = 1
 
 
-@dataclass(frozen=True)
-class Resource:
+class Resource(TypedDict):
     arn: str
     account_id: str
     region: str
@@ -18,18 +21,16 @@ class Resource:
     id: str
     name: str | None
     tags: dict[str, str]
-    config: dict[str, Any]
+    config: dict[str, Any]  # raw API item, JSON-safe (dates as ISO strings)
 
 
-@dataclass(frozen=True)
-class Link:
+class Link(TypedDict):
     source: str  # ARN
     target: str  # ARN
-    type: str  # e.g. "contains", "uses"
+    type: str  # "contains", "uses", "attached", "routes", "routes_to", "filters"
 
 
-@dataclass(frozen=True)
-class UnitResult:
+class Unit(TypedDict):
     """Outcome of collecting one resource type in one region.
 
     Later runs must only mark resources "deleted" when the unit that owns them
@@ -39,28 +40,57 @@ class UnitResult:
     service: str
     resource_type: str
     region: str
-    status: str  # "ok" or "error"
-    count: int = 0
-    error: str | None = None
+    status: Literal["ok", "error"]
+    count: int
+    error: str | None
 
 
-@dataclass
-class Snapshot:
+class Snapshot(TypedDict):
+    schema_version: int
     account_id: str
     partition: str
     collected_at: str
     regions: list[str]
-    units: list[UnitResult] = field(default_factory=list)
-    resources: list[Resource] = field(default_factory=list)
-    links: list[Link] = field(default_factory=list)
+    units: list[Unit]
+    resources: list[Resource]
+    links: list[Link]
 
-    @property
-    def ok(self) -> bool:
-        return all(u.status == "ok" for u in self.units)
 
-    def to_dict(self) -> dict[str, Any]:
-        return {"schema_version": SCHEMA_VERSION, **asdict(self)}
+def new_snapshot(account_id: str, partition: str, collected_at: str, regions: list[str]) -> Snapshot:
+    return {
+        "schema_version": SCHEMA_VERSION, "account_id": account_id, "partition": partition,
+        "collected_at": collected_at, "regions": regions, "units": [], "resources": [], "links": [],
+    }
+
+
+def ok_unit(service: str, resource_type: str, region: str, count: int) -> Unit:
+    return {"service": service, "resource_type": resource_type, "region": region,
+            "status": "ok", "count": count, "error": None}
+
+
+def error_unit(service: str, resource_type: str, region: str, error: str) -> Unit:
+    return {"service": service, "resource_type": resource_type, "region": region,
+            "status": "error", "count": 0, "error": error}
+
+
+def is_complete(snapshot: Snapshot) -> bool:
+    return all(u["status"] == "ok" for u in snapshot["units"])
+
+
+def link(source: str, target: str, type: str) -> Link:
+    return {"source": source, "target": target, "type": type}
 
 
 def tags_to_dict(tags: list[dict[str, str]] | None) -> dict[str, str]:
     return {t["Key"]: t["Value"] for t in tags or []}
+
+
+def json_safe(value: Any) -> Any:
+    """Copy of an API response with dates as ISO strings, so it is plain JSON data."""
+    if isinstance(value, dict):
+        return {k: json_safe(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [json_safe(v) for v in value]
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    return value

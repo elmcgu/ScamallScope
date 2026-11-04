@@ -1,4 +1,4 @@
-"""Run the collectors across regions and build a Snapshot."""
+"""Run the collectors across regions and build a snapshot dict."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
 from .collectors import ec2
-from .model import Snapshot, UnitResult
+from .model import Snapshot, error_unit, new_snapshot, ok_unit
 
 
 def _error_text(exc: Exception) -> str:
@@ -27,7 +27,7 @@ def collect(session: boto3.Session, regions: list[str]) -> Snapshot:
     account_id = identity["Account"]
     partition = identity["Arn"].split(":")[1]
 
-    snap = Snapshot(
+    snap = new_snapshot(
         account_id=account_id,
         partition=partition,
         collected_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -35,36 +35,26 @@ def collect(session: boto3.Session, regions: list[str]) -> Snapshot:
     )
 
     for region in regions:
-        ctx = ec2.Context(partition=partition, account_id=account_id, region=region)
+        ctx = ec2.context(partition, account_id, region)
         client = session.client("ec2", region_name=region)
         for resource_type, fn in ec2.COLLECTORS:
             try:
                 resources, links = fn(client, ctx)
             except (ClientError, BotoCoreError) as exc:
                 # Record the failure. Never treat it as "no resources".
-                snap.units.append(UnitResult("ec2", resource_type, region, "error", error=_error_text(exc)))
+                snap["units"].append(error_unit("ec2", resource_type, region, _error_text(exc)))
                 continue
-            snap.resources.extend(resources)
-            snap.links.extend(links)
-            snap.units.append(UnitResult("ec2", resource_type, region, "ok", count=len(resources)))
+            snap["resources"].extend(resources)
+            snap["links"].extend(links)
+            snap["units"].append(ok_unit("ec2", resource_type, region, len(resources)))
 
     return snap
-
-
-def write(snap: Snapshot, path: Path) -> None:
-    write_json(snap.to_dict(), path)
 
 
 def write_json(obj: Any, path: Path) -> None:
     """Write JSON readable by the owner only (snapshots and graphs map an AWS estate)."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    data = json.dumps(obj, indent=2, sort_keys=True, default=_json_default)
+    data = json.dumps(obj, indent=2, sort_keys=True)
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
     with os.fdopen(fd, "w", encoding="utf-8") as f:
         f.write(data + "\n")
-
-
-def _json_default(value: Any) -> str:
-    if isinstance(value, datetime):
-        return value.isoformat()
-    raise TypeError(f"Cannot serialise {type(value).__name__}")

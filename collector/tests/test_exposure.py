@@ -4,6 +4,7 @@ import pytest
 from botocore.exceptions import ClientError
 
 from scamallscope import exposure, graph, snapshot
+from scamallscope.model import Resource, Snapshot
 
 from test_snapshot import REGION, arn
 
@@ -40,7 +41,7 @@ def make_estate(session, *, public_ip=True, igw_route=True, explicit_table=True,
 
 
 def result_for(session, ids):
-    snap = json.loads(json.dumps(snapshot.collect(session, [REGION]).to_dict(), default=str))
+    snap = snapshot.collect(session, [REGION])
     return exposure.analyse(snap)[arn("instance", ids["instance"])], snap
 
 
@@ -149,11 +150,13 @@ def test_second_interface_with_public_ip_is_checked():
     """Primary interface is private; a second interface has a public IP and an open group."""
     region, acct = REGION, "123456789012"
 
-    def res(kind, rid, config):
+    def res(kind: str, rid: str, config: dict) -> Resource:
         return {"arn": f"arn:aws:ec2:{region}:{acct}:{kind}/{rid}", "id": rid, "type": kind,
                 "region": region, "service": "ec2", "account_id": acct, "name": None, "tags": {}, "config": config}
 
-    snap = {
+    snap: Snapshot = {
+        "schema_version": 1, "account_id": acct, "partition": "aws",
+        "collected_at": "2026-11-03T00:00:00+00:00", "regions": [region],
         "units": [],
         "resources": [
             res("subnet", "subnet-priv", {"SubnetId": "subnet-priv", "VpcId": "vpc-1"}),

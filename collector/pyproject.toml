@@ -11,7 +11,11 @@ dependencies = ["boto3>=1.35"]
 scamallscope = "scamallscope.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8", "moto[ec2,sts]>=5"]
+dev = [
+    "pytest>=8",
+    "moto[ec2,sts]>=5",
+    "pyright>=1.1.414",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -19,3 +23,8 @@ build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.pyright]
+include = ["scamallscope", "tests", "scripts"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"

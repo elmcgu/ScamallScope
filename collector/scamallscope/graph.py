@@ -8,11 +8,12 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from . import exposure
+from .model import Snapshot
 
 GRAPH_SCHEMA_VERSION = 1
 
 
-def _rules(perms: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _rules(perms: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
     """Flatten security group permissions to protocol, port range and sources."""
     rules = []
     for p in perms or []:
@@ -102,7 +103,7 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
 }
 
 
-def to_graph(snapshot: dict[str, Any]) -> dict[str, Any]:
+def to_graph(snapshot: Snapshot) -> dict[str, Any]:
     exposed = exposure.analyse(snapshot)
     internet = exposure.subnet_internet_routes(snapshot)
     nodes = []

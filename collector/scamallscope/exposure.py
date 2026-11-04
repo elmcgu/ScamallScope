@@ -20,6 +20,7 @@ from collections import defaultdict
 from typing import Any
 
 from . import network_acl
+from .model import Snapshot
 
 CHECKS = ("security group open to 0.0.0.0/0 or ::/0, public IP, default route to an attached "
           "internet gateway, inbound network ACL rules. "
@@ -29,7 +30,7 @@ WORLD = {"ipv4": "0.0.0.0/0", "ipv6": "::/0"}
 NEEDED = ("instance", "subnet", "security-group", "route-table", "internet-gateway", "network-acl")
 
 
-def analyse(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def analyse(snapshot: Snapshot) -> dict[str, dict[str, Any]]:
     """Return {instance ARN: {"exposure", "reason", "ports"}} for every EC2 instance."""
     failed = {(u["region"], u["resource_type"]) for u in snapshot["units"] if u["status"] != "ok"}
     index: dict[tuple[str, str], dict[str, dict[str, Any]]] = defaultdict(dict)
@@ -43,7 +44,7 @@ def analyse(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
-def subnet_internet_routes(snapshot: dict[str, Any]) -> dict[str, bool | None]:
+def subnet_internet_routes(snapshot: Snapshot) -> dict[str, bool | None]:
     """{subnet ARN: True if its route table sends 0.0.0.0/0 or ::/0 to an attached internet gateway}.
 
     None means unknown: a unit the answer needs failed, or no route table was found.
@@ -177,27 +178,26 @@ def _interface(region: str, eni: dict[str, Any], index: dict) -> dict[str, Any]:
 def _through_acl(perm: dict[str, Any], family: str, acl: dict[str, Any]) -> list[dict[str, Any]]:
     """Parts of a security group rule that the network ACL also lets in."""
     protocol = network_acl.protocol_number(perm.get("IpProtocol"))
-    if protocol == "-1":
-        # All protocols: check the common ones one by one.
-        icmp = "1" if family == "ipv4" else "58"
-        checks = [("6", network_acl.ALL_PORTS), ("17", network_acl.ALL_PORTS), (icmp, None)]
-    elif protocol in network_acl.ICMP:
-        checks = [(protocol, None)]
-    elif protocol in ("6", "17"):
-        checks = [(protocol, (perm.get("FromPort", 0), perm.get("ToPort", 65535)))]
-    else:
-        checks = [(protocol, None)]  # other protocols (e.g. 50 ESP) have no ports
+    icmp = "1" if family == "ipv4" else "58"
+    out: list[dict[str, Any]] = []
 
-    out = []
-    for proto, ports in checks:
-        for r in network_acl.allowed(acl, proto, ports, family):
-            if r is None:  # no port range: keep the security group's values (ICMP type and code)
-                same = proto == protocol
-                out.append({"protocol": network_acl.protocol_name(proto),
-                            "from_port": perm.get("FromPort") if same else None,
-                            "to_port": perm.get("ToPort") if same else None})
-            else:
-                out.append({"protocol": network_acl.protocol_name(proto), "from_port": r[0], "to_port": r[1]})
+    def ranges(proto: str, ports: network_acl.Range) -> None:
+        for lo, hi in network_acl.allowed_ports(acl, proto, ports, family):
+            out.append({"protocol": network_acl.protocol_name(proto), "from_port": lo, "to_port": hi})
+
+    def whole(proto: str, from_port: int | None, to_port: int | None) -> None:
+        if network_acl.allows_protocol(acl, proto, family):
+            out.append({"protocol": network_acl.protocol_name(proto), "from_port": from_port, "to_port": to_port})
+
+    if protocol == "-1":  # all protocols: check the common ones one by one
+        ranges("6", network_acl.ALL_PORTS)
+        ranges("17", network_acl.ALL_PORTS)
+        whole(icmp, None, None)
+    elif protocol in ("6", "17"):
+        ranges(protocol, (perm.get("FromPort", 0), perm.get("ToPort", 65535)))
+    else:
+        # ICMP keeps the security group's type and code; other protocols (e.g. 50 ESP) have no ports.
+        whole(protocol, perm.get("FromPort"), perm.get("ToPort"))
     return out
 
 

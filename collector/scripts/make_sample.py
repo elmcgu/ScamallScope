@@ -99,7 +99,7 @@ def main() -> None:
     with mock_aws():
         session = boto3.Session(region_name="eu-west-1")
         build(session)
-        snap = json.loads(json.dumps(snapshot.collect(session, REGIONS).to_dict(), default=str))
+        snap = snapshot.collect(session, REGIONS)
     result = graph.to_graph(snap)
     OUT.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
