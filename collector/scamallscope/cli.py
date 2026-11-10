@@ -14,7 +14,7 @@ import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
 from . import enrich, graph, httpjson, inventory, snapshot
-from .integrations import cloudwatch, cost, github, prometheus, wazuh
+from .integrations import cloudwatch, cost, costhub, github, prometheus, wazuh
 from .model import is_complete
 
 
@@ -60,12 +60,12 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--output", type=Path, help="Output file (default: <snapshot>.graph.json)")
 
     f = sub.add_parser("fetch", help="Fetch raw data from an integration into integrations/<source>.json")
-    f.add_argument("source", choices=["wazuh", "github", "cloudwatch", "prometheus", "cost"])
+    f.add_argument("source", choices=["wazuh", "github", "cloudwatch", "prometheus", "cost", "costhub"])
     f.add_argument("--snapshot", type=Path, help="Snapshot (needed by github and cloudwatch)")
     f.add_argument("--url", help="wazuh: server API URL (https://host:55000); prometheus: base URL")
     f.add_argument("--indexer-url", help="wazuh: indexer URL (https://host:9200)")
     f.add_argument("--ca-file", help="Extra CA certificate file for TLS (verification is always on)")
-    f.add_argument("--profile", help="AWS profile (cloudwatch, cost)")
+    f.add_argument("--profile", help="AWS profile (cloudwatch, cost, costhub)")
     f.add_argument("--tag-key", default="env", help="cost: cost allocation tag to group by (default env)")
     f.add_argument("--output-dir", type=Path, default=Path("integrations"))
 
@@ -209,6 +209,8 @@ def _fetch(args: argparse.Namespace) -> int:
             raw = prometheus.fetch(args.url, os.environ.get("PROMETHEUS_BEARER_TOKEN"), args.ca_file)
         elif args.source == "cloudwatch":
             raw = cloudwatch.fetch(boto3.Session(profile_name=args.profile), snap)  # type: ignore[arg-type]
+        elif args.source == "costhub":
+            raw = costhub.fetch(boto3.Session(profile_name=args.profile))
         else:
             raw = cost.fetch(boto3.Session(profile_name=args.profile), args.tag_key)
     except (httpjson.HttpError, ValueError, ClientError, BotoCoreError) as exc:

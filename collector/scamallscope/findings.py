@@ -30,6 +30,7 @@ class Finding(TypedDict):
     region: str
     detail: str
     remediation: str | None
+    savings_usd: float | None  # estimated saving a month (cost findings); null otherwise
 
 
 class Coverage(TypedDict):
@@ -89,7 +90,8 @@ def clip(text: Any, limit: int = 300) -> str:
 
 def make(source: str, check_id: str, title: str, severity_: Severity, bps: list[str],
          resource: str | None, resource_name: str, region: str, detail: str = "",
-         remediation: str | None = None, pillar: Pillar | None = None) -> Finding:
+         remediation: str | None = None, pillar: Pillar | None = None,
+         savings_usd: float | None = None) -> Finding:
     kept = known_bps(bps)
     return {
         "id": f"{source}:{check_id}:{resource or resource_name}",
@@ -104,7 +106,14 @@ def make(source: str, check_id: str, title: str, severity_: Severity, bps: list[
         "region": region,
         "detail": clip(detail),
         "remediation": clip(remediation) if remediation else None,
+        "savings_usd": round(float(savings_usd), 2) if savings_usd is not None else None,
     }
+
+
+def severity_for_saving(usd: float | None) -> Severity:
+    """Cost findings: severity by estimated saving a month (spec 11)."""
+    v = usd or 0
+    return "high" if v >= 100 else "medium" if v >= 20 else "low" if v >= 1 else "info"
 
 
 def cover(coverage: dict[str, Coverage], bps: list[str] | tuple[str, ...], failed: bool = False, n: int = 1) -> None:

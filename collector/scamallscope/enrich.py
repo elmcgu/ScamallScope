@@ -9,13 +9,13 @@ from typing import Any
 
 from . import graph, hosts, hygiene, posture
 from .findings import Coverage, Finding, Parsed, counts
-from .integrations import ansible, cloudwatch, cost, github, prometheus, prowler, wazuh
+from .integrations import ansible, cloudwatch, cost, costhub, github, prometheus, prowler, wazuh
 from .model import Snapshot
 
 GRAPH_SCHEMA_VERSION = 2
 NODE_KEYS = {"wazuh": "wazuh", "github": "deploy", "ansible": "config_run", "cloudwatch": "metrics",
              "prometheus": "metrics", "cost": "cost"}
-SOURCES = ("prowler", "wazuh", "github", "ansible", "cloudwatch", "prometheus", "cost")
+SOURCES = ("prowler", "wazuh", "github", "ansible", "cloudwatch", "prometheus", "cost", "costhub")
 
 
 def _read(path: Path) -> Any:
@@ -54,6 +54,9 @@ def _parse(source: str, value: Any, snap: Snapshot, index: hosts.Index, known: s
         return prometheus.parse(data, index), None
     if source == "cost":
         return cost.parse(data, index, today)
+    if source == "costhub":
+        return costhub.parse(data, known), {"enabled": bool(data.get("enabled")),
+                                            "compute_optimizer": data.get("compute_optimizer")}
     raise ValueError(source)
 
 
@@ -86,6 +89,8 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
         matched = len(parsed["resources"]) or len({f["resource"] for f in parsed["findings"] if f["resource"]})
         meta[source] = {"loaded": True, "findings": len(parsed["findings"]), "matched": matched,
                         "unmatched": sorted(set(parsed["unmatched"])), "notes": parsed["notes"]}
+        if source == "costhub" and extra:
+            meta[source].update(extra)
 
     rules = hygiene.run(snap, nodes, {k: v for k, v in per_source.items() if k != "cost"}, required_tags)
     findings.extend(rules["findings"])

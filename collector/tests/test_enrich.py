@@ -37,7 +37,9 @@ def test_ENR_2_all_sources(folder):
     assert all(m["loaded"] for m in g["meta"]["integrations"].values()), g["meta"]["integrations"]
     ids = [f["id"] for f in g["findings"]]
     assert len(ids) == len(set(ids))
-    assert {"prowler", "wazuh", "github", "ansible", "cost", "hygiene", "inventory"} <= {f["source"] for f in g["findings"]}
+    assert {"prowler", "wazuh", "github", "ansible", "cost", "costhub", "hygiene", "inventory"} <= {f["source"] for f in g["findings"]}
+    assert g["meta"]["integrations"]["costhub"]["enabled"] is True
+    assert g["meta"]["integrations"]["costhub"]["compute_optimizer"] == "Active"
 
 
 def test_ENR_3_broken_file_does_not_stop_the_rest(folder):

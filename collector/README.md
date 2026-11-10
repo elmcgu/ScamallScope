@@ -14,6 +14,7 @@ uv run scamallscope changes --table scamallscope-inventory --date 2026-11-04
 uv run scamallscope history --table scamallscope-inventory --arn <arn>
 uv run scamallscope fetch cloudwatch --snapshot snapshots/<file>.snapshot.json --profile <read-only-profile>
 uv run scamallscope fetch cost --profile <read-only-profile> [--tag-key env]
+uv run scamallscope fetch costhub --profile <read-only-profile>     # Cost Optimization Hub + Compute Optimizer status
 WAZUH_API_USER=... WAZUH_API_PASSWORD=... WAZUH_INDEXER_USER=... WAZUH_INDEXER_PASSWORD=... \
   uv run scamallscope fetch wazuh --url https://<wazuh>:55000 --indexer-url https://<indexer>:9200 [--ca-file ca.pem]
 GITHUB_TOKEN=... uv run scamallscope fetch github --snapshot snapshots/<file>.snapshot.json
@@ -65,6 +66,7 @@ For integrations (each only if you use it):
 
 - CloudWatch: `cloudwatch:GetMetricData`, `cloudwatch:DescribeAlarms`
 - Cost Explorer: `ce:GetCostAndUsage`, `ce:GetCostAndUsageWithResources` ($0.01 per request, 3 per run)
+- Cost Optimization Hub: `cost-optimization-hub:ListRecommendations`, `compute-optimizer:GetEnrollmentStatus` (no charge)
 - Wazuh: an API user with read-only access to agents; an indexer user with read on `wazuh-states-vulnerabilities-*`
 - GitHub: fine-grained token, repository permission "Deployments: read", only the repos in `scamallscope:repo` tags
 
