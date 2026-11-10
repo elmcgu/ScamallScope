@@ -109,3 +109,56 @@ Where the docs did not say something and the source code did, the source is cite
 - **R38** Lambda runtimes and deprecation dates. https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 - **R39** S3 default encryption FAQ (all new objects encrypted with SSE-S3 by default since
   January 2023). https://docs.aws.amazon.com/AmazonS3/latest/userguide/default-encryption-faq.html
+
+## Added 2026-11-10 (Phase B research)
+
+Checked on 2026-11-10. API shapes also checked against the botocore 1.43.123 service models.
+
+- **R41** Cost Optimization Hub: consolidates rightsizing, idle deletion, Savings Plans and RI
+  recommendations with estimated savings; supported resources include EC2, Auto Scaling groups,
+  EBS, Lambda, Fargate, RDS, NAT gateways. Rightsizing and idle come from Compute Optimizer.
+  https://docs.aws.amazon.com/cost-management/latest/userguide/cost-optimization-hub.html
+- **R42** Cost Optimization Hub `ListRecommendations` (botocore model: `filter`, `orderBy`,
+  `includeAllRecommendations`, `maxResults`, `nextToken`; item fields `resourceArn`, `actionType`,
+  `estimatedMonthlySavings`, `estimatedMonthlyCost`, `currencyCode`, `implementationEffort`,
+  `restartNeeded`, `rollbackPossible`, `recommendationLookbackPeriodInDays`).
+  https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_cost-optimization-hub_ListRecommendations.html
+  (page did not render on 2026-11-10; shape taken from botocore)
+- **R43** Compute Optimizer: opt-in required, analyses 14 days of CloudWatch metrics, finds idle
+  resources. https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html
+- **R44** Trusted Advisor: checks and API need Business Support+, Enterprise or Unified Operations;
+  Basic gets service limits and selected security and fault tolerance checks in the console only.
+  https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html
+- **R45** REL10-BP01 Deploy the workload to multiple locations (at least two AZs; RDS, ElastiCache,
+  Redshift need Multi-AZ turned on; load balancers in front of compute).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_fault_isolation_multiaz_region_system.html
+- **R46** REL11-BP03 Automate healing on all layers (anti-patterns: no autoscaling, single
+  instances, no database failover; EC2 automatic recovery for single instances).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_auto_healing_system.html
+- **R47** REL09-BP03 Perform data backup automatically (AWS Backup, RDS PITR, Data Lifecycle Manager).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_backing_up_data_automated_backups_data.html
+- **R48** COST04-BP03 Decommission resources.
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_decomissioning_resources_decommission.html
+- **R49** COST08-BP02 Select components to optimize data transfer cost (VPC endpoints, NAT gateway
+  in the same AZ as its heaviest users).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_data_transfer_optimized_components.html
+- **R50** SEC08-BP02 Enforce encryption at rest (EBS encryption by default, RDS encryption).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_rest_encrypt.html
+- **R51** SEC09-BP02 Enforce encryption in transit (no HTTP to public resources, HTTPS listeners,
+  no deprecated TLS, replace certificates before expiry).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_transit_encrypt.html
+- **R52** SEC04-BP01 Configure service and application logging (CloudTrail trail, VPC Flow Logs,
+  Route 53 resolver logs, GuardDuty).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_detect_investigate_events_app_service_logging.html
+- **R53** SEC06-BP03 Reduce manual management and interactive access (no 22 or 3389 in security
+  groups, SSM Agent and `AmazonSSMManagedInstanceCore`).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_compute_reduce_manual_management.html
+- **R54** SEC02-BP05 Audit and rotate credentials periodically (credential report, rotate access
+  keys at most every 90 days). https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_audit.html
+- **R55** VPC pricing: public IPv4 address, in use or idle, $0.005 per hour. https://aws.amazon.com/vpc/pricing/
+- **R56** COST07-BP04 Implement pricing models for all components of this workload (Savings
+  Plans and RIs for always-on resources; review coverage).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_pricing_model_implement_models.html
+- **R57** COST06-BP03 Select resource type, size, and number automatically based on metrics
+  (Compute Optimizer, Auto Scaling, S3 Intelligent-Tiering).
+  https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_type_size_number_resources_metrics.html

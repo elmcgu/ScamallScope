@@ -1,61 +1,165 @@
 # Plan
 
-From the state on 2026-11-04 (roadmap 1 to 3 done, tested with moto) to a working demo, then real
-data, then deployed.
+Goal: an app that shows an engineer, for one AWS account, three ranked lists:
 
-## Where the repo was
+1. **Security concerns** to fix first (worst severity on the most exposed resources first).
+2. **Places to cut cost**, with an estimated saving in USD a month.
+3. **Availability risks**: single points of failure, missing backups, no automatic healing.
+
+Every item says what is wrong, why it matters, how to fix it, and links to the AWS
+Well-Architected best practice it breaks. Availability is the Reliability pillar in
+Well-Architected terms; the UI says "Availability (Reliability)".
+
+Updated 2026-11-10. Research for this plan: [references.md](references.md) R41 to R57.
+
+## Where the repo is (2026-11-10, commit 8a3be9b)
 
 | Done | Proof |
 |---|---|
-| Inventory collector: EC2 networking and instances, Lambda, IAM, S3 | `collector/tests/test_snapshot.py`, `test_global_services.py` |
-| Internet exposure and admin checks | `test_exposure.py`, `test_network_acl.py` |
-| Graph JSON and network view (Cytoscape.js) | `test_graph.py`, `frontend/tests/` |
-| Daily inventory in DynamoDB | `test_inventory.py`, decision 0001 |
+| Inventory through boto3: EC2 networking and instances, Lambda, IAM, S3 | `test_snapshot.py`, `test_global_services.py` |
+| Exposure and admin checks | `test_exposure.py`, `test_network_acl.py` |
+| Daily inventory and change log in DynamoDB | `test_inventory.py`, decision 0001 |
+| Phase A: findings model, Well-Architected catalogue (177 BPs), host matching, 7 integrations (parse and fetch), 13 hygiene rules, scorecard, `enrich`, made-up demo, UI views | 156 pytest and 44 vitest tests pass; `npm run build` works |
 
-## Phase A: demo with made-up data (this change)
+Not done from Phase A: A1 (Ellis reviews the docs) and the A9 browser check.
+
+## What the research changed
+
+1. **Use the AWS services that already compute the answer, and read them through boto3.**
+   - Cost Optimization Hub gives rightsizing, idle, Savings Plans and Reserved Instance
+     recommendations, with estimated monthly savings that take account of your discounts. It
+     covers EC2, Auto Scaling groups, EBS, Lambda, RDS, NAT gateways and more [R41, R42]. It is
+     better than our own CPU threshold (HYG-EC2-002), which stays only as a fallback when the hub
+     is not loaded.
+   - Compute Optimizer is the source of the hub's rightsizing and idle recommendations. It needs
+     an opt-in and 14 days of metrics [R43]. We read its enrolment status so the UI can say
+     "not enabled" instead of "nothing to save".
+   - Trusted Advisor is **not** used. Its API needs a Business Support+, Enterprise or Unified
+     Operations plan [R44]; most small accounts do not have one.
+   - Prowler stays the main security checker. Security Hub CSPM is optional later.
+2. **The inventory must include what availability and cost depend on.** The best practices
+   name specific resources and settings: Multi-AZ RDS, load balancers in several AZs, Auto
+   Scaling groups for self-healing (REL10-BP01, REL11-BP03 [R45, R46]); automatic backups and
+   EBS snapshots (REL09-BP03 [R47]); unattached volumes and idle resources (COST04-BP03 [R48]);
+   NAT gateways and VPC endpoints (COST08-BP02 [R49]); EBS default encryption and RDS encryption
+   (SEC08-BP02 [R50]); HTTPS listeners and certificate expiry (SEC09-BP02 [R51]); CloudTrail, VPC
+   Flow Logs and GuardDuty (SEC04-BP01 [R52]); SSH and RDP open, SSM-managed instances
+   (SEC06-BP03 [R53]); access keys older than 90 days (SEC02-BP05 [R54]).
+3. **Rank by impact, not by source.** Security by severity and exposure; cost by USD a month;
+   availability by severity and whether the resource is in production (`env` tag).
+
+## Phase B: build (Claude builds; tests with moto, Stubber for APIs moto lacks)
+
+Each step gets a spec in `docs/specs/` with a test table, as in Phase A. "Done when" is the
+check. All new AWS calls are read-only and are added to the permissions list in
+`collector/README.md`.
 
 | Step | Output | Done when |
 |---|---|---|
-| A1 Docs | PROJECT.md, architecture.md, specs/, references.md, decision 0002 | Reviewed by Ellis |
-| A2 Findings model and Well-Architected catalogue | `findings.py`, `data/well_architected.json` | FND tests pass |
-| A3 Host matching | `hosts.py` | HST tests pass |
-| A4 Parsers: Prowler, Wazuh, GitHub, Ansible, CloudWatch, Prometheus, Cost | `integrations/*.py` `parse()` | PRW, WAZ, GHB, ANS, CWM, PRM, CST tests pass |
-| A5 Fetchers | `integrations/*.py` `fetch()`, `http.py`, CLI `fetch` | Fetch tests pass (fake HTTP, moto, Stubber) |
-| A6 Hygiene rules and scorecard | `hygiene.py`, `posture.py` | HYG, POS tests pass |
-| A7 Enrich and CLI | `enrich.py`, `scamallscope enrich` | ENR tests pass |
-| A8 Fake data | `scripts/make_sample.py` writes fake raw files and `samples/demo.graph.json` | Demo graph has findings from every source |
-| A9 UI views | `views.js`, `main.js`, `index.html` | VIEW tests pass; `npm run build` works; views checked in a browser |
+| B1 Docs | This plan; R41 to R57; decision 0003 (use AWS recommenders, keep own rules as fallback); specs 10 to 14 | Specs exist with test tables |
+| B2 Collectors: storage and network | `collectors/ec2.py` adds EBS volumes, own EBS snapshots, Elastic IPs, NAT gateways, VPC endpoints, flow logs, EBS encryption by default, IMDS setting per instance | SNAP tests pass in moto; graph shows volumes and NAT gateways |
+| B3 Collectors: data and compute | New `rds.py` (Multi-AZ, encryption, public, backup retention), `elbv2.py` (AZs, listeners, TLS policy, target health), `autoscaling.py` (AZs, health check type, instances) | RDS, ELB, ASG tests pass in moto; links ASG to instances and target group to instances |
+| B4 Collectors: account controls | New `account.py`: CloudTrail trails and status, GuardDuty detectors, IAM credential report (root MFA, root keys, key age, last used, user MFA), AWS Backup protected resources, SSM managed instances, ACM certificate expiry | ACC tests pass (moto; credential report CSV from a fixture) |
+| B5 Integration: Cost Optimization Hub | `integrations/costhub.py`: `fetch()` with `ListRecommendations` (us-east-1, paginated) and Compute Optimizer `GetEnrollmentStatus`; `parse()` to findings with `estimated_monthly_savings` | COH tests pass (Stubber; moto does not cover these services) |
+| B6 Integration: commitment coverage | `integrations/cost.py` adds `GetSavingsPlansCoverage` and `GetReservationCoverage` | CST tests pass (Stubber) |
+| B7 Rules | `hygiene.py` adds the rules in the three tables below; each finding gets `remediation` and, for cost, `estimated_monthly_savings` | HYG tests pass: one per rule, plus a "not checked" test per rule |
+| B8 Ranking | `rank.py`: one priority score per finding within its pillar; merge the same issue from Prowler and our rules (same resource and BP) | RNK tests pass |
+| B9 Demo | `make_sample.py` builds a moto estate with at least one example of every rule; fake hub and coverage files | Demo graph has findings from every rule and source |
+| B10 UI: Overview | New default view "Overview": three columns (Security, Cost, Availability), top 10 each with what, why, fix, BP link and saving; totals at the top (open issues by severity, savings a month, single points of failure) | VIEW tests pass; checked in a browser |
+| B11 UI: Availability view and Map | "Availability" view per workload (VPC and `app` tag): AZ spread, backup, healing, monitoring. Map "Colour by" adds pillar | VIEW tests pass; checked in a browser |
+| B12 Finish | README run-through from a clean clone; pyright clean; all tests pass | Ellis runs the demo from the README |
 
-## Phase B: real data, one source at a time (with Ellis)
+### New rules: security
 
-Order: lowest risk and least access first. For each source: create the read-only identity, run
-fetch, run enrich, compare 3 to 5 values with the source's own UI, write down what did not match.
+| Rule | When | Severity | BP |
+|---|---|---|---|
+| SEC-NET-001 | Security group allows 0.0.0.0/0 or ::/0 on 22 or 3389, attached to a running instance | high (exposed: critical) | SEC06-BP03, SEC05-BP02 |
+| SEC-EC2-001 | Instance allows IMDSv1 (`HttpTokens` not `required`) | medium | SEC06-BP02 |
+| SEC-EC2-002 | Running instance not managed by SSM | low | SEC06-BP03 |
+| SEC-EBS-001 | Volume not encrypted, or EBS encryption by default off in a Region with instances | medium | SEC08-BP02 |
+| SEC-RDS-001 | DB instance not encrypted | high | SEC08-BP02 |
+| SEC-RDS-002 | DB instance `PubliclyAccessible` and reachable from the internet | critical | SEC05-BP01 |
+| SEC-ELB-001 | Internet-facing load balancer has an HTTP listener that does not redirect to HTTPS | medium | SEC09-BP02 |
+| SEC-ELB-002 | HTTPS listener uses a TLS policy that allows TLS 1.0 or 1.1 | medium | SEC09-BP02 |
+| SEC-ACM-001 | Certificate in use expires within 30 days, or is not eligible for renewal | medium | SEC09-BP01 |
+| SEC-IAM-002 | Active access key older than 90 days, or unused for 90 days | medium | SEC02-BP05 |
+| SEC-IAM-003 | Console user without MFA | high | SEC02-BP01 |
+| SEC-IAM-004 | Root user without MFA, or root has access keys | critical | SEC01-BP02 |
+| SEC-LOG-001 | No multi-Region CloudTrail trail that is logging | high | SEC04-BP01 |
+| SEC-LOG-002 | VPC with running instances and no flow log | low | SEC04-BP01 |
+| SEC-DET-001 | GuardDuty not enabled in a Region with resources | medium | SEC04-BP01, SEC10-BP06 |
 
-1. AWS inventory against a real account (`collect`, read-only role). Check exposure on 2 instances by hand.
-2. Prowler: run with the same read-only role. Compare the failed count with Prowler's HTML report.
-3. CloudWatch and Cost Explorer: add the 4 read actions to the role. Compare one instance's CPU with the console.
-4. Wazuh: read-only API user and indexer user. Check host name matching; add `scamallscope:host` tags where names differ.
-5. GitHub: fine-grained token, Deployments read. Tag resources with `scamallscope:repo`.
-6. Ansible: run the main playbook in check mode with the JSON callback.
-7. Prometheus: confirm the `instance_id` relabel exists, or match by host name.
+Kept: EXP-001, IAM-ADMIN-001, HYG-IAM-001, HYG-S3-002, HYG-LAM-001, HYG-AGT-001, Prowler, Wazuh.
 
-Expected tuning: hygiene thresholds, required tags, host-name matching rules, normalisation of
-Wazuh OS names.
+### New rules: cost
 
-## Phase C: deploy (roadmap 4)
+| Rule | When | Saving shown | BP |
+|---|---|---|---|
+| COST-HUB-* | One finding per Cost Optimization Hub recommendation (Delete, Stop, Rightsize, Upgrade, purchase Savings Plans or RI) | Hub's `estimatedMonthlySavings` | COST04-BP03, COST06-BP02 or COST07-BP04 by action type |
+| COST-EBS-001 | Volume `available` (unattached) | Size x price per GB-month | COST04-BP03 |
+| COST-EBS-002 | `gp2` volume (gp3 costs less per GB) | Price difference x size | COST06-BP02 |
+| COST-SNAP-001 | Own snapshot older than 180 days, not made by AWS Backup or Data Lifecycle Manager | Size x snapshot price (upper bound: snapshots are incremental) | COST04-BP05 |
+| COST-EIP-001 | Elastic IP not associated | $0.005 x 730 = $3.65 a month [R55] | COST04-BP03 |
+| COST-NAT-001 | NAT gateway in a VPC with no S3 or DynamoDB gateway endpoint | None; shows NAT cost if Cost Explorer is loaded | COST08-BP02 |
+| COST-COV-001 | Savings Plans and RI coverage under 50% of eligible on-demand spend over 30 days | Hub's purchase recommendation, if any | COST07-BP04 [R56] |
 
-Needs its own change request and decision record. To decide:
+Kept: HYG-EC2-001, HYG-TAG-001; HYG-EC2-002 only when the hub is not loaded. When Compute
+Optimizer is not enabled, the Cost view says so at the top, with the link to opt in. Prices are a
+dated table in the code (us-east-1) and the UI says "estimate".
 
-- Where it runs: a scheduled container or Lambda in the account, or a small host that can also
-  reach Wazuh and Prometheus (they are often private).
-- Secrets: Wazuh and GitHub credentials in AWS Secrets Manager, read by the job's role.
-- UI hosting: private S3 bucket with CloudFront and sign-in (Cognito or IAM Identity Center).
-- Graph files: S3 with encryption, versioning and a lifecycle rule.
+### New rules: availability (Reliability)
 
-## Phase D: later
+| Rule | When | Severity | BP |
+|---|---|---|---|
+| REL-AZ-001 | Workload (VPC and `app` tag, ASG or target group) runs in one AZ only | high if prod, else medium | REL10-BP01 |
+| REL-AZ-002 | RDS instance not Multi-AZ | high if prod, else low | REL10-BP01 |
+| REL-AZ-003 | Load balancer or ASG uses one AZ | high | REL10-BP01 |
+| REL-AZ-004 | Private subnets in several AZs route through one NAT gateway | medium | REL10-BP01, COST08-BP02 |
+| REL-HEAL-001 | Running instance not in an ASG and no CloudWatch alarm with an EC2 recover action | medium | REL11-BP03 |
+| REL-HEAL-002 | ASG behind a load balancer with health check type `EC2` (should be `ELB`) | low | REL11-BP01 |
+| REL-HEAL-003 | Target group has unhealthy targets | high | REL11-BP01 |
+| REL-BAK-001 | EBS volume or RDS instance with no AWS Backup recovery point and no own snapshot in 7 days | high if prod, else medium | REL09-BP03 |
+| REL-BAK-002 | RDS backup retention 0 | high | REL09-BP03 |
+| REL-BAK-003 | RDS or EBS snapshot not encrypted | medium | REL09-BP02 |
 
-- Loki error counts and Grafana links (spec 06, planned sections).
+Kept: HYG-S3-001, HYG-MON-001, HYG-MON-002, HYG-CFG-001.
+
+## Phase C: real data (with Ellis)
+
+Lowest risk and least access first. For each source: create the read-only identity, run
+`collect` or `fetch`, run `enrich`, compare 3 to 5 values with the AWS console or the source's own
+UI, and write down what did not match.
+
+1. AWS inventory with a read-only role (all collectors, including B2 to B4). Check 2 exposure and
+   2 availability results by hand.
+2. Cost Optimization Hub and Compute Optimizer (enable them if needed; Compute Optimizer needs
+   14 days of metrics). Compare total savings with the console.
+3. Cost Explorer cost and coverage. Compare last month's total.
+4. Prowler with the same role. Compare the failed count with Prowler's HTML report.
+5. CloudWatch. Compare one instance's CPU with the console.
+6. Wazuh, GitHub, Ansible, Prometheus.
+
+Expected tuning: severities, the prod rule, prices, required tags, host-name matching.
+
+## Phase D: deploy
+
+Needs its own change request and decision record. Decide: where it runs (scheduled container or
+Lambda, or a host that can reach Wazuh and Prometheus), secrets in AWS Secrets Manager, UI on a
+private S3 bucket with CloudFront and sign-in, graph files in S3 with encryption, versioning and
+a lifecycle rule.
+
+## Phase E: later
+
+- Price List API for savings estimates.
+- Security Hub CSPM and GuardDuty findings as integrations.
 - Changes view from the DynamoDB change log.
-- More collectors: EBS volumes and snapshots (unattached volumes, old snapshots), RDS, load balancers.
+- More collectors: ECS and EKS, ElastiCache, DynamoDB tables (PITR), EFS, CloudFront.
 - Several accounts (the account ID is already on every resource).
-- Replace HYG-EC2-002 with AWS Compute Optimizer recommendations [R8].
+- Loki error counts and Grafana links.
+
+## Decisions for Ellis
+
+1. A resource with no `env` tag: rank it as prod (safer, noisier) or non-prod (quieter)?
+   Default: prod.
+2. Savings estimates from a dated price table in the code (simple, can drift) or the Price List
+   API now (exact, more code and calls)? Default: price table, Price List API in Phase E.
