@@ -165,6 +165,9 @@ Checked on 2026-11-10. API shapes also checked against the botocore 1.43.123 ser
 - **R58** EC2 automatic instance recovery: simplified automatic recovery is on by default on
   supported instances (`MaintenanceOptions.AutoRecovery`); CloudWatch action based recovery needs
   an alarm. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html
+- **R60** Introducing Cost Optimization Hub (What's New, November 2023): no additional cost in
+  all Regions except the AWS China and AWS GovCloud (US) Regions.
+  https://aws.amazon.com/about-aws/whats-new/2023/11/cost-optimization-hub
 - **R59** EBS pricing worked examples: gp3 $0.08, gp2 $0.10, io1 and io2 $0.125, st1 $0.045,
   sc1 $0.015 per GB-month; snapshots $0.05 per GB-month. The examples do not name a Region.
   https://aws.amazon.com/ebs/pricing/

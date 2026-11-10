@@ -1,7 +1,8 @@
 # scamallscope frontend
 
 Views of a ScamallScope graph JSON: the network map (Cytoscape.js), and for graphs built with
-`enrich` (schema version 2) Findings, Hosts, Cost and Well-Architected (spec 09).
+`enrich` (schema version 2) Overview, Findings, Hosts, Cost, Availability and Well-Architected
+(specs 09 and 14).
 
 ## Run
 
@@ -46,12 +47,20 @@ handlers or external links. A build (`dist/`) then contains the icons: keep it p
 
 ## Views (graph version 2)
 
-- **Map:** "Colour by" internet exposure, worst finding, or monthly cost. The details panel adds
+- **Overview** (opens first): totals (open issues by severity, savings a month, single points of
+  failure) and three columns, Security, Cost and Availability (Reliability), each with the top 10
+  issues by priority: what, where, why (best practice link), fix, and the saving for cost items.
+  A note at the top of a column says which sources did not run. Each issue is shown once even when
+  several sources found it (spec 13).
+- **Map:** "Colour by" internet exposure, worst finding, monthly cost, or the worst finding of one
+  pillar. Snapshots, settings, trails, certificates and the credential report are not drawn. The details panel adds
   findings, Wazuh, GitHub deployment, Ansible, monitoring and cost for the selected resource.
 - **Findings:** every issue from every source; filter by pillar, severity, source and text.
   Select a resource name to open it on the map.
 - **Hosts:** one row per EC2 instance joining all sources; select a heading to sort.
 - **Cost:** by month, service, tag and instance, and the monthly cost of idle instances.
+- **Availability:** one row per workload (app tag, Auto Scaling group, target group, database or
+  single instance): AZs, prod, healing, backup, monitoring, availability findings. "Prod only" filter.
 - **Well-Architected:** per pillar, each best practice as issues, clear or not checked, with a link
   to its AWS page.
 

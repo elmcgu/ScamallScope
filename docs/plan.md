@@ -23,6 +23,31 @@ Updated 2026-11-10. Research for this plan: [references.md](references.md) R41 t
 
 Not done from Phase A: A1 (Ellis reviews the docs) and the A9 browser check.
 
+## Phase B status (2026-11-10)
+
+| Step | Commit | Proof |
+|---|---|---|
+| B1 Docs | a55bd0e | Decision 0003, specs 10 to 14 |
+| B2 Storage and network collectors | 83d8a39 | `test_inventory_b.py` INV-1 to INV-6, INV-15, INV-16 |
+| B3 RDS, ELB, Auto Scaling | c0e9912 | INV-7 to INV-9 |
+| B4 Account controls | 93c930b | INV-10 to INV-14 |
+| B5 Cost Optimization Hub | 4f9ec22, 8f4a677 | `test_costhub.py` COH-1 to COH-7 |
+| B6 Commitment coverage | 93ac716 | `test_cost.py` CST-8, CST-9 |
+| B7 32 rules | 7bb310b | `test_rules_b.py`: one hit and one clean case per rule, RUL-1 to RUL-4 |
+| B8 Ranking | 7abdf8e | `test_rank.py` RNK-1 to RNK-6 |
+| B9 Demo | 7adf79b | `make_sample.py` prints "rules with no example in the demo: none" |
+| B10 Overview | c4c0aa3 | `views.test.js` VIEW-9 to VIEW-11 |
+| B11 Availability, map | 4eb7ead | `test_availability.py` AVL-1 to AVL-3, VIEW-12, VIEW-13 |
+| B12 Finish | this commit | Clean clone: `make_sample.py`, `npm ci`, 52 vitest tests, `npm run build`; 250 pytest tests and pyright clean in the working copy |
+
+Open, for Ellis:
+
+- **Browser check (A9, B10, B11).** No browser in this WSL. Run `npm run dev`, "Load sample", and
+  look at Overview, Availability and Map "Colour by" (worst security, cost, availability finding).
+- **A1 doc review.**
+- Known: rebuilding the sample changes moto's random resource IDs in `samples/`, so commit the
+  sample only when its content changed on purpose.
+
 ## What the research changed
 
 1. **Use the AWS services that already compute the answer, and read them through boto3.**

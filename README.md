@@ -2,8 +2,9 @@
 
 *Scamall* is Irish for "cloud". ScamallScope maps an AWS estate and shows it from different angles: security, networking, cost and hygiene.
 
-> Status (2026-11-04): roadmap 1 to 3 and the integrations demo work locally with made-up data
-> (moto and fake raw files); not yet run against a real account or deployed. Starts with one AWS
+> Status (2026-11-10): roadmap 1 to 3, the integrations and Phase B (security, cost and
+> availability checks, Overview and Availability views) work locally with made-up data (moto and
+> fake raw files); not yet run against a real account or deployed. Starts with one AWS
 > account; the account ID is kept on every resource so more accounts can be added later.
 
 **Docs:** [what it is and why](docs/PROJECT.md) (including how it maps to AWS Well-Architected) ·
@@ -19,14 +20,20 @@ cd ../frontend && npm ci && npm run dev                            # http://loca
 
 ## What it does
 
-- **Collects** resources in an AWS account using read-only Python (boto3) calls: EC2 networking
-  and instances, Lambda, IAM and S3 so far.
+- **Collects** resources in an AWS account using read-only Python (boto3) calls: EC2 networking,
+  instances, EBS volumes and snapshots, Elastic IPs, NAT gateways, VPC endpoints and flow logs,
+  Lambda, RDS, load balancers, Auto Scaling groups, IAM (with the credential report), S3,
+  CloudTrail, GuardDuty, AWS Backup, Systems Manager and ACM.
 - **Keeps an inventory** in DynamoDB and records what is new, changed or deleted each day.
 - **Links** resources into a graph (VPC → subnet → EC2 → security group, and so on).
+- **Ranks** what to fix: an **Overview** with the top security concerns, the biggest savings (USD
+  a month) and the worst availability risks, each with why (the Well-Architected best practice)
+  and how to fix it. The same issue found by two sources is shown once.
 - **Shows** the graph in a web frontend, with views and filters:
   - **Networking:** VPCs, subnets, routes, gateways, what can reach what.
   - **Security:** public exposure, IAM, findings from integrations.
   - **Cost:** spend per resource, service and tag.
+  - **Availability:** per workload, how many AZs it runs in, how it heals, whether it is backed up and monitored.
   - **Hygiene:** untagged resources, unused volumes, old snapshots, idle resources.
   - **Changes:** what is new, changed or deleted since the last run.
   - **Filters:** show or hide resource types, regions and tags.
@@ -36,7 +43,10 @@ cd ../frontend && npm ci && npm run dev                            # http://loca
   - GitHub: which commit is deployed where, and whether the last deployment worked.
   - Ansible: per host failed, unreachable, or drifted (check mode).
   - CloudWatch and Prometheus: idle instances, instances with no alarm or no monitoring.
-  - Cost Explorer: cost by service, tag and instance. Planned: Loki error counts, Grafana links.
+  - Cost Explorer: cost by service, tag and instance, and Savings Plans and RI coverage.
+  - Cost Optimization Hub (with Compute Optimizer): rightsizing, idle and commitment
+    recommendations with AWS's own savings estimates ([decision 0003](docs/decisions/0003-use-aws-recommenders.md)).
+  - Planned: Loki error counts, Grafana links.
 - **Scores** findings against AWS Well-Architected best practices (security, reliability, cost):
   issues, clear, or not checked.
 
@@ -57,8 +67,10 @@ cd ../frontend && npm ci && npm run dev                            # http://loca
 3. **Daily inventory:** current state and change log in DynamoDB ([decision 0001](docs/decisions/0001-inventory-in-dynamodb.md)).
 4. **Deploy:** CloudFormation stack runs the collector on a schedule and hosts the UI, with sign-in.
 5. **Security, cost, hygiene views** and the Well-Architected scorecard (demo done; changes view later).
-6. **Integrations:** Prowler, Wazuh, GitHub, Ansible, CloudWatch, Prometheus, Cost Explorer (demo
-   done with made-up data; next: real data one source at a time, see [plan](docs/plan.md)).
+6. **Integrations:** Prowler, Wazuh, GitHub, Ansible, CloudWatch, Prometheus, Cost Explorer, Cost
+   Optimization Hub (demo done with made-up data).
+7. **Security, cost and availability checks** (Phase B): 32 more rules, ranking, Overview and
+   Availability views (demo done; next: real data one source at a time, see [plan](docs/plan.md)).
 
 ## Security
 

@@ -8,6 +8,7 @@ How ScamallScope is built. What it does and why: [PROJECT.md](PROJECT.md). Behav
 ```
 collector/scamallscope/
   collectors/        AWS read-only collectors (EC2, Lambda, IAM, S3)          existing
+    rds.py elbv2.py autoscaling.py account.py                                 Phase B (spec 10)
   snapshot.py        run collectors -> snapshot dict                          existing
   exposure.py        internet exposure                                        existing
   iam_analysis.py    admin principals                                         existing
@@ -22,9 +23,13 @@ collector/scamallscope/
   posture.py         Well-Architected scorecard                               new
   enrich.py          snapshot + raw files -> graph v2                         new
   data/well_architected.json   177 SEC, REL and COST best practices           new
+  integrations/costhub.py      Cost Optimization Hub, Compute Optimizer       Phase B (spec 11)
+  hygiene.py         + 32 security, cost and availability rules, rule context Phase B (spec 12)
+  rank.py            duplicates, priority, summary totals                     Phase B (spec 13)
+  availability.py    workloads for the Availability view                      Phase B (spec 14)
 frontend/src/
   model.js           graph data logic for the map                             existing
-  views.js           data logic for Findings, Hosts, Cost, Well-Architected   new
+  views.js           data logic for Overview, Findings, Hosts, Cost, Availability, Well-Architected
   main.js            DOM and Cytoscape                                        extended
 ```
 
@@ -39,7 +44,9 @@ frontend/src/
    3. `hygiene.run(snapshot, graph nodes, loaded sources)` adds findings from rules.
    4. Exposure and admin results become findings too, so all issues are in one list.
    5. `posture.scorecard(findings, coverage)` builds the per-pillar table.
-   6. Per-resource data is put on the graph node under a key per source (`wazuh`, `deploy`,
+   6. `rank.apply(findings, nodes)` marks duplicates (same resource, pillar and a shared BP), sets
+      `priority` and returns `summary` (spec 13). `availability.workloads(...)` builds `workloads`.
+   7. Per-resource data is put on the graph node under a key per source (`wazuh`, `deploy`,
       `config_run`, `metrics`, `cost`), plus `finding_counts`.
 4. The UI loads `graph.json`.
 
@@ -53,14 +60,17 @@ Version 1 plus these top-level keys. The UI accepts 1 and 2.
   "meta": { "...": "as v1", "integrations": { "wazuh": { "loaded": true, "fetched_at": "...", "matched": 4, "unmatched": ["old-host"] } } },
   "elements": [ { "group": "nodes", "data": { "...": "as v1",
       "finding_counts": { "critical": 0, "high": 1, "medium": 2, "low": 0, "info": 0 },
+      "finding_counts_by_pillar": { "security": { "high": 1 }, "cost": {}, "reliability": { "medium": 2 } },
       "wazuh":      { "agent_id": "003", "status": "active", "os_name": "Ubuntu", "os_version": "22.04.4 LTS", "vulns": { "critical": 1, "high": 3, "medium": 0, "low": 2 }, "top_packages": [ { "name": "openssl", "version": "3.0.2", "count": 2 } ] },
       "deploy":     { "repo": "o/r", "environment": "production", "state": "success", "sha": "abc1234", "created_at": "...", "url": "..." },
       "config_run": { "ok": 12, "changed": 1, "failures": 0, "unreachable": 0, "mode": "check" },
       "metrics":    { "cpu_avg": 1.8, "cpu_max": 9.0, "days": 14, "alarms": 0, "prom_up": 1 },
       "cost":       { "monthly_usd": 41.2, "basis": "last 14 days x 30/14" } } } ],
-  "findings": [ /* Finding, see specs/01-findings.md */ ],
+  "findings": [ /* Finding, see spec 01; Phase B adds savings_usd, priority, duplicate_of, also_reported_by */ ],
   "posture":  { "security": { "best_practices": [ { "id": "SEC06-BP01", "title": "...", "url": "...", "status": "issues", "findings": 3, "checked_by": ["wazuh", "hygiene"] } ], "summary": { "issues": 4, "clear": 6, "not_checked": 47 } }, "reliability": {}, "cost": {} },
-  "cost":     { "currency": "USD", "months": [ { "start": "2026-08-01", "total": 120.5, "by_service": { "Amazon Elastic Compute Cloud - Compute": 80.1 } } ], "by_tag": { "key": "env", "values": { "prod": 90.0, "": 12.0 } }, "idle_monthly_usd": 41.2 }
+  "summary":  { "open": { "critical": 1, "high": 4, "medium": 9, "low": 6, "info": 0 }, "by_pillar": { "security": 8, "cost": 6, "reliability": 6 }, "savings_usd": 78.79, "savings_estimated": true, "single_points_of_failure": 3 },
+  "workloads": [ { "id": "...", "name": "app shop-web", "kind": "app", "region": "eu-west-1", "vpc": "prod", "azs": ["eu-west-1a"], "members": ["arn:..."], "prod": true, "healing": "none", "backup": "n/a", "monitoring": "alarm", "findings": 2 } ],
+  "cost":     { "currency": "USD", "months": [ { "start": "2026-08-01", "total": 120.5, "by_service": { "Amazon Elastic Compute Cloud - Compute": 80.1 } } ], "by_tag": { "key": "env", "values": { "prod": 90.0, "": 12.0 } }, "idle_monthly_usd": 41.2, "coverage": { "savings_plans_pct": 0.0, "reservations_pct": 0.0, "on_demand_usd": 168.4, "days": 30 } }
 }
 ```
 
@@ -94,7 +104,8 @@ def fetch(...) -> dict: ...                                    # network; return
 
 - **Least privilege per source.** AWS: the read-only actions in `collector/README.md` plus
   `cloudwatch:GetMetricData`, `cloudwatch:DescribeAlarms`, `ce:GetCostAndUsage`,
-  `ce:GetCostAndUsageWithResources`. Wazuh: an API user with a read-only role for agents, and an
+  `ce:GetCostAndUsageWithResources`, `ce:GetSavingsPlansCoverage`, `ce:GetReservationCoverage`,
+  `cost-optimization-hub:ListRecommendations`, `compute-optimizer:GetEnrollmentStatus`. Wazuh: an API user with a read-only role for agents, and an
   indexer user with read on `wazuh-states-vulnerabilities-*`. GitHub: fine-grained token,
   "Deployments: read" and "Metadata: read" on the listed repos only [R20].
 - **Credentials** from environment variables only: `WAZUH_API_USER`, `WAZUH_API_PASSWORD`,

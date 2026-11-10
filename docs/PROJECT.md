@@ -4,7 +4,8 @@
 hygiene, reliability and cost data over it. Every issue it shows links to the AWS
 Well-Architected best practice that it breaks.
 
-Status (2026-11-04): working demo with made-up data. Not yet run against a real account.
+Status (2026-11-10): working demo with made-up data, including Phase B (security, cost and
+availability checks; Overview and Availability views). Not yet run against a real account.
 Numbers in square brackets, like [R1], point to [references.md](references.md).
 
 ## The problem
@@ -27,15 +28,23 @@ sentence, but today it takes five tools to write it.
 
 ## What ScamallScope does
 
-1. **Collects** an inventory of the AWS account with read-only API calls (EC2 networking,
-   instances, Lambda, IAM, S3), and links the resources into a graph.
+1. **Collects** an inventory of the AWS account with read-only boto3 calls (EC2 networking and
+   instances, EBS, Elastic IPs, NAT gateways, VPC endpoints, flow logs, Lambda, RDS, load
+   balancers, Auto Scaling, IAM and its credential report, S3, CloudTrail, GuardDuty, AWS Backup,
+   Systems Manager, ACM), and links the resources into a graph ([spec 10](specs/10-inventory-phase-b.md)).
 2. **Reads** data from the tools you already run (the integrations), and attaches it to the
    resource it is about.
 3. **Checks** hygiene rules that need data from more than one source, for example "running
    instance with no Wazuh agent" or "idle instance" (CloudWatch CPU plus inventory).
 4. **Maps** every finding to AWS Well-Architected best-practice IDs, such as `SEC06-BP01`,
    and builds a scorecard per pillar: issues, clear, or not checked.
-5. **Shows** it in a browser:
+5. **Ranks** every finding within its pillar: security by severity and exposure, cost by saving,
+   availability by severity and whether it is prod. The same issue from two sources is one issue
+   ([spec 13](specs/13-ranking.md)).
+6. **Shows** it in a browser:
+   - **Overview:** the top 10 security concerns, savings and availability risks, each with why
+     and how to fix it.
+   - **Availability:** per workload: AZs, healing, backup, monitoring.
    - **Map:** VPCs, subnets, instances and how they connect, coloured by exposure, findings or cost.
    - **Findings:** one table of all issues from all sources, filtered by pillar, severity and source.
    - **Hosts:** per instance: OS version, vulnerable packages, last deployment, last Ansible run,
@@ -53,7 +62,8 @@ sentence, but today it takes five tools to write it.
 | Ansible | Per host: ok, changed, failed, unreachable; drift in check mode | `ansible.posix.json` callback output [R21, R22, R23] | Demo |
 | CloudWatch | EC2 `CPUUtilization` over 14 days; which instances have alarms | `GetMetricData`, `DescribeAlarms` [R25, R26, R27] | Demo |
 | Prometheus | Which instances are scraped and whether they are `up` | HTTP API `/api/v1/query` [R29, R30] | Demo |
-| Cost Explorer | Cost by service, by tag, and by EC2 instance | `GetCostAndUsage`, `GetCostAndUsageWithResources` [R32, R33] | Demo |
+| Cost Explorer | Cost by service, by tag, and by EC2 instance; Savings Plans and RI coverage | `GetCostAndUsage`, `GetCostAndUsageWithResources` [R32, R33], `GetSavingsPlansCoverage`, `GetReservationCoverage` | Demo |
+| Cost Optimization Hub | Rightsizing, idle, Savings Plans and RI recommendations with estimated savings; Compute Optimizer status | `ListRecommendations` [R41, R42], `GetEnrollmentStatus` [R43] | Demo |
 | Loki | Error log lines per host over 24 hours | HTTP API `query` with a LogQL metric query [R36] | Planned |
 | Grafana | Link from a resource to its Grafana dashboard | Dashboard URL variables [R37] | Planned |
 
@@ -121,7 +131,11 @@ pillar, so you can also see what is **not** checked.
 | SEC04-BP03 Correlate and enrich security alerts | Findings from all sources on one resource | All |
 | SEC05-BP01 / BP02 Network layers and traffic flow | Instances, buckets and functions reachable from the internet, with the rule that allows it | Inventory |
 | SEC06-BP01 Perform vulnerability management | Vulnerable packages per host; instances with no agent; deprecated Lambda runtimes | Wazuh, inventory |
-| SEC08-BP02 Enforce encryption at rest | Buckets without default encryption | Inventory, Prowler |
+| SEC08-BP02 Enforce encryption at rest | Buckets without default encryption; unencrypted EBS volumes and RDS; EBS encryption by default off | Inventory, Prowler |
+| SEC01-BP02, SEC02-BP01, SEC02-BP05 | Root without MFA or with keys; console users without MFA; access keys over 90 days old or unused | Credential report |
+| SEC04-BP01 Configure service and application logging | No multi-Region trail logging; VPCs without flow logs; GuardDuty off | Inventory |
+| SEC06-BP02, SEC06-BP03 | IMDSv1 allowed; SSH or RDP open to the internet; instances not managed by Systems Manager | Inventory |
+| SEC09-BP01, SEC09-BP02 | Certificates expiring within 30 days; HTTP without redirect and TLS 1.0/1.1 on internet-facing load balancers | Inventory |
 | SEC11-BP06 Deploy software programmatically | Which code is deployed where, from GitHub deployments | GitHub |
 | Every BP in Prowler's Well-Architected mapping | Prowler findings, with their BP IDs | Prowler [R12] |
 
@@ -139,6 +153,9 @@ same resource.
 | REL08-BP02 Integrate functional testing as part of your deployment | Latest deployment failed | GitHub |
 | REL08-BP05 Deploy changes with automation | Hosts not in the Ansible run, hosts that failed, and drift found in check mode | Ansible |
 | REL09-BP01 Identify and back up all data | Buckets without versioning | Inventory |
+| REL09-BP02, REL09-BP03 Back up automatically and securely | Volumes and databases with no AWS Backup point or snapshot in 7 days; RDS retention 0; unencrypted snapshots | Inventory, AWS Backup |
+| REL10-BP01 Deploy the workload to multiple locations | Apps, target groups, load balancers and Auto Scaling groups in one AZ; RDS not Multi-AZ; instances on their own; one NAT gateway for several AZs | Inventory |
+| REL11-BP01, REL11-BP03 Detect failures and heal automatically | Unhealthy targets; ASGs ignoring load balancer health; instances with automatic recovery off and no recover alarm | Inventory, CloudWatch |
 | Every BP in Prowler's reliability mapping | Prowler findings | Prowler [R13] |
 
 **Why it helps:** most outages in a small estate come from changes and from things nobody was
@@ -153,7 +170,10 @@ deployed by a pipeline?" in one row.
 | COST03-BP05 Configure billing and cost management tools | Cost by service and by tag, from Cost Explorer | Cost Explorer |
 | COST04-BP01 Track resources over their lifetime | Daily inventory and change log (roadmap 3) | Inventory |
 | COST04-BP03 Decommission resources | Stopped instances (EBS still charged) | Inventory |
-| COST06-BP02 Select resource type, size, and number based on data | Idle instances: average CPU under 5% and peak under 20% over 14 days, with their cost | CloudWatch, Cost Explorer |
+| COST06-BP02 Select resource type, size, and number based on data | Cost Optimization Hub rightsizing; gp2 volumes; without the hub: idle instances (CPU under 5% average, 20% peak over 14 days) | Cost Optimization Hub, inventory, CloudWatch |
+| COST04-BP03, COST04-BP05 Decommission resources; retention | Unattached volumes, idle Elastic IPs, snapshots over 180 days old not made by Backup or DLM, hub Delete and Stop recommendations | Inventory, Cost Optimization Hub |
+| COST07-BP04 Implement pricing models | Savings Plans and RI coverage under 50%; hub purchase recommendations | Cost Explorer, Cost Optimization Hub |
+| COST08-BP02 Optimize data transfer | NAT gateways with no S3 or DynamoDB gateway endpoint in the VPC | Inventory |
 
 **Why it helps:** COST03 says cost data is useful only when you can tie it to an owner.
 ScamallScope shows the cost next to the resource, its tags and its owner, so "who can switch
@@ -173,8 +193,9 @@ this off?" has an answer.
 
 | Item | Cost |
 |---|---|
-| Collector calls (EC2, IAM, S3, Lambda describe and list) | No charge for these API calls |
-| Cost Explorer API | $0.01 per request [R34]. A daily run uses 3 requests: about $0.90 a month |
+| Collector calls (EC2, RDS, ELB, Auto Scaling, IAM, S3, Lambda, CloudTrail, GuardDuty, Backup, SSM, ACM describe and list) | No charge for these API calls |
+| Cost Explorer API | $0.01 per request [R34]. A daily run uses 5 requests (3 cost, 2 coverage): about $1.50 a month |
+| Cost Optimization Hub | No additional cost [R60]. Compute Optimizer's basic recommendations are free; its enhanced metrics are paid and not needed [R43] |
 | Cost Explorer resource-level data (opt-in) | About $0.01 per 1,000 usage records a month [R34] |
 | CloudWatch `GetMetricData` | Charged per metric requested; see [R28]. One metric per instance per day |
 | DynamoDB inventory | Well under $1 a month at 2,000 resources ([decision 0001](decisions/0001-inventory-in-dynamodb.md)) |
