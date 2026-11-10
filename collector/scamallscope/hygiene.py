@@ -128,10 +128,14 @@ class Ctx:
         return (now - when).total_seconds() / 86400
 
 
-def is_prod(r: Resource) -> bool:
+def prod_tags(tags: dict[str, str]) -> bool:
     """Prod when env says so, or when there is no env tag (decision by Ellis, 2026-11-10)."""
-    env = (r["tags"].get("env") or "").strip().lower()
+    env = (tags.get("env") or "").strip().lower()
     return not env or env in PROD_VALUES
+
+
+def is_prod(r: Resource) -> bool:
+    return prod_tags(r["tags"])
 
 
 def _state(r: Resource) -> str | None:

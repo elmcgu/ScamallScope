@@ -31,6 +31,9 @@ class Finding(TypedDict):
     detail: str
     remediation: str | None
     savings_usd: float | None  # estimated saving a month (cost findings); null otherwise
+    priority: float  # set by rank.apply; higher first, compared within a pillar (spec 13)
+    duplicate_of: str | None  # id of the primary finding for the same issue
+    also_reported_by: list[str]  # other sources that found the same issue
 
 
 class Coverage(TypedDict):
@@ -107,6 +110,9 @@ def make(source: str, check_id: str, title: str, severity_: Severity, bps: list[
         "detail": clip(detail),
         "remediation": clip(remediation) if remediation else None,
         "savings_usd": round(float(savings_usd), 2) if savings_usd is not None else None,
+        "priority": 0.0,
+        "duplicate_of": None,
+        "also_reported_by": [],
     }
 
 

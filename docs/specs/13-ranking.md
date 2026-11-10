@@ -12,7 +12,9 @@ and share at least one best practice. Keep one as primary:
 3. any other source (Prowler, Wazuh, ...).
 
 The others get `duplicate_of: <primary id>`; the primary gets `also_reported_by: [sources]`.
-Duplicates stay in the Findings table (marked) and are left out of totals and the Overview.
+Duplicates stay in the Findings table (marked) and are left out of totals, the Overview and the
+map's `finding_counts` (so ENR-5 counts primary findings only). Every finding has `priority`,
+`duplicate_of` and `also_reported_by` (empty list when none).
 
 ## Priority
 
@@ -24,12 +26,14 @@ Duplicates stay in the Findings table (marked) and are left out of totals and th
 | cost | `savings_usd` (null = 0) x 10 + severity weight / 10 |
 | reliability | severity weight + 20 if prod |
 
-Severity weights: critical 100, high 70, medium 40, low 15, info 5.
+Severity weights: critical 100, high 70, medium 40, low 15, info 5. Findings with no resource
+(account settings, app groups) count as prod.
 
 ## Totals (`g["summary"]`)
 
-Primary findings only: `open` by severity and by pillar; `savings_usd` (sum of cost
-`savings_usd`, rounded to 0.01); `single_points_of_failure` (REL-AZ-* count).
+Primary findings only: `open` by severity, `by_pillar`; `savings_usd` (sum of cost
+`savings_usd`, rounded to 0.01); `savings_estimated` (true when any saving comes from our price
+table, not the hub); `single_points_of_failure` (REL-AZ-* count).
 
 ## Tests
 

@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from . import graph, hosts, hygiene, posture
+from . import graph, hosts, hygiene, posture, rank
 from .findings import Coverage, Finding, Parsed, counts
 from .integrations import ansible, cloudwatch, cost, costhub, github, prometheus, prowler, wazuh
 from .model import Snapshot
@@ -118,9 +118,10 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
         for arn, data in resources.items():
             if arn in nodes:
                 nodes[arn].setdefault(key, {}).update(data)
+    summary = rank.apply(findings, nodes)
     by_resource: dict[str, list[Finding]] = {}
     for f in findings:
-        if f["resource"]:
+        if f["resource"] and not f["duplicate_of"]:  # the map counts each issue once, like the Overview
             by_resource.setdefault(f["resource"], []).append(f)
     for arn, node in nodes.items():
         node["finding_counts"] = counts(by_resource.get(arn, []))
@@ -136,6 +137,7 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
     g["schema_version"] = GRAPH_SCHEMA_VERSION
     g["meta"]["integrations"] = meta
     g["findings"] = findings
+    g["summary"] = summary
     g["posture"] = posture.scorecard(findings, coverage)
     g["cost"] = cost_summary
     return g

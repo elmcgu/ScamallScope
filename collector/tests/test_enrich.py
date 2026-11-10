@@ -60,7 +60,7 @@ def test_ENR_4_node_has_data_from_every_source(folder):
 
 def test_ENR_5_finding_counts(folder):
     g = enrich.build(estate.snapshot(), enrich.load_raw(folder))
-    mine = [f for f in g["findings"] if f["resource"] == WEB]
+    mine = [f for f in g["findings"] if f["resource"] == WEB and not f["duplicate_of"]]
     assert sum(nodes(g)[WEB]["finding_counts"].values()) == len(mine) > 0
 
 
