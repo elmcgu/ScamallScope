@@ -21,3 +21,20 @@ def fake_aws_env(monkeypatch):
 def session():
     with mock_aws():
         yield boto3.Session(region_name="eu-west-1")
+
+
+@pytest.fixture(autouse=True)
+def no_unmocked_services(monkeypatch):
+    """moto 5.2.5 does not implement backup:ListProtectedResources or ssm:DescribeInstanceInformation.
+    Under moto those two units return empty settings; test_inventory_b tests the real functions with Stubber."""
+    from scamallscope.collectors import account
+    from scamallscope.model import make_setting
+
+    def empty(service, setting_id, key):
+        return lambda client, ctx: ([make_setting(ctx["partition"], service, ctx["region"], ctx["account_id"],
+                                                  setting_id, {key: []})], [])
+
+    fake = {"backup": empty("backup", "backup-protected", "Resources"),
+            "ssm": empty("ssm", "ssm-managed", "Instances")}
+    monkeypatch.setattr(account, "REPORT_WAIT_S", 0)  # moto says STARTED on the first call
+    monkeypatch.setattr(account, "REGIONAL", [(s, t, c, fake.get(s, fn)) for s, t, c, fn in account.REGIONAL])

@@ -48,6 +48,13 @@ Only these read-only actions:
   `elasticloadbalancing:DescribeSSLPolicies`, `elasticloadbalancing:DescribeTargetGroups`,
   `elasticloadbalancing:DescribeTargetHealth`, `elasticloadbalancing:DescribeTags`
 - `autoscaling:DescribeAutoScalingGroups`
+- `acm:ListCertificates`, `acm:DescribeCertificate`
+- `cloudtrail:DescribeTrails`, `cloudtrail:GetTrailStatus`
+- `iam:GenerateCredentialReport`, `iam:GetCredentialReport` (the report lists users, MFA and key dates; no secrets.
+  Generating it changes no IAM setting)
+- `guardduty:ListDetectors`, `guardduty:GetDetector`
+- `backup:ListProtectedResources`
+- `ssm:DescribeInstanceInformation`
 - `lambda:ListFunctions`, `lambda:ListFunctionUrlConfigs`, `lambda:ListTags`
 - `iam:GetAccountAuthorizationDetails` (returns policy documents; no passwords or access keys)
 - `s3:ListAllMyBuckets`, `s3:GetBucketLocation`, `s3:GetBucketPolicyStatus`, `s3:GetBucketPublicAccessBlock`,

@@ -154,6 +154,16 @@ def _autoscaling_group(c: dict[str, Any]) -> dict[str, Any]:
             "health_check_type": c.get("HealthCheckType")}
 
 
+def _certificate(c: dict[str, Any]) -> dict[str, Any]:
+    return {"not_after": c.get("NotAfter"), "in_use": bool(c.get("InUseBy")),
+            "renewal_eligibility": c.get("RenewalEligibility"), "cert_type": c.get("Type")}
+
+
+def _trail(c: dict[str, Any]) -> dict[str, Any]:
+    return {"multi_region": bool(c.get("IsMultiRegionTrail")), "logging": bool(c.get("IsLogging")),
+            "home_region": c.get("HomeRegion")}
+
+
 def _setting(c: dict[str, Any]) -> dict[str, Any]:
     # Settings feed rules; the graph only says whether a simple on/off setting is on.
     return {"enabled": c["Enabled"]} if isinstance(c.get("Enabled"), bool) else {}
@@ -268,6 +278,8 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "load-balancer": _load_balancer,
     "target-group": _target_group,
     "autoscaling-group": _autoscaling_group,
+    "certificate": _certificate,
+    "trail": _trail,
 }
 
 

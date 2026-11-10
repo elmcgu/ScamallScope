@@ -1,12 +1,15 @@
 """Spec 10: inventory for availability, cost and account controls (moto; Stubber where moto lacks it)."""
 
 import re
+from datetime import datetime, timezone
 
+import boto3
 import pytest
 from botocore.exceptions import ClientError
+from botocore.stub import Stubber
 
 from scamallscope import graph, snapshot
-from scamallscope.collectors import ec2 as ec2_collector
+from scamallscope.collectors import account as account_collector, ec2 as ec2_collector
 from scamallscope.model import is_complete
 
 from test_snapshot import REGION, arn, build_estate
@@ -228,3 +231,94 @@ def test_INV_9_autoscaling_group(session, estate):
     managed = [l for l in links(snap) if l[0] == g["arn"] and l[2] == "manages"]
     assert len(managed) == 1
     assert (g["arn"], tg["TargetGroupArn"], "registers") in links(snap)
+
+
+def test_INV_10_certificate(session, estate):
+    acm = session.client("acm", region_name=REGION)
+    cert = acm.request_certificate(DomainName="shop.example.com")["CertificateArn"]
+    c = by_type(collect(session), "certificate")[cert.rsplit("/", 1)[-1]]
+    assert c["name"] == "shop.example.com" and "NotAfter" in c["config"] and "InUseBy" in c["config"]
+
+
+def test_INV_11_multi_region_trail(session, estate):
+    s3 = session.client("s3", region_name=REGION)
+    s3.create_bucket(Bucket="example-trail", CreateBucketConfiguration={"LocationConstraint": REGION})
+    ct = session.client("cloudtrail", region_name=REGION)
+    ct.create_trail(Name="org", S3BucketName="example-trail", IsMultiRegionTrail=True)
+    ct.start_logging(Name="org")
+
+    t = by_type(collect(session), "trail")["org"]
+    assert t["region"] == "global"
+    assert t["config"]["IsMultiRegionTrail"] is True and t["config"]["IsLogging"] is True
+
+
+def test_INV_12_credential_report(session, estate):
+    iam = session.client("iam")
+    iam.create_user(UserName="ci-deployer")
+    iam.create_access_key(UserName="ci-deployer")
+
+    r = by_type(collect(session), "credential-report")["credential-report"]
+    rows = {row["user"]: row for row in r["config"]["Rows"]}
+    assert "ci-deployer" in rows  # moto's report has no root row; see the CSV test below
+    assert rows["ci-deployer"]["access_key_1_active"] == "true"
+    assert set(rows["ci-deployer"]) == set(account_collector.REPORT_COLUMNS)
+    assert r["arn"] == f"arn:aws:iam::{ACCOUNT}:scamallscope-setting/credential-report"
+
+
+REPORT_CSV = (
+    "user,arn,user_creation_time,password_enabled,password_last_used,password_last_changed,password_next_rotation,"
+    "mfa_active,access_key_1_active,access_key_1_last_rotated,access_key_1_last_used_date,access_key_1_last_used_region,"
+    "access_key_1_last_used_service,access_key_2_active,access_key_2_last_rotated,access_key_2_last_used_date,"
+    "access_key_2_last_used_region,access_key_2_last_used_service,cert_1_active,cert_1_last_rotated,cert_2_active,"
+    "cert_2_last_rotated\n"
+    "<root_account>,arn:aws:iam::123456789012:root,2020-01-01T00:00:00+00:00,not_supported,2026-10-01T00:00:00+00:00,"
+    "not_supported,not_supported,false,false,N/A,N/A,N/A,N/A,false,N/A,N/A,N/A,N/A,false,N/A,false,N/A\n"
+)
+
+
+def test_INV_12_root_row_from_real_report_format():
+    rows = account_collector.parse_credential_report(REPORT_CSV.encode())
+    assert rows == [{"user": "<root_account>", "arn": "arn:aws:iam::123456789012:root", "password_enabled": "not_supported",
+                     "mfa_active": "false", "access_key_1_active": "false", "access_key_1_last_rotated": "N/A",
+                     "access_key_1_last_used_date": "N/A", "access_key_2_active": "false",
+                     "access_key_2_last_rotated": "N/A", "access_key_2_last_used_date": "N/A"}]
+
+
+def test_credential_report_waits_then_fails_cleanly():
+    class Busy:
+        def generate_credential_report(self):
+            return {"State": "STARTED"}
+
+        def get_credential_report(self):
+            raise ClientError({"Error": {"Code": "ReportInProgress", "Message": "wait"}}, "GetCredentialReport")
+
+    waits = []
+    with pytest.raises(RuntimeError):
+        account_collector.collect_credential_report(Busy(), "aws", ACCOUNT, sleep=waits.append)
+    assert len(waits) == account_collector.REPORT_TRIES
+
+
+def test_INV_13_guardduty_setting(session, estate):
+    session.client("guardduty", region_name=REGION).create_detector(Enable=True)
+    g = by_type(collect(session), "setting")
+    detectors = next(r for r in g.values() if r["service"] == "guardduty")["config"]["Detectors"]
+    assert len(detectors) == 1 and detectors[0]["Status"] == "ENABLED"
+
+
+def test_INV_14_backup_and_ssm_with_stubber():
+    ctx = ec2_collector.context("aws", ACCOUNT, REGION)
+    backup = boto3.client("backup", region_name=REGION)
+    with Stubber(backup) as stub:
+        stub.add_response("list_protected_resources", {"Results": [
+            {"ResourceArn": f"arn:aws:ec2:{REGION}:{ACCOUNT}:volume/vol-1", "ResourceType": "EBS",
+             "LastBackupTime": datetime(2026, 11, 9, tzinfo=timezone.utc)}], "NextToken": "n"}, {})
+        stub.add_response("list_protected_resources", {"Results": []}, {"NextToken": "n"})
+        (r,), _ = account_collector.collect_backup_protected(backup, ctx)
+    assert r["id"] == "backup-protected" and r["config"]["Resources"][0]["LastBackupTime"].startswith("2026-11-09")
+
+    ssm = boto3.client("ssm", region_name=REGION)
+    with Stubber(ssm) as stub:
+        stub.add_response("describe_instance_information",
+                          {"InstanceInformationList": [{"InstanceId": "i-0abc", "PingStatus": "Online"}]}, {})
+        (r,), _ = account_collector.collect_ssm_managed(ssm, ctx)
+    assert r["config"] == {"Instances": [{"InstanceId": "i-0abc", "PingStatus": "Online"}]}
