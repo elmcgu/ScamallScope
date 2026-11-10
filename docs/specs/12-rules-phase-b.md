@@ -1,7 +1,10 @@
 # 12 Security, cost and availability rules
 
 Rules in `hygiene.py`, same engine as spec 08: a rule runs only when its inputs are loaded, and
-covers its best practice only when it checked at least one resource. Every finding now has
+covers its best practice only when it checked at least one resource. A rule can also name the
+snapshot units it needs (for example `ssm`/`setting` in the resource's Region): if that unit
+failed or is missing, the rule checks nothing there. Account-wide rules (credential report, trails,
+coverage, app groups) are group rules: they return how many things they checked and the hits. Every finding now has
 `remediation` (one line) and `savings_usd` (cost rules; null otherwise).
 
 **Prod:** a resource is prod when its `env` tag is `prod`, `production` or `prd`, or when it
@@ -71,3 +74,5 @@ One test per rule ID (hit and no hit), named `test_<RULE>_...`, plus:
 | RUL-2 | No `env` tag | Treated as prod |
 | RUL-3 | costhub loaded and enabled | HYG-EC2-002 does not run |
 | RUL-4 | Every finding | Has `remediation`; cost rule findings have `savings_usd` |
+
+Tests: `collector/tests/test_rules_b.py` with the hand-built estate in `tests/estate_b.py`.

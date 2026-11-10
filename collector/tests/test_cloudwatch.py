@@ -20,7 +20,7 @@ def parse():
 
 def test_CWM_1_average_and_peak():
     m = parse()["resources"][APP]
-    assert m == {"cpu_avg": 1.9, "cpu_max": 9.0, "days": 14, "alarms": 0}
+    assert m == {"cpu_avg": 1.9, "cpu_max": 9.0, "days": 14, "alarms": 0, "recover_alarm": False}
 
 
 def test_CWM_2_no_data_is_not_idle():
@@ -54,3 +54,13 @@ def test_CWM_4_fetch_with_moto(session):
 def test_CWM_5_query_ids_valid_and_unique():
     ids = cloudwatch.query_ids(["i-0b", "i-0a", "i-0c"])
     assert len(ids) == 6 and all(re.fullmatch(r"[a-z][a-zA-Z0-9_]*", i) for i in ids)
+
+
+def test_recover_alarm_is_seen():
+    import estate
+    from scamallscope import hosts
+    raw = {"days": 14, "regions": {"eu-west-1": {
+        "queries": {"q0_avg": "i-0web1|avg", "q0_max": "i-0web1|max"}, "results": [],
+        "alarms": [{"AlarmName": "recover", "Dimensions": [{"Name": "InstanceId", "Value": "i-0web1"}], "RecoverAction": True}]}}}
+    m = cloudwatch.parse(raw, hosts.build(estate.snapshot()))["resources"][estate.iarn("i-0web1")]
+    assert m["recover_alarm"] is True and m["alarms"] == 1

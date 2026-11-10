@@ -92,7 +92,13 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
         if source == "costhub" and extra:
             meta[source].update(extra)
 
-    rules = hygiene.run(snap, nodes, {k: v for k, v in per_source.items() if k != "cost"}, required_tags)
+    # costhub counts as loaded for the rules only when the hub is enabled (decision 0003).
+    rule_sources = {k: v for k, v in per_source.items()
+                    if k != "cost" and not (k == "costhub" and not meta.get("costhub", {}).get("enabled"))}
+    if "cost" in per_source:
+        rule_sources["cost"] = {}
+    extras = {"cost_coverage": (cost_summary or {}).get("coverage")}
+    rules = hygiene.run(snap, nodes, rule_sources, required_tags, extras, today)
     findings.extend(rules["findings"])
     coverage["hygiene"] = rules["coverage"]
 

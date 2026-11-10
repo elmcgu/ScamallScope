@@ -71,7 +71,9 @@ def test_ENR_6_no_ip_addresses(folder):
 
 
 def test_ENR_7_idle_cost(folder):
-    g = enrich.build(estate.snapshot(), enrich.load_raw(folder))
+    raw = enrich.load_raw(folder)
+    raw.pop("costhub")  # with the hub loaded, HYG-EC2-002 does not run (RUL-3)
+    g = enrich.build(estate.snapshot(), raw)
     idle = {f["resource"] for f in g["findings"] if f["check_id"] == "HYG-EC2-002"}
     assert idle == {APP}
     assert g["cost"]["idle_monthly_usd"] == nodes(g)[APP]["cost"]["monthly_usd"] == 15.0
@@ -100,3 +102,19 @@ def test_findings_use_the_map_label(folder):
     g = enrich.build(estate.snapshot(), enrich.load_raw(folder))
     imds = next(f for f in g["findings"] if f["check_id"] == "ec2_instance_imdsv2_enabled")
     assert imds["resource_name"] == "prod-web-1"
+
+
+def test_RUL_3_hub_replaces_cpu_idle_rule(folder):
+    g = enrich.build(estate.snapshot(), enrich.load_raw(folder))
+    assert not [f for f in g["findings"] if f["check_id"] == "HYG-EC2-002"]
+    assert [f for f in g["findings"] if f["check_id"] == "COST-HUB-Rightsize"][0]["resource"] == APP
+
+
+def test_hub_not_enabled_keeps_cpu_idle_rule(folder):
+    raw = enrich.load_raw(folder)
+    hub = json.loads(raw["costhub"].read_text())
+    hub.update(enabled=False, recommendations=[])
+    raw["costhub"].write_text(json.dumps(hub))
+    g = enrich.build(estate.snapshot(), raw)
+    assert [f["resource"] for f in g["findings"] if f["check_id"] == "HYG-EC2-002"] == [APP]
+    assert g["meta"]["integrations"]["costhub"]["enabled"] is False

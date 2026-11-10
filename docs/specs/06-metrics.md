@@ -8,13 +8,15 @@ Per region, for running instances in the snapshot:
   `InstanceId` [R27], period 3600 s, stat `Average`, and a second query with stat `Maximum`;
   last 14 days. Up to 500 queries per call; paged with `NextToken`.
 - `DescribeAlarms` [R26] (metric alarms), paged. An instance "has an alarm" when an alarm's
-  `Dimensions` include its `InstanceId`.
+  `Dimensions` include its `InstanceId`. Only one fact about actions is kept: `RecoverAction`,
+  true when an action is an EC2 recover action (`arn:aws:automate:<region>:ec2:recover`) [R58].
+  Other actions name SNS topics and are dropped.
 
 Raw `integrations/cloudwatch.json`:
 `{"fetched_at", "days": 14, "regions": {"eu-west-1": {"queries": {"<query id>": "<instance id>|avg"}, "results": [MetricDataResults], "alarms": [MetricAlarms]}}}`.
 
 Output per instance (`metrics`): `cpu_avg`, `cpu_max` (rounded to 0.1), `days`, `alarms`
-(count). No data points: `cpu_avg` null (it is not "idle").
+(count), `recover_alarm` (bool). No data points: `cpu_avg` null (it is not "idle").
 
 The idle and no-alarm rules are hygiene rules (spec 08), because they need inventory state.
 

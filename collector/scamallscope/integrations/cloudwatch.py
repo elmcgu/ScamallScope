@@ -59,7 +59,9 @@ def fetch(session: Any, snapshot: Snapshot, now: datetime | None = None) -> dict
                 results.extend(page.get("MetricDataResults", []))
         alarms: list[dict[str, Any]] = []
         for page in cw.get_paginator("describe_alarms").paginate(AlarmTypes=["MetricAlarm"]):
-            alarms.extend({"AlarmName": a.get("AlarmName"), "Dimensions": a.get("Dimensions", [])}
+            alarms.extend({"AlarmName": a.get("AlarmName"), "Dimensions": a.get("Dimensions", []),
+                           # Only EC2 recover actions are kept (REL-HEAL-001); other actions name SNS topics.
+                           "RecoverAction": any(":ec2:recover" in x for x in a.get("AlarmActions", []))}
                           for a in page.get("MetricAlarms", []))
         regions[region] = {"queries": ids, "results": json_safe(results), "alarms": alarms}
     return {"fetched_at": end.isoformat(), "days": DAYS, "regions": regions}
@@ -80,10 +82,13 @@ def parse(raw: dict[str, Any], index: hosts.Index) -> Parsed:
             iid, stat = target.split("|")
             values.setdefault(iid, {}).setdefault(stat, []).extend(float(v) for v in res.get("Values") or [])
         alarm_count: dict[str, int] = {}
+        recover: set[str] = set()
         for a in data.get("alarms") or []:
             for d in a.get("Dimensions") or []:
                 if d.get("Name") == "InstanceId":
                     alarm_count[d.get("Value")] = alarm_count.get(d.get("Value"), 0) + 1
+                    if a.get("RecoverAction"):
+                        recover.add(d.get("Value"))
         for iid in {t.split("|")[0] for t in ids.values()}:
             arn = hosts.by_instance_id(index, iid)
             if not arn:
@@ -95,5 +100,6 @@ def parse(raw: dict[str, Any], index: hosts.Index) -> Parsed:
                 "cpu_max": round(max(mx), 1) if mx else None,
                 "days": raw.get("days", DAYS),
                 "alarms": alarm_count.get(iid, 0),
+                "recover_alarm": iid in recover,
             }
     return out
