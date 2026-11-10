@@ -5,7 +5,15 @@ import { SEVERITIES, nodesOf } from "./model.js";
 
 export const PILLARS = ["security", "reliability", "cost"];
 export const STATUSES = ["issues", "clear", "not_checked"];
-export const VIEWS = ["map", "findings", "hosts", "cost", "wa"];
+export const VIEWS = ["overview", "map", "findings", "hosts", "cost", "wa", "availability"];
+export const PILLAR_LABELS = { security: "Security", cost: "Cost", reliability: "Availability (Reliability)" };
+const OVERVIEW_ORDER = ["security", "cost", "reliability"];
+// Sources whose absence means some checks for that column did not run.
+const COLUMN_SOURCES = {
+  security: { prowler: "Prowler checks", wazuh: "Wazuh vulnerabilities and agents" },
+  cost: { costhub: "Cost Optimization Hub: savings are estimates from our own rules", cost: "Cost Explorer spend and commitment coverage" },
+  reliability: { cloudwatch: "CloudWatch alarms and recover actions", prometheus: "Prometheus monitoring", ansible: "Ansible configuration runs" },
+};
 
 export function hasEnrichment(graph) {
   return graph?.schema_version >= 2 && Array.isArray(graph.findings);
@@ -129,4 +137,61 @@ export function integrationStatus(graph) {
   return Object.entries(graph.meta?.integrations ?? {}).map(([name, m]) => ({
     name, loaded: !!m.loaded, error: m.error ?? null, unmatched: m.unmatched ?? [],
   }));
+}
+
+/** Primary findings (each issue once, spec 13). */
+export function primaryFindings(graph) {
+  return (graph.findings || []).filter((f) => !f.duplicate_of);
+}
+
+function byPriority(a, b) {
+  return (b.priority ?? 0) - (a.priority ?? 0) || a.title.localeCompare(b.title);
+}
+
+/** Best-practice title and AWS link for an id, from the scorecard. */
+export function bpInfo(graph, id) {
+  for (const p of PILLARS) {
+    const row = graph.posture?.[p]?.best_practices?.find((r) => r.id === id);
+    if (row) return { id, title: row.title, url: row.url };
+  }
+  return { id, title: "", url: null };
+}
+
+/** Notes for a column: which sources it would use are not loaded (or loaded but switched off). */
+export function columnNotes(graph, pillar) {
+  const meta = graph.meta?.integrations ?? {};
+  const notes = [];
+  for (const [source, what] of Object.entries(COLUMN_SOURCES[pillar])) {
+    const m = meta[source];
+    if (!m?.loaded) notes.push(`${source} not loaded: ${what} did not run.`);
+    else if (source === "costhub" && m.enabled === false) notes.push("Cost Optimization Hub is not enabled: savings are estimates from our own rules.");
+    else if (source === "costhub" && m.compute_optimizer && m.compute_optimizer !== "Active") {
+      notes.push(`Compute Optimizer is ${m.compute_optimizer}: no rightsizing or idle recommendations yet.`);
+    }
+  }
+  return notes;
+}
+
+/** The three Overview columns: top n primary findings per pillar by priority (spec 14, VIEW-9). */
+export function overviewColumns(graph, n = 10) {
+  const primary = primaryFindings(graph);
+  return OVERVIEW_ORDER.map((pillar) => {
+    const all = primary.filter((f) => f.pillar === pillar).sort(byPriority);
+    return { pillar, label: PILLAR_LABELS[pillar], items: all.slice(0, n), more: Math.max(0, all.length - n), notes: columnNotes(graph, pillar) };
+  });
+}
+
+/** Header totals for the Overview, from the graph summary. */
+export function overviewTotals(graph) {
+  const s = graph.summary ?? {};
+  const open = s.open ?? {};
+  return {
+    critical: open.critical ?? 0, high: open.high ?? 0, medium: open.medium ?? 0, low: (open.low ?? 0) + (open.info ?? 0),
+    savings: s.savings_usd ?? 0, savingsEstimated: !!s.savings_estimated, spof: s.single_points_of_failure ?? 0,
+  };
+}
+
+/** "$12.50 a month", or "" when there is no saving (VIEW-10). */
+export function savingText(v) {
+  return typeof v === "number" && v > 0 ? `${money(v)} a month` : "";
 }

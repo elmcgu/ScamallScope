@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { classesFor, parseGraph, worstSeverity } from "../src/model.js";
 import {
-  costSummary, filterFindings, findingsFor, hasEnrichment, hostRows, postureRows, postureSummary, safeUrl,
-  sortFindings, sortRows,
+  bpInfo, columnNotes, costSummary, filterFindings, findingsFor, hasEnrichment, hostRows, overviewColumns,
+  overviewTotals, postureRows, postureSummary, safeUrl, savingText, sortFindings, sortRows,
 } from "../src/views.js";
 
 const sample = parseGraph(readFileSync(new URL("../../samples/demo.graph.json", import.meta.url), "utf8"));
@@ -97,5 +97,48 @@ describe("safety and modes", () => {
   it("VIEW-8 v1 graph has no enrichment", () => {
     expect(hasEnrichment({ schema_version: 1, elements: [] })).toBe(false);
     expect(hasEnrichment(sample)).toBe(true);
+  });
+});
+
+describe("overview", () => {
+  const g = (findings, integrations = {}) => ({ schema_version: 2, findings, meta: { integrations }, posture: {}, summary: {} });
+
+  it("VIEW-9 three columns, top 10 by priority, no duplicates", () => {
+    const many = Array.from({ length: 12 }, (_, i) => f("high", "security", `s${i}`, { priority: i }));
+    const dup = f("critical", "security", "dup", { priority: 999, duplicate_of: "x" });
+    const cols = overviewColumns(g([...many, dup, f("low", "cost", "c", { priority: 5 })]));
+    expect(cols.map((c) => c.pillar)).toEqual(["security", "cost", "reliability"]);
+    expect(cols[0].items).toHaveLength(10);
+    expect(cols[0].items[0].title).toBe("s11");
+    expect(cols[0].items.some((x) => x.title === "dup")).toBe(false);
+    expect(cols[0].more).toBe(2);
+    expect(cols[1].items.map((x) => x.title)).toEqual(["c"]);
+    expect(cols[2].label).toBe("Availability (Reliability)");
+  });
+
+  it("VIEW-10 savings text has two decimals", () => {
+    expect(savingText(12.5)).toBe("$12.50 a month");
+    expect(savingText(null)).toBe("");
+    expect(savingText(0)).toBe("");
+  });
+
+  it("VIEW-11 a column lists the sources that did not run", () => {
+    const notes = columnNotes(g([], { prowler: { loaded: true }, wazuh: { loaded: false } }), "security");
+    expect(notes).toEqual(["wazuh not loaded: Wazuh vulnerabilities and agents did not run."]);
+    const hubOff = columnNotes(g([], { cost: { loaded: true }, costhub: { loaded: true, enabled: false } }), "cost");
+    expect(hubOff[0]).toMatch(/not enabled/);
+    const coOff = columnNotes(g([], { cost: { loaded: true }, costhub: { loaded: true, enabled: true, compute_optimizer: "Inactive" } }), "cost");
+    expect(coOff[0]).toMatch(/Compute Optimizer is Inactive/);
+  });
+
+  it("sample overview has cards in every column and totals from the summary", () => {
+    const cols = overviewColumns(sample);
+    expect(cols.every((c) => c.items.length > 0)).toBe(true);
+    expect(cols[1].items[0].savings_usd).toBeGreaterThan(0);
+    const t = overviewTotals(sample);
+    expect(t.savings).toBe(sample.summary.savings_usd);
+    expect(t.spof).toBeGreaterThan(0);
+    const first = cols[0].items[0];
+    expect(bpInfo(sample, first.best_practices[0]).url).toMatch(/^https:\/\/docs\.aws\.amazon\.com\//);
   });
 });

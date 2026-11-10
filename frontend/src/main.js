@@ -7,8 +7,9 @@ import {
   toCyElements, visibleIds, warnings,
 } from "./model.js";
 import {
-  PILLARS, costSummary, filterFindings, findingFacets, findingsFor, hasEnrichment, hostRows, integrationStatus,
-  money, postureRows, postureSummary, safeUrl, sortFindings, sortRows,
+  PILLARS, PILLAR_LABELS, bpInfo, costSummary, filterFindings, findingFacets, findingsFor, hasEnrichment, hostRows,
+  integrationStatus, money, overviewColumns, overviewTotals, postureRows, postureSummary, safeUrl, savingText,
+  sortFindings, sortRows,
 } from "./views.js";
 
 cytoscape.use(fcose);
@@ -135,12 +136,13 @@ function load(json, source) {
   }
   if (enriched) {
     sourceOptions();
+    renderOverview();
     renderFindings();
     renderHosts();
     renderCost();
     renderWa();
   }
-  showView("map");
+  showView(enriched ? "overview" : "map");
 }
 
 /** Re-apply node classes for the colour mode, keeping hidden nodes hidden. */
@@ -158,7 +160,7 @@ function recolour() {
 function showView(name) {
   for (const b of document.querySelectorAll("#views button")) b.setAttribute("aria-pressed", String(b.dataset.view === name));
   $("view-map").hidden = name !== "map";
-  for (const v of ["findings", "hosts", "cost", "wa"]) $(`view-${v}`).hidden = name !== v;
+  for (const v of ["overview", "findings", "hosts", "cost", "wa"]) $(`view-${v}`).hidden = name !== v;
   if (name === "map" && cy) cy.resize();
 }
 
@@ -226,6 +228,44 @@ function sourceOptions() {
     ...findingFacets(graph.findings).sources.map((s) => el("option", { value: s, textContent: s })));
 }
 
+function renderOverview() {
+  const t = overviewTotals(graph);
+  const stat = (value, label, className = "") => el("div", { className: `stat ${className}` }, [
+    el("span", { className: "value", textContent: String(value) }), el("span", { className: "label", textContent: label })]);
+  $("overview-totals").replaceChildren(
+    stat(t.critical, "critical", "sev-critical"), stat(t.high, "high", "sev-high"), stat(t.medium, "medium"),
+    stat(t.low, "low or info"),
+    stat(money(t.savings), t.savingsEstimated ? "savings a month (includes estimates)" : "savings a month"),
+    stat(t.spof, "single points of failure"),
+  );
+  const nodeIds = new Set(cy ? cy.nodes().map((n) => n.id()) : []);
+  $("overview-columns").replaceChildren(...overviewColumns(graph).map((col) => {
+    const cards = col.items.map((f) => {
+      const bp = f.best_practices[0] ? bpInfo(graph, f.best_practices[0]) : null;
+      const where = nodeIds.has(f.resource)
+        ? el("button", { type: "button", className: "link-button", textContent: f.resource_name, onclick: () => openOnMap(f.resource) })
+        : document.createTextNode(f.resource_name);
+      return el("article", { className: "card" }, [
+        el("p", { className: "card-head" }, [sevBadge(f.severity), document.createTextNode(" "),
+          el("strong", { textContent: f.title })]),
+        el("p", { className: "muted" }, [where, document.createTextNode(` · ${f.region}`)]),
+        savingText(f.savings_usd) ? el("p", { className: "saving", textContent: `Saves about ${savingText(f.savings_usd)}` }) : null,
+        bp ? el("p", {}, [document.createTextNode("Why: "), link(bp.url, `${bp.id} ${bp.title}`)]) : null,
+        f.remediation ? el("p", { textContent: `Fix: ${f.remediation}` }) : null,
+        f.also_reported_by?.length ? el("p", { className: "muted", textContent: `Also reported by ${f.also_reported_by.join(", ")}` }) : null,
+      ]);
+    });
+    const more = col.more ? el("button", { type: "button", className: "link-button", textContent: `${col.more} more in Findings`,
+      onclick: () => { $("f-pillar").value = col.pillar; renderFindings(); showView("findings"); } }) : null;
+    return el("section", { className: "column" }, [
+      el("h2", { textContent: `${col.label} (${col.items.length + col.more})` }),
+      ...col.notes.map((n) => el("p", { className: "note", textContent: n })),
+      ...(cards.length ? cards : [el("p", { className: "muted", textContent: "No open issues from the checks that ran." })]),
+      more,
+    ]);
+  }));
+}
+
 function renderFindings() {
   const one = (id) => ($(id).value ? new Set([$(id).value]) : null);
   const rows = sortFindings(filterFindings(graph.findings, {
@@ -236,7 +276,7 @@ function renderFindings() {
   const t = table(["Severity", "Pillar", "Finding", "Resource", "Source", "Best practices", "Detail"], rows.map((f) => [
     sevBadge(f.severity), f.pillar, f.title,
     nodeIds.has(f.resource) ? el("button", { type: "button", className: "link-button", textContent: f.resource_name, onclick: () => openOnMap(f.resource) }) : f.resource_name,
-    f.source,
+    f.duplicate_of ? `${f.source} (same issue as another finding)` : f.source,
     el("span", {}, f.best_practices.flatMap((bp, i) => [i ? document.createTextNode(", ") : null,
       link(graph.posture?.[f.pillar]?.best_practices.find((r) => r.id === bp)?.url, bp)])),
     [f.detail, f.remediation].filter(Boolean).join(" Fix: "),

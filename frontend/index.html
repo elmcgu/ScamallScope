@@ -15,6 +15,7 @@
     <header>
       <h1>ScamallScope</h1>
       <nav id="views" aria-label="Views">
+        <button type="button" data-view="overview" aria-pressed="false">Overview</button>
         <button type="button" data-view="map" aria-pressed="true">Map</button>
         <button type="button" data-view="findings" aria-pressed="false">Findings</button>
         <button type="button" data-view="hosts" aria-pressed="false">Hosts</button>
@@ -91,6 +92,10 @@
         <p class="muted">Click a resource to see its details.</p>
       </aside>
     </main>
+    <section id="view-overview" class="view" hidden>
+      <div id="overview-totals" class="totals"></div>
+      <div id="overview-columns" class="columns"></div>
+    </section>
     <section id="view-findings" class="view" hidden>
       <div class="toolbar">
         <label>Pillar <select id="f-pillar"><option value="">All</option><option>security</option><option>reliability</option><option>cost</option></select></label>
