@@ -162,3 +162,9 @@ Checked on 2026-11-10. API shapes also checked against the botocore 1.43.123 ser
 - **R57** COST06-BP03 Select resource type, size, and number automatically based on metrics
   (Compute Optimizer, Auto Scaling, S3 Intelligent-Tiering).
   https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_type_size_number_resources_metrics.html
+- **R58** EC2 automatic instance recovery: simplified automatic recovery is on by default on
+  supported instances (`MaintenanceOptions.AutoRecovery`); CloudWatch action based recovery needs
+  an alarm. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html
+- **R59** EBS pricing worked examples: gp3 $0.08, gp2 $0.10, io1 and io2 $0.125, st1 $0.045,
+  sc1 $0.015 per GB-month; snapshots $0.05 per GB-month. The examples do not name a Region.
+  https://aws.amazon.com/ebs/pricing/

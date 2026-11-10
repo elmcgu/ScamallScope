@@ -10,7 +10,7 @@ Every item says what is wrong, why it matters, how to fix it, and links to the A
 Well-Architected best practice it breaks. Availability is the Reliability pillar in
 Well-Architected terms; the UI says "Availability (Reliability)".
 
-Updated 2026-11-10. Research for this plan: [references.md](references.md) R41 to R57.
+Updated 2026-11-10. Research for this plan: [references.md](references.md) R41 to R59.
 
 ## Where the repo is (2026-11-10, commit 8a3be9b)
 
@@ -56,7 +56,7 @@ check. All new AWS calls are read-only and are added to the permissions list in
 
 | Step | Output | Done when |
 |---|---|---|
-| B1 Docs | This plan; R41 to R57; decision 0003 (use AWS recommenders, keep own rules as fallback); specs 10 to 14 | Specs exist with test tables |
+| B1 Docs | This plan; R41 to R59; decision 0003 (use AWS recommenders, keep own rules as fallback); specs 10 to 14 | Specs exist with test tables |
 | B2 Collectors: storage and network | `collectors/ec2.py` adds EBS volumes, own EBS snapshots, Elastic IPs, NAT gateways, VPC endpoints, flow logs, EBS encryption by default, IMDS setting per instance | SNAP tests pass in moto; graph shows volumes and NAT gateways |
 | B3 Collectors: data and compute | New `rds.py` (Multi-AZ, encryption, public, backup retention), `elbv2.py` (AZs, listeners, TLS policy, target health), `autoscaling.py` (AZs, health check type, instances) | RDS, ELB, ASG tests pass in moto; links ASG to instances and target group to instances |
 | B4 Collectors: account controls | New `account.py`: CloudTrail trails and status, GuardDuty detectors, IAM credential report (root MFA, root keys, key age, last used, user MFA), AWS Backup protected resources, SSM managed instances, ACM certificate expiry | ACC tests pass (moto; credential report CSV from a fixture) |
@@ -157,9 +157,8 @@ a lifecycle rule.
 - Several accounts (the account ID is already on every resource).
 - Loki error counts and Grafana links.
 
-## Decisions for Ellis
+## Decisions (Ellis, 2026-11-10)
 
-1. A resource with no `env` tag: rank it as prod (safer, noisier) or non-prod (quieter)?
-   Default: prod.
-2. Savings estimates from a dated price table in the code (simple, can drift) or the Price List
-   API now (exact, more code and calls)? Default: price table, Price List API in Phase E.
+1. A resource with no `env` tag is ranked as prod.
+2. Savings estimates come from a dated price table in the code; the Price List API is Phase E.
+3. One commit per Phase B step.
