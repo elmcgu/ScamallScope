@@ -3,234 +3,369 @@
   "collected_at": "2026-11-04T06:00:00+00:00",
   "links": [
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-442092425a1963a65",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-52c8a7609a563a1a6",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-94eb1ba1dfb8c9529",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-011149dd66e6530c0",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-44ac8edeff7e21aac",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-946361ae336818496",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-1c33d3e13b991028e",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-8b2963a3db377934f",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-3b73724df87efef58",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-2b1d5f01e3b7b6b26",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-f713f1b9cbaa6cc50",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-41e197a88fde48f2e",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-01e50783ff7f14f9c",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-bba74bf2f2803bcf1",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-b3618e2b5e80ebd89",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-e8b1c44c62e1c81f8",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fb561af10f24244dd",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fd41a74ffbcf7ce7a",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-a1d3626850e148a54",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-28d6418ec5c0efd15",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-f6ed33604b0fb118d",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-7fb72d449a55c8c81",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-5b38c41d282724601",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-94eb1ba1dfb8c9529",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-06bcb7f777169cd41",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-b0b69083dc1cfe6ae",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-06bcb7f777169cd41",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-e8b1c44c62e1c81f8",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-47e5eed5cd756c896",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-378a2d78c6ce9d8de",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-378a2d78c6ce9d8de",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
       "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-de5f7cb5498462b88",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-4668d9527de90dc75",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-de5f7cb5498462b88",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fd41a74ffbcf7ce7a",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-4668d9527de90dc75",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
       "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-2e866114b400cf4e5",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-31d98de1f9454a940",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-2e866114b400cf4e5",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-28d6418ec5c0efd15",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-31d98de1f9454a940",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-5b38c41d282724601",
       "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-22d18704f9032da93",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-25710db5ebe78ee9f",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-22d18704f9032da93",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fd41a74ffbcf7ce7a",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-25710db5ebe78ee9f",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
       "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-8b2963a3db377934f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-16f243ae04384aa3f",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-da3fe42e31d1f25d8",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-16f243ae04384aa3f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-7fb72d449a55c8c81",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-da3fe42e31d1f25d8",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
       "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-1ca0b0366be6256fb",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-e5bf25a3782252cae",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-e5bf25a3782252cae",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-a1d3626850e148a54",
+      "type": "uses"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-090d86025880e631b",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-090d86025880e631b",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-a1d3626850e148a54",
+      "type": "uses"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-44ac8edeff7e21aac",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-dbe3777512af986df",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-dbe3777512af986df",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-47e5eed5cd756c896",
+      "type": "uses"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-c57595503754b6a6a",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
       "type": "attached"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-aacffd864d98fcb90",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-45515455df4fd760b",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
       "type": "attached"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-8218194d3f686bcf9",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-7dfabef53fac6713b",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-9e6814c564cf8ff17",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-42399ee5b1d3ee1c2",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-0194256040064e144",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-6c2c4c6e68a59f78b",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-0194256040064e144",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-94eb1ba1dfb8c9529",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-6c2c4c6e68a59f78b",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
       "type": "routes"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-0194256040064e144",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-1ca0b0366be6256fb",
-      "type": "routes_to"
-    },
-    {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-4ccad54996eb04422",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-b5eb18b2eea464aa6",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-b5eb18b2eea464aa6",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-8b2963a3db377934f",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-6c2c4c6e68a59f78b",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-f713f1b9cbaa6cc50",
       "type": "routes"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-b5eb18b2eea464aa6",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-aacffd864d98fcb90",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-6c2c4c6e68a59f78b",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-c57595503754b6a6a",
       "type": "routes_to"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-d66c72ee75f1cf2f7",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-450b7351f98d86ec5",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-d66c72ee75f1cf2f7",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-442092425a1963a65",
-      "type": "filters"
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-450b7351f98d86ec5",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "type": "routes"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-d66c72ee75f1cf2f7",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-011149dd66e6530c0",
-      "type": "filters"
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-450b7351f98d86ec5",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-01e50783ff7f14f9c",
+      "type": "routes"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-d66c72ee75f1cf2f7",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-946361ae336818496",
-      "type": "filters"
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-450b7351f98d86ec5",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:nat-gateway/nat-0e131166646cbd001",
+      "type": "routes_to"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-c579bc42bcf3e39b0",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-51309ed2a01fbe705",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-c579bc42bcf3e39b0",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-94eb1ba1dfb8c9529",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-c579bc42bcf3e39b0",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-2625adefbf7417f37",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-e004b1f8b022f8d46",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-2625adefbf7417f37",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-2b1d5f01e3b7b6b26",
-      "type": "filters"
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-e004b1f8b022f8d46",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-44ac8edeff7e21aac",
+      "type": "routes"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-9294d5ea56df2428b",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-e004b1f8b022f8d46",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-45515455df4fd760b",
+      "type": "routes_to"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b45583705b4024f71",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-9294d5ea56df2428b",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-8b2963a3db377934f",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b45583705b4024f71",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-52c8a7609a563a1a6",
       "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b45583705b4024f71",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-3b73724df87efef58",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b45583705b4024f71",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-b3618e2b5e80ebd89",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-65287d9b84f0e8342",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-65287d9b84f0e8342",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-65287d9b84f0e8342",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-65287d9b84f0e8342",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-f713f1b9cbaa6cc50",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-65287d9b84f0e8342",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-01e50783ff7f14f9c",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b8a7456379ac27c3f",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b8a7456379ac27c3f",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-1c33d3e13b991028e",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-e3458c1e688cb3d41",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-e3458c1e688cb3d41",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-44ac8edeff7e21aac",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-0636fd4cb51ff0e09",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-378a2d78c6ce9d8de",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-491299216efa5a0ac",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-4668d9527de90dc75",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-0af1cafc1590dee0d",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-31d98de1f9454a940",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-5e13dc31b459bd3a4",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-25710db5ebe78ee9f",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-0907698ca35bbd1f9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-da3fe42e31d1f25d8",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-83f5790b31375dfea",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-31d98de1f9454a940",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-99e2c62a7a511e9fd",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-e5bf25a3782252cae",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-607cf065e4ef3264e",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-090d86025880e631b",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-04f0738658740a500",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-dbe3777512af986df",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:snapshot/snap-d9a91b8fdd46ee8a9",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-f6f7bc7f57d9be4d4",
+      "type": "snapshot_of"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:snapshot/snap-1f52ae1baee2b8949",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-83f5790b31375dfea",
+      "type": "snapshot_of"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:nat-gateway/nat-0e131166646cbd001",
+      "type": "contains"
     },
     {
       "source": "arn:aws:lambda:eu-west-1:123456789012:function:orders-webhook",
@@ -244,12 +379,12 @@
     },
     {
       "source": "arn:aws:lambda:eu-west-1:123456789012:function:orders-worker",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
       "type": "attached"
     },
     {
       "source": "arn:aws:lambda:eu-west-1:123456789012:function:orders-worker",
-      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fd41a74ffbcf7ce7a",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
       "type": "uses"
     },
     {
@@ -258,149 +393,229 @@
       "type": "assumes"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-58e7f1324cd27279d",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:rds:eu-west-1:123456789012:db:orders-db",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e644f882e78c03ebf",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-3a133faf11c023b1e",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-fc09670a03034ed31",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0df4ccd3d4d6c8b67",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-02abbf977686d1657",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0b8ecbcbe6993a26f",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8e668fa09f3e7d9fb",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-015ca0eebcc12e311",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-4fd32abc7382eb3c1",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-e3bfa16e2682cdf1b",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-fc09670a03034ed31",
-      "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-54f5924886e470545",
-      "type": "contains"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-54f5924886e470545",
-      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-e3bfa16e2682cdf1b",
+      "source": "arn:aws:rds:eu-west-1:123456789012:db:orders-db",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
       "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:internet-gateway/igw-f1fe18be3c89fe70d",
-      "target": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "type": "attached"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-97b296ae00300642a",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:rds:eu-west-1:123456789012:db:reporting-db",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-ce41f00a7b358d5d8",
+      "source": "arn:aws:rds:eu-west-1:123456789012:db:reporting-db",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
+      "type": "uses"
+    },
+    {
+      "source": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
+      "target": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-c5202c84c51ad5cd5",
-      "type": "contains"
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
+      "type": "uses"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-c5202c84c51ad5cd5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-fc09670a03034ed31",
-      "type": "routes"
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/orders-workers/a99fbfd7329ec15e",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-e5bf25a3782252cae",
+      "type": "targets"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-c5202c84c51ad5cd5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:internet-gateway/igw-f1fe18be3c89fe70d",
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/orders-workers/a99fbfd7329ec15e",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-090d86025880e631b",
+      "type": "targets"
+    },
+    {
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
+      "target": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
       "type": "routes_to"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
-      "target": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
+      "target": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+      "type": "routes_to"
+    },
+    {
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-378a2d78c6ce9d8de",
+      "type": "targets"
+    },
+    {
+      "source": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-da3fe42e31d1f25d8",
+      "type": "targets"
+    },
+    {
+      "source": "arn:aws:autoscaling:eu-west-1:123456789012:autoScalingGroup:fb6a0ec1-df90-40af-87a6-444a9c1b4fe6:autoScalingGroupName/orders-workers",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-e5bf25a3782252cae",
+      "type": "manages"
+    },
+    {
+      "source": "arn:aws:autoscaling:eu-west-1:123456789012:autoScalingGroup:fb6a0ec1-df90-40af-87a6-444a9c1b4fe6:autoScalingGroupName/orders-workers",
+      "target": "arn:aws:ec2:eu-west-1:123456789012:instance/i-090d86025880e631b",
+      "type": "manages"
+    },
+    {
+      "source": "arn:aws:autoscaling:eu-west-1:123456789012:autoScalingGroup:fb6a0ec1-df90-40af-87a6-444a9c1b4fe6:autoScalingGroupName/orders-workers",
+      "target": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/orders-workers/a99fbfd7329ec15e",
+      "type": "registers"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f1e9ea6082c9ab699",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-58e7f1324cd27279d",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e644f882e78c03ebf",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-3a133faf11c023b1e",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0df4ccd3d4d6c8b67",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0b8ecbcbe6993a26f",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8e668fa09f3e7d9fb",
-      "type": "filters"
-    },
-    {
-      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
-      "target": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-ca16cebb8a2310b86",
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ca64f95fa04d62108",
       "type": "contains"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-ca16cebb8a2310b86",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-fc09670a03034ed31",
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-42357c1de975f5061",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-bf3d05e8e3246c747",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8c08bbccc2a093cec",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f7c2c7a8b19e859e3",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ce33b306effd813d5",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e18da0ce6fa9d4fa2",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-82140f2a3abe11646",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-a82fb19faab4d15b3",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-c10fa2828ac686424",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ca64f95fa04d62108",
+      "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-5976c0c25eba950f8",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-5976c0c25eba950f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-c10fa2828ac686424",
+      "type": "uses"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:internet-gateway/igw-6ae4bea4ea36df8a7",
+      "target": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "type": "attached"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-93a8471d84f283f01",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-e467581ba877d8a6a",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-5e8735b28cc331481",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-5e8735b28cc331481",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ca64f95fa04d62108",
+      "type": "routes"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-5e8735b28cc331481",
+      "target": "arn:aws:ec2:us-east-1:123456789012:internet-gateway/igw-6ae4bea4ea36df8a7",
+      "type": "routes_to"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
+      "target": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f1e9ea6082c9ab699",
       "type": "filters"
     },
     {
-      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-ca16cebb8a2310b86",
-      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-02abbf977686d1657",
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-bf3d05e8e3246c747",
       "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8c08bbccc2a093cec",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f7c2c7a8b19e859e3",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ce33b306effd813d5",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e18da0ce6fa9d4fa2",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
+      "target": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-6c20a9911cf7f85fe",
+      "type": "contains"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-6c20a9911cf7f85fe",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ca64f95fa04d62108",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-6c20a9911cf7f85fe",
+      "target": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-42357c1de975f5061",
+      "type": "filters"
+    },
+    {
+      "source": "arn:aws:ec2:us-east-1:123456789012:volume/vol-89806a164f72b8bf4",
+      "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-5976c0c25eba950f8",
+      "type": "attached"
     },
     {
       "source": "arn:aws:iam::123456789012:user/alex.admin",
@@ -423,7 +638,7 @@
       "type": "attached"
     },
     {
-      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-06bcb7f777169cd41",
+      "source": "arn:aws:ec2:eu-west-1:123456789012:instance/i-378a2d78c6ce9d8de",
       "target": "arn:aws:iam::123456789012:role/prod-web-role",
       "type": "assumes"
     }
@@ -437,12 +652,12 @@
   "resources": [
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-a3acb8adbebcc1a66",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-abc232b3d3f5fbcc4",
       "config": {
         "CidrBlock": "172.31.0.0/16",
         "CidrBlockAssociationSet": [
           {
-            "AssociationId": "vpc-cidr-assoc-3125f94a5aa765893",
+            "AssociationId": "vpc-cidr-assoc-7799ecc3a0f632cb8",
             "CidrBlock": "172.31.0.0/16",
             "CidrBlockState": {
               "State": "associated"
@@ -456,9 +671,9 @@
         "OwnerId": "123456789012",
         "State": "available",
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "vpc-a3acb8adbebcc1a66",
+      "id": "vpc-abc232b3d3f5fbcc4",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -467,12 +682,12 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-f0a1e10e04f89799f",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-504d1a00a30881fa9",
       "config": {
         "CidrBlock": "10.10.0.0/16",
         "CidrBlockAssociationSet": [
           {
-            "AssociationId": "vpc-cidr-assoc-fa874aacbd5e385f1",
+            "AssociationId": "vpc-cidr-assoc-a4b98c26cd372efcd",
             "CidrBlock": "10.10.0.0/16",
             "CidrBlockState": {
               "State": "associated"
@@ -495,9 +710,9 @@
             "Value": "prod"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "vpc-f0a1e10e04f89799f",
+      "id": "vpc-504d1a00a30881fa9",
       "name": "prod",
       "region": "eu-west-1",
       "service": "ec2",
@@ -509,12 +724,12 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-c7179ad575702d206",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:vpc/vpc-3fbf5766f186776eb",
       "config": {
         "CidrBlock": "10.20.0.0/16",
         "CidrBlockAssociationSet": [
           {
-            "AssociationId": "vpc-cidr-assoc-5fff40bdc710c4e97",
+            "AssociationId": "vpc-cidr-assoc-37d9248e6e8234ac9",
             "CidrBlock": "10.20.0.0/16",
             "CidrBlockState": {
               "State": "associated"
@@ -537,9 +752,9 @@
             "Value": "staging"
           }
         ],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "vpc-c7179ad575702d206",
+      "id": "vpc-3fbf5766f186776eb",
       "name": "staging",
       "region": "eu-west-1",
       "service": "ec2",
@@ -551,7 +766,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-442092425a1963a65",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-52c8a7609a563a1a6",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "eu-west-1a",
@@ -569,12 +784,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-442092425a1963a65",
-        "SubnetId": "subnet-442092425a1963a65",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-52c8a7609a563a1a6",
+        "SubnetId": "subnet-52c8a7609a563a1a6",
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "subnet-442092425a1963a65",
+      "id": "subnet-52c8a7609a563a1a6",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -583,12 +798,12 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-94eb1ba1dfb8c9529",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "eu-west-1a",
         "AvailabilityZoneId": "euw1-az3",
-        "AvailableIpAddressCount": 250,
+        "AvailableIpAddressCount": 248,
         "CidrBlock": "10.10.1.0/24",
         "DefaultForAz": false,
         "Ipv6CidrBlockAssociationSet": [],
@@ -601,17 +816,17 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-94eb1ba1dfb8c9529",
-        "SubnetId": "subnet-94eb1ba1dfb8c9529",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-63c8ec6e395f01db8",
+        "SubnetId": "subnet-63c8ec6e395f01db8",
         "Tags": [
           {
             "Key": "Name",
             "Value": "prod-public"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "subnet-94eb1ba1dfb8c9529",
+      "id": "subnet-63c8ec6e395f01db8",
       "name": "prod-public",
       "region": "eu-west-1",
       "service": "ec2",
@@ -622,12 +837,12 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "eu-west-1a",
         "AvailabilityZoneId": "euw1-az3",
-        "AvailableIpAddressCount": 248,
+        "AvailableIpAddressCount": 246,
         "CidrBlock": "10.10.2.0/24",
         "DefaultForAz": false,
         "Ipv6CidrBlockAssociationSet": [],
@@ -640,17 +855,17 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a4e20de93500114ba",
-        "SubnetId": "subnet-a4e20de93500114ba",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-a984942cd22989378",
+        "SubnetId": "subnet-a984942cd22989378",
         "Tags": [
           {
             "Key": "Name",
             "Value": "prod-private"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "subnet-a4e20de93500114ba",
+      "id": "subnet-a984942cd22989378",
       "name": "prod-private",
       "region": "eu-west-1",
       "service": "ec2",
@@ -661,7 +876,85 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-011149dd66e6530c0",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-44ac8edeff7e21aac",
+      "config": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "eu-west-1a",
+        "AvailabilityZoneId": "euw1-az3",
+        "AvailableIpAddressCount": 250,
+        "CidrBlock": "10.20.1.0/24",
+        "DefaultForAz": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": false,
+        "MapPublicIpOnLaunch": false,
+        "OwnerId": "123456789012",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsAAAARecord": false,
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name"
+        },
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-44ac8edeff7e21aac",
+        "SubnetId": "subnet-44ac8edeff7e21aac",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "staging-public"
+          }
+        ],
+        "VpcId": "vpc-3fbf5766f186776eb"
+      },
+      "id": "subnet-44ac8edeff7e21aac",
+      "name": "staging-public",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "staging-public"
+      },
+      "type": "subnet"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-1c33d3e13b991028e",
+      "config": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "eu-west-1a",
+        "AvailabilityZoneId": "euw1-az3",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "10.20.2.0/24",
+        "DefaultForAz": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": false,
+        "MapPublicIpOnLaunch": false,
+        "OwnerId": "123456789012",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsAAAARecord": false,
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name"
+        },
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-1c33d3e13b991028e",
+        "SubnetId": "subnet-1c33d3e13b991028e",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "staging-private"
+          }
+        ],
+        "VpcId": "vpc-3fbf5766f186776eb"
+      },
+      "id": "subnet-1c33d3e13b991028e",
+      "name": "staging-private",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "staging-private"
+      },
+      "type": "subnet"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-3b73724df87efef58",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "eu-west-1b",
@@ -679,12 +972,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-011149dd66e6530c0",
-        "SubnetId": "subnet-011149dd66e6530c0",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-3b73724df87efef58",
+        "SubnetId": "subnet-3b73724df87efef58",
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "subnet-011149dd66e6530c0",
+      "id": "subnet-3b73724df87efef58",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -693,7 +986,85 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-946361ae336818496",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-f713f1b9cbaa6cc50",
+      "config": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "eu-west-1b",
+        "AvailabilityZoneId": "euw1-az1",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "10.10.3.0/24",
+        "DefaultForAz": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": false,
+        "MapPublicIpOnLaunch": false,
+        "OwnerId": "123456789012",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsAAAARecord": false,
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name"
+        },
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-f713f1b9cbaa6cc50",
+        "SubnetId": "subnet-f713f1b9cbaa6cc50",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-public-b"
+          }
+        ],
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "subnet-f713f1b9cbaa6cc50",
+      "name": "prod-public-b",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-public-b"
+      },
+      "type": "subnet"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-01e50783ff7f14f9c",
+      "config": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "eu-west-1b",
+        "AvailabilityZoneId": "euw1-az1",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "10.10.4.0/24",
+        "DefaultForAz": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": false,
+        "MapPublicIpOnLaunch": false,
+        "OwnerId": "123456789012",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsAAAARecord": false,
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name"
+        },
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-01e50783ff7f14f9c",
+        "SubnetId": "subnet-01e50783ff7f14f9c",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-private-b"
+          }
+        ],
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "subnet-01e50783ff7f14f9c",
+      "name": "prod-private-b",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-private-b"
+      },
+      "type": "subnet"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-b3618e2b5e80ebd89",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "eu-west-1c",
@@ -711,12 +1082,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-946361ae336818496",
-        "SubnetId": "subnet-946361ae336818496",
+        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-b3618e2b5e80ebd89",
+        "SubnetId": "subnet-b3618e2b5e80ebd89",
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "subnet-946361ae336818496",
+      "id": "subnet-b3618e2b5e80ebd89",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -725,88 +1096,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-8b2963a3db377934f",
-      "config": {
-        "AssignIpv6AddressOnCreation": false,
-        "AvailabilityZone": "eu-west-1c",
-        "AvailabilityZoneId": "euw1-az2",
-        "AvailableIpAddressCount": 250,
-        "CidrBlock": "10.20.1.0/24",
-        "DefaultForAz": false,
-        "Ipv6CidrBlockAssociationSet": [],
-        "Ipv6Native": false,
-        "MapPublicIpOnLaunch": false,
-        "OwnerId": "123456789012",
-        "PrivateDnsNameOptionsOnLaunch": {
-          "EnableResourceNameDnsAAAARecord": false,
-          "EnableResourceNameDnsARecord": false,
-          "HostnameType": "ip-name"
-        },
-        "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-8b2963a3db377934f",
-        "SubnetId": "subnet-8b2963a3db377934f",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "staging-public"
-          }
-        ],
-        "VpcId": "vpc-c7179ad575702d206"
-      },
-      "id": "subnet-8b2963a3db377934f",
-      "name": "staging-public",
-      "region": "eu-west-1",
-      "service": "ec2",
-      "tags": {
-        "Name": "staging-public"
-      },
-      "type": "subnet"
-    },
-    {
-      "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-2b1d5f01e3b7b6b26",
-      "config": {
-        "AssignIpv6AddressOnCreation": false,
-        "AvailabilityZone": "eu-west-1c",
-        "AvailabilityZoneId": "euw1-az2",
-        "AvailableIpAddressCount": 251,
-        "CidrBlock": "10.20.2.0/24",
-        "DefaultForAz": false,
-        "Ipv6CidrBlockAssociationSet": [],
-        "Ipv6Native": false,
-        "MapPublicIpOnLaunch": false,
-        "OwnerId": "123456789012",
-        "PrivateDnsNameOptionsOnLaunch": {
-          "EnableResourceNameDnsAAAARecord": false,
-          "EnableResourceNameDnsARecord": false,
-          "HostnameType": "ip-name"
-        },
-        "State": "available",
-        "SubnetArn": "arn:aws:ec2:eu-west-1:123456789012:subnet/subnet-2b1d5f01e3b7b6b26",
-        "SubnetId": "subnet-2b1d5f01e3b7b6b26",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "staging-private"
-          }
-        ],
-        "VpcId": "vpc-c7179ad575702d206"
-      },
-      "id": "subnet-2b1d5f01e3b7b6b26",
-      "name": "staging-private",
-      "region": "eu-west-1",
-      "service": "ec2",
-      "tags": {
-        "Name": "staging-private"
-      },
-      "type": "subnet"
-    },
-    {
-      "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-41e197a88fde48f2e",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fb561af10f24244dd",
       "config": {
         "Description": "default VPC security group",
-        "GroupId": "sg-41e197a88fde48f2e",
+        "GroupId": "sg-fb561af10f24244dd",
         "GroupName": "default",
         "IpPermissions": [],
         "IpPermissionsEgress": [
@@ -823,11 +1116,11 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-41e197a88fde48f2e",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fb561af10f24244dd",
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "sg-41e197a88fde48f2e",
+      "id": "sg-fb561af10f24244dd",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -836,10 +1129,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-bba74bf2f2803bcf1",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-a1d3626850e148a54",
       "config": {
         "Description": "default VPC security group",
-        "GroupId": "sg-bba74bf2f2803bcf1",
+        "GroupId": "sg-a1d3626850e148a54",
         "GroupName": "default",
         "IpPermissions": [],
         "IpPermissionsEgress": [
@@ -856,11 +1149,11 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-bba74bf2f2803bcf1",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-a1d3626850e148a54",
         "Tags": [],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "sg-bba74bf2f2803bcf1",
+      "id": "sg-a1d3626850e148a54",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -869,10 +1162,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-e8b1c44c62e1c81f8",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
       "config": {
         "Description": "prod-web",
-        "GroupId": "sg-e8b1c44c62e1c81f8",
+        "GroupId": "sg-0983b830c87182ec3",
         "GroupName": "prod-web",
         "IpPermissions": [
           {
@@ -916,16 +1209,16 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-e8b1c44c62e1c81f8",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0983b830c87182ec3",
         "Tags": [
           {
             "Key": "Name",
             "Value": "prod-web"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "sg-e8b1c44c62e1c81f8",
+      "id": "sg-0983b830c87182ec3",
       "name": "prod-web",
       "region": "eu-west-1",
       "service": "ec2",
@@ -936,10 +1229,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fd41a74ffbcf7ce7a",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
       "config": {
         "Description": "prod-app",
-        "GroupId": "sg-fd41a74ffbcf7ce7a",
+        "GroupId": "sg-d8049ca9d66990111",
         "GroupName": "prod-app",
         "IpPermissions": [
           {
@@ -970,16 +1263,16 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-fd41a74ffbcf7ce7a",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-d8049ca9d66990111",
         "Tags": [
           {
             "Key": "Name",
             "Value": "prod-app"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "sg-fd41a74ffbcf7ce7a",
+      "id": "sg-d8049ca9d66990111",
       "name": "prod-app",
       "region": "eu-west-1",
       "service": "ec2",
@@ -990,10 +1283,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-28d6418ec5c0efd15",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-5b38c41d282724601",
       "config": {
         "Description": "prod-db",
-        "GroupId": "sg-28d6418ec5c0efd15",
+        "GroupId": "sg-5b38c41d282724601",
         "GroupName": "prod-db",
         "IpPermissions": [
           {
@@ -1024,16 +1317,16 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-28d6418ec5c0efd15",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-5b38c41d282724601",
         "Tags": [
           {
             "Key": "Name",
             "Value": "prod-db"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "sg-28d6418ec5c0efd15",
+      "id": "sg-5b38c41d282724601",
       "name": "prod-db",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1044,10 +1337,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-f6ed33604b0fb118d",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-b0b69083dc1cfe6ae",
       "config": {
         "Description": "default VPC security group",
-        "GroupId": "sg-f6ed33604b0fb118d",
+        "GroupId": "sg-b0b69083dc1cfe6ae",
         "GroupName": "default",
         "IpPermissions": [],
         "IpPermissionsEgress": [
@@ -1064,11 +1357,11 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-f6ed33604b0fb118d",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-b0b69083dc1cfe6ae",
         "Tags": [],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "sg-f6ed33604b0fb118d",
+      "id": "sg-b0b69083dc1cfe6ae",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -1077,10 +1370,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-7fb72d449a55c8c81",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-47e5eed5cd756c896",
       "config": {
         "Description": "staging-web",
-        "GroupId": "sg-7fb72d449a55c8c81",
+        "GroupId": "sg-47e5eed5cd756c896",
         "GroupName": "staging-web",
         "IpPermissions": [
           {
@@ -1124,16 +1417,16 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-7fb72d449a55c8c81",
+        "SecurityGroupArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-47e5eed5cd756c896",
         "Tags": [
           {
             "Key": "Name",
             "Value": "staging-web"
           }
         ],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "sg-7fb72d449a55c8c81",
+      "id": "sg-47e5eed5cd756c896",
       "name": "staging-web",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1144,7 +1437,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-06bcb7f777169cd41",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-378a2d78c6ce9d8de",
       "config": {
         "AmiLaunchIndex": 0,
         "Architecture": "x86_64",
@@ -1152,25 +1445,25 @@
           {
             "DeviceName": "/dev/sda1",
             "Ebs": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
               "DeleteOnTermination": true,
               "Status": "attached",
-              "VolumeId": "vol-c249914a1b21be484"
+              "VolumeId": "vol-0636fd4cb51ff0e09"
             }
           }
         ],
-        "ClientToken": "4a113628-7f92-43e3-b8c0-f271f51ad91c",
+        "ClientToken": "500451a1-9f49-44f7-bac7-870793d15218",
         "EbsOptimized": false,
         "HibernationOptions": {},
         "Hypervisor": "xen",
         "IamInstanceProfile": {
           "Arn": "arn:aws:iam::123456789012:instance-profile/prod-web-profile",
-          "Id": "iip-assoc-08689ba27d16c9729"
+          "Id": "iip-assoc-7daddbb7d09d79e46"
         },
         "ImageId": "ami-03cf127a",
-        "InstanceId": "i-06bcb7f777169cd41",
+        "InstanceId": "i-378a2d78c6ce9d8de",
         "InstanceType": "t3.micro",
-        "LaunchTime": "2026-11-05T09:11:10+00:00",
+        "LaunchTime": "2026-11-10T21:49:33+00:00",
         "MetadataOptions": {
           "HttpEndpoint": "enabled",
           "HttpProtocolIpv6": "disabled",
@@ -1186,12 +1479,12 @@
           {
             "Association": {
               "IpOwnerId": "123456789012",
-              "PublicDnsName": "ip-54-214-102-86.ec2.internal",
-              "PublicIp": "54.214.102.86"
+              "PublicDnsName": "ip-54-214-32-210.ec2.internal",
+              "PublicIp": "54.214.32.210"
             },
             "Attachment": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
-              "AttachmentId": "eni-attach-7a2d829a51f78f018",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
+              "AttachmentId": "eni-attach-9aca2d94c8d25372f",
               "DeleteOnTermination": false,
               "DeviceIndex": 0,
               "NetworkCardIndex": 0,
@@ -1200,22 +1493,22 @@
             "Description": "Primary network interface",
             "Groups": [
               {
-                "GroupId": "sg-e8b1c44c62e1c81f8",
+                "GroupId": "sg-0983b830c87182ec3",
                 "GroupName": "prod-web"
               }
             ],
             "InterfaceType": "interface",
             "Ipv6Addresses": [],
-            "MacAddress": "02:00:00:12:a6:dc",
-            "NetworkInterfaceId": "eni-818fb831c2ec132ca",
+            "MacAddress": "02:00:00:99:08:76",
+            "NetworkInterfaceId": "eni-277e354476a533574",
             "OwnerId": "123456789012",
             "PrivateIpAddress": "10.10.1.4",
             "PrivateIpAddresses": [
               {
                 "Association": {
                   "IpOwnerId": "123456789012",
-                  "PublicDnsName": "ip-54-214-102-86.ec2.internal",
-                  "PublicIp": "54.214.102.86"
+                  "PublicDnsName": "ip-54-214-32-210.ec2.internal",
+                  "PublicIp": "54.214.32.210"
                 },
                 "Primary": true,
                 "PrivateIpAddress": "10.10.1.4"
@@ -1223,8 +1516,8 @@
             ],
             "SourceDestCheck": true,
             "Status": "in-use",
-            "SubnetId": "subnet-94eb1ba1dfb8c9529",
-            "VpcId": "vpc-f0a1e10e04f89799f"
+            "SubnetId": "subnet-63c8ec6e395f01db8",
+            "VpcId": "vpc-504d1a00a30881fa9"
           }
         ],
         "Placement": {
@@ -1236,8 +1529,8 @@
         "PrivateDnsName": "ip-10-10-1-4.eu-west-1.compute.internal",
         "PrivateIpAddress": "10.10.1.4",
         "ProductCodes": [],
-        "PublicDnsName": "ec2-54-214-102-86.eu-west-1.compute.amazonaws.com",
-        "PublicIpAddress": "54.214.102.86",
+        "PublicDnsName": "ec2-54-214-32-210.eu-west-1.compute.amazonaws.com",
+        "PublicIpAddress": "54.214.32.210",
         "RootDeviceName": "/dev/sda1",
         "RootDeviceType": "ebs",
         "SecurityGroups": [],
@@ -1252,7 +1545,7 @@
           "Message": ""
         },
         "StateTransitionReason": "",
-        "SubnetId": "subnet-94eb1ba1dfb8c9529",
+        "SubnetId": "subnet-63c8ec6e395f01db8",
         "Tags": [
           {
             "Key": "Name",
@@ -1273,17 +1566,22 @@
           {
             "Key": "scamallscope:repo",
             "Value": "example-org/shop-web"
+          },
+          {
+            "Key": "app",
+            "Value": "shop-web"
           }
         ],
         "VirtualizationType": "hvm",
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "i-06bcb7f777169cd41",
+      "id": "i-378a2d78c6ce9d8de",
       "name": "prod-web-1",
       "region": "eu-west-1",
       "service": "ec2",
       "tags": {
         "Name": "prod-web-1",
+        "app": "shop-web",
         "env": "prod",
         "owner": "web",
         "role": "web",
@@ -1293,7 +1591,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-de5f7cb5498462b88",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-4668d9527de90dc75",
       "config": {
         "AmiLaunchIndex": 0,
         "Architecture": "x86_64",
@@ -1301,21 +1599,21 @@
           {
             "DeviceName": "/dev/sda1",
             "Ebs": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
               "DeleteOnTermination": true,
               "Status": "attached",
-              "VolumeId": "vol-f5767385d097715fd"
+              "VolumeId": "vol-491299216efa5a0ac"
             }
           }
         ],
-        "ClientToken": "8a33c4a7-2b52-40d7-a7ae-7ca86c98e715",
+        "ClientToken": "a0003fae-581f-4493-924a-29939bdafe63",
         "EbsOptimized": false,
         "HibernationOptions": {},
         "Hypervisor": "xen",
         "ImageId": "ami-03cf127a",
-        "InstanceId": "i-de5f7cb5498462b88",
+        "InstanceId": "i-4668d9527de90dc75",
         "InstanceType": "t3.micro",
-        "LaunchTime": "2026-11-05T09:11:10+00:00",
+        "LaunchTime": "2026-11-10T21:49:33+00:00",
         "MetadataOptions": {
           "HttpEndpoint": "enabled",
           "HttpProtocolIpv6": "disabled",
@@ -1331,8 +1629,8 @@
           {
             "Association": {},
             "Attachment": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
-              "AttachmentId": "eni-attach-13078889b9716e016",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
+              "AttachmentId": "eni-attach-b736f723d0f33c69f",
               "DeleteOnTermination": false,
               "DeviceIndex": 0,
               "NetworkCardIndex": 0,
@@ -1341,14 +1639,14 @@
             "Description": "Primary network interface",
             "Groups": [
               {
-                "GroupId": "sg-fd41a74ffbcf7ce7a",
+                "GroupId": "sg-d8049ca9d66990111",
                 "GroupName": "prod-app"
               }
             ],
             "InterfaceType": "interface",
             "Ipv6Addresses": [],
-            "MacAddress": "02:00:00:e0:96:fb",
-            "NetworkInterfaceId": "eni-1dfd43a93db972791",
+            "MacAddress": "02:00:00:3e:fb:be",
+            "NetworkInterfaceId": "eni-b643c9ba0c514e579",
             "OwnerId": "123456789012",
             "PrivateIpAddress": "10.10.2.4",
             "PrivateIpAddresses": [
@@ -1359,8 +1657,8 @@
             ],
             "SourceDestCheck": true,
             "Status": "in-use",
-            "SubnetId": "subnet-a4e20de93500114ba",
-            "VpcId": "vpc-f0a1e10e04f89799f"
+            "SubnetId": "subnet-a984942cd22989378",
+            "VpcId": "vpc-504d1a00a30881fa9"
           }
         ],
         "Placement": {
@@ -1386,7 +1684,7 @@
           "Message": ""
         },
         "StateTransitionReason": "",
-        "SubnetId": "subnet-a4e20de93500114ba",
+        "SubnetId": "subnet-a984942cd22989378",
         "Tags": [
           {
             "Key": "Name",
@@ -1410,9 +1708,9 @@
           }
         ],
         "VirtualizationType": "hvm",
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "i-de5f7cb5498462b88",
+      "id": "i-4668d9527de90dc75",
       "name": "prod-app-1",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1427,7 +1725,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-2e866114b400cf4e5",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-31d98de1f9454a940",
       "config": {
         "AmiLaunchIndex": 0,
         "Architecture": "x86_64",
@@ -1435,21 +1733,33 @@
           {
             "DeviceName": "/dev/sda1",
             "Ebs": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
               "DeleteOnTermination": true,
               "Status": "attached",
-              "VolumeId": "vol-92ff9eec48b250903"
+              "VolumeId": "vol-0af1cafc1590dee0d"
+            }
+          },
+          {
+            "DeviceName": "/dev/sdf",
+            "Ebs": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "DeleteOnTermination": false,
+              "Status": "attached",
+              "VolumeId": "vol-83f5790b31375dfea"
             }
           }
         ],
-        "ClientToken": "6a4a7595-410f-41bf-916e-93543b810c03",
+        "ClientToken": "24f64f24-3019-42f8-95c7-3cf937b99107",
         "EbsOptimized": false,
         "HibernationOptions": {},
         "Hypervisor": "xen",
         "ImageId": "ami-03cf127a",
-        "InstanceId": "i-2e866114b400cf4e5",
+        "InstanceId": "i-31d98de1f9454a940",
         "InstanceType": "t3.micro",
-        "LaunchTime": "2026-11-05T09:11:10+00:00",
+        "LaunchTime": "2026-11-10T21:49:33+00:00",
+        "MaintenanceOptions": {
+          "AutoRecovery": "disabled"
+        },
         "MetadataOptions": {
           "HttpEndpoint": "enabled",
           "HttpProtocolIpv6": "disabled",
@@ -1465,8 +1775,8 @@
           {
             "Association": {},
             "Attachment": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
-              "AttachmentId": "eni-attach-15b6a349ea52ce326",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
+              "AttachmentId": "eni-attach-7b0f3af3260bfc641",
               "DeleteOnTermination": false,
               "DeviceIndex": 0,
               "NetworkCardIndex": 0,
@@ -1475,14 +1785,14 @@
             "Description": "Primary network interface",
             "Groups": [
               {
-                "GroupId": "sg-28d6418ec5c0efd15",
+                "GroupId": "sg-5b38c41d282724601",
                 "GroupName": "prod-db"
               }
             ],
             "InterfaceType": "interface",
             "Ipv6Addresses": [],
-            "MacAddress": "02:00:00:f2:54:f3",
-            "NetworkInterfaceId": "eni-a2e174a763f92c213",
+            "MacAddress": "02:00:00:f4:e6:24",
+            "NetworkInterfaceId": "eni-bd9e65b51d3c21a2c",
             "OwnerId": "123456789012",
             "PrivateIpAddress": "10.10.2.5",
             "PrivateIpAddresses": [
@@ -1493,8 +1803,8 @@
             ],
             "SourceDestCheck": true,
             "Status": "in-use",
-            "SubnetId": "subnet-a4e20de93500114ba",
-            "VpcId": "vpc-f0a1e10e04f89799f"
+            "SubnetId": "subnet-a984942cd22989378",
+            "VpcId": "vpc-504d1a00a30881fa9"
           }
         ],
         "Placement": {
@@ -1520,7 +1830,7 @@
           "Message": ""
         },
         "StateTransitionReason": "",
-        "SubnetId": "subnet-a4e20de93500114ba",
+        "SubnetId": "subnet-a984942cd22989378",
         "Tags": [
           {
             "Key": "Name",
@@ -1536,9 +1846,9 @@
           }
         ],
         "VirtualizationType": "hvm",
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "i-2e866114b400cf4e5",
+      "id": "i-31d98de1f9454a940",
       "name": "prod-db-1",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1551,7 +1861,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-22d18704f9032da93",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-25710db5ebe78ee9f",
       "config": {
         "AmiLaunchIndex": 0,
         "Architecture": "x86_64",
@@ -1559,21 +1869,21 @@
           {
             "DeviceName": "/dev/sda1",
             "Ebs": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
               "DeleteOnTermination": true,
               "Status": "attached",
-              "VolumeId": "vol-4655d9192b513ab0b"
+              "VolumeId": "vol-5e13dc31b459bd3a4"
             }
           }
         ],
-        "ClientToken": "2b640192-a7cd-424d-8957-f0b910110365",
+        "ClientToken": "1177768f-1068-4a5b-afb8-05adf3dada73",
         "EbsOptimized": false,
         "HibernationOptions": {},
         "Hypervisor": "xen",
         "ImageId": "ami-03cf127a",
-        "InstanceId": "i-22d18704f9032da93",
+        "InstanceId": "i-25710db5ebe78ee9f",
         "InstanceType": "t3.micro",
-        "LaunchTime": "2026-11-05T09:11:10+00:00",
+        "LaunchTime": "2026-11-10T21:49:33+00:00",
         "MetadataOptions": {
           "HttpEndpoint": "enabled",
           "HttpProtocolIpv6": "disabled",
@@ -1589,8 +1899,8 @@
           {
             "Association": {},
             "Attachment": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
-              "AttachmentId": "eni-attach-721472d4a32a4c07c",
+              "AttachTime": "2026-11-10T21:49:33+00:00",
+              "AttachmentId": "eni-attach-2675d56580edf5762",
               "DeleteOnTermination": false,
               "DeviceIndex": 0,
               "NetworkCardIndex": 0,
@@ -1599,14 +1909,14 @@
             "Description": "Primary network interface",
             "Groups": [
               {
-                "GroupId": "sg-fd41a74ffbcf7ce7a",
+                "GroupId": "sg-d8049ca9d66990111",
                 "GroupName": "prod-app"
               }
             ],
             "InterfaceType": "interface",
             "Ipv6Addresses": [],
-            "MacAddress": "02:00:00:bc:61:b3",
-            "NetworkInterfaceId": "eni-0e44c2ff311d184f0",
+            "MacAddress": "02:00:00:87:f4:2e",
+            "NetworkInterfaceId": "eni-3a2e2943aaa0cfd81",
             "OwnerId": "123456789012",
             "PrivateIpAddress": "10.10.2.6",
             "PrivateIpAddresses": [
@@ -1617,8 +1927,8 @@
             ],
             "SourceDestCheck": true,
             "Status": "in-use",
-            "SubnetId": "subnet-a4e20de93500114ba",
-            "VpcId": "vpc-f0a1e10e04f89799f"
+            "SubnetId": "subnet-a984942cd22989378",
+            "VpcId": "vpc-504d1a00a30881fa9"
           }
         ],
         "Placement": {
@@ -1643,8 +1953,8 @@
           "Code": "Client.UserInitiatedShutdown",
           "Message": "Client.UserInitiatedShutdown: User initiated shutdown"
         },
-        "StateTransitionReason": "User initiated (2026-11-05 09:11:10 UTC)",
-        "SubnetId": "subnet-a4e20de93500114ba",
+        "StateTransitionReason": "User initiated (2026-11-10 21:49:33 UTC)",
+        "SubnetId": "subnet-a984942cd22989378",
         "Tags": [
           {
             "Key": "Name",
@@ -1664,9 +1974,9 @@
           }
         ],
         "VirtualizationType": "hvm",
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "i-22d18704f9032da93",
+      "id": "i-25710db5ebe78ee9f",
       "name": "prod-batch-old",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1680,7 +1990,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-16f243ae04384aa3f",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-da3fe42e31d1f25d8",
       "config": {
         "AmiLaunchIndex": 0,
         "Architecture": "x86_64",
@@ -1688,21 +1998,21 @@
           {
             "DeviceName": "/dev/sda1",
             "Ebs": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
+              "AttachTime": "2026-11-10T21:49:34+00:00",
               "DeleteOnTermination": true,
               "Status": "attached",
-              "VolumeId": "vol-95fc150b8b62abe65"
+              "VolumeId": "vol-0907698ca35bbd1f9"
             }
           }
         ],
-        "ClientToken": "bc7c6e41-ebaf-4e9b-9cdb-686e9a056b52",
+        "ClientToken": "55d71c3e-7945-4d48-84c6-27a7c566b5c9",
         "EbsOptimized": false,
         "HibernationOptions": {},
         "Hypervisor": "xen",
         "ImageId": "ami-03cf127a",
-        "InstanceId": "i-16f243ae04384aa3f",
+        "InstanceId": "i-da3fe42e31d1f25d8",
         "InstanceType": "t3.micro",
-        "LaunchTime": "2026-11-05T09:11:10+00:00",
+        "LaunchTime": "2026-11-10T21:49:34+00:00",
         "MetadataOptions": {
           "HttpEndpoint": "enabled",
           "HttpProtocolIpv6": "disabled",
@@ -1718,12 +2028,12 @@
           {
             "Association": {
               "IpOwnerId": "123456789012",
-              "PublicDnsName": "ip-54-214-144-210.ec2.internal",
-              "PublicIp": "54.214.144.210"
+              "PublicDnsName": "ip-54-214-141-239.ec2.internal",
+              "PublicIp": "54.214.141.239"
             },
             "Attachment": {
-              "AttachTime": "2026-11-05T09:11:10+00:00",
-              "AttachmentId": "eni-attach-4e212c92a0328c37f",
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "AttachmentId": "eni-attach-5c75fcb51f00627be",
               "DeleteOnTermination": false,
               "DeviceIndex": 0,
               "NetworkCardIndex": 0,
@@ -1732,44 +2042,44 @@
             "Description": "Primary network interface",
             "Groups": [
               {
-                "GroupId": "sg-7fb72d449a55c8c81",
-                "GroupName": "staging-web"
+                "GroupId": "sg-0983b830c87182ec3",
+                "GroupName": "prod-web"
               }
             ],
             "InterfaceType": "interface",
             "Ipv6Addresses": [],
-            "MacAddress": "02:00:00:0c:31:ba",
-            "NetworkInterfaceId": "eni-dea2bcc1de7bc4eca",
+            "MacAddress": "02:00:00:aa:1a:8a",
+            "NetworkInterfaceId": "eni-9dd15fd3dc4bfb8b4",
             "OwnerId": "123456789012",
-            "PrivateIpAddress": "10.20.1.4",
+            "PrivateIpAddress": "10.10.1.5",
             "PrivateIpAddresses": [
               {
                 "Association": {
                   "IpOwnerId": "123456789012",
-                  "PublicDnsName": "ip-54-214-144-210.ec2.internal",
-                  "PublicIp": "54.214.144.210"
+                  "PublicDnsName": "ip-54-214-141-239.ec2.internal",
+                  "PublicIp": "54.214.141.239"
                 },
                 "Primary": true,
-                "PrivateIpAddress": "10.20.1.4"
+                "PrivateIpAddress": "10.10.1.5"
               }
             ],
             "SourceDestCheck": true,
             "Status": "in-use",
-            "SubnetId": "subnet-8b2963a3db377934f",
-            "VpcId": "vpc-c7179ad575702d206"
+            "SubnetId": "subnet-63c8ec6e395f01db8",
+            "VpcId": "vpc-504d1a00a30881fa9"
           }
         ],
         "Placement": {
-          "AvailabilityZone": "eu-west-1c",
+          "AvailabilityZone": "eu-west-1a",
           "GroupName": "",
           "Tenancy": "default"
         },
         "Platform": "windows",
-        "PrivateDnsName": "ip-10-20-1-4.eu-west-1.compute.internal",
-        "PrivateIpAddress": "10.20.1.4",
+        "PrivateDnsName": "ip-10-10-1-5.eu-west-1.compute.internal",
+        "PrivateIpAddress": "10.10.1.5",
         "ProductCodes": [],
-        "PublicDnsName": "ec2-54-214-144-210.eu-west-1.compute.amazonaws.com",
-        "PublicIpAddress": "54.214.144.210",
+        "PublicDnsName": "ec2-54-214-141-239.eu-west-1.compute.amazonaws.com",
+        "PublicIpAddress": "54.214.141.239",
         "RootDeviceName": "/dev/sda1",
         "RootDeviceType": "ebs",
         "SecurityGroups": [],
@@ -1784,7 +2094,406 @@
           "Message": ""
         },
         "StateTransitionReason": "",
-        "SubnetId": "subnet-8b2963a3db377934f",
+        "SubnetId": "subnet-63c8ec6e395f01db8",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-web-2"
+          },
+          {
+            "Key": "role",
+            "Value": "web"
+          },
+          {
+            "Key": "owner",
+            "Value": "web"
+          },
+          {
+            "Key": "env",
+            "Value": "prod"
+          },
+          {
+            "Key": "app",
+            "Value": "shop-web"
+          }
+        ],
+        "VirtualizationType": "hvm",
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "i-da3fe42e31d1f25d8",
+      "name": "prod-web-2",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-web-2",
+        "app": "shop-web",
+        "env": "prod",
+        "owner": "web",
+        "role": "web"
+      },
+      "type": "instance"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-e5bf25a3782252cae",
+      "config": {
+        "AmiLaunchIndex": 0,
+        "Architecture": "x86_64",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "DeleteOnTermination": true,
+              "Status": "attached",
+              "VolumeId": "vol-99e2c62a7a511e9fd"
+            }
+          }
+        ],
+        "EbsOptimized": false,
+        "Hypervisor": "xen",
+        "ImageId": "ami-03cf127a",
+        "InstanceId": "i-e5bf25a3782252cae",
+        "InstanceType": "t3.small",
+        "LaunchTime": "2026-11-10T21:49:34+00:00",
+        "MetadataOptions": {
+          "HttpEndpoint": "enabled",
+          "HttpProtocolIpv6": "disabled",
+          "HttpPutResponseHopLimit": 1,
+          "HttpTokens": "optional",
+          "InstanceMetadataTags": "disabled",
+          "State": "applied"
+        },
+        "Monitoring": {
+          "State": "disabled"
+        },
+        "NetworkInterfaces": [
+          {
+            "Association": {},
+            "Attachment": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "AttachmentId": "eni-attach-e246726ee2d329270",
+              "DeleteOnTermination": false,
+              "DeviceIndex": 0,
+              "NetworkCardIndex": 0,
+              "Status": "attached"
+            },
+            "Description": "Primary network interface",
+            "Groups": [
+              {
+                "GroupId": "sg-a1d3626850e148a54",
+                "GroupName": "default"
+              }
+            ],
+            "InterfaceType": "interface",
+            "Ipv6Addresses": [],
+            "MacAddress": "02:00:00:2b:55:fa",
+            "NetworkInterfaceId": "eni-ce9697ac49e127bf4",
+            "OwnerId": "123456789012",
+            "PrivateIpAddress": "10.10.2.7",
+            "PrivateIpAddresses": [
+              {
+                "Primary": true,
+                "PrivateIpAddress": "10.10.2.7"
+              }
+            ],
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-a984942cd22989378",
+            "VpcId": "vpc-504d1a00a30881fa9"
+          }
+        ],
+        "Placement": {
+          "AvailabilityZone": "eu-west-1a",
+          "GroupName": "",
+          "Tenancy": "default"
+        },
+        "Platform": "windows",
+        "PrivateDnsName": "ip-10-10-2-7.ec2.internal",
+        "PrivateIpAddress": "10.10.2.7",
+        "ProductCodes": [],
+        "RootDeviceName": "/dev/sda1",
+        "RootDeviceType": "ebs",
+        "SecurityGroups": [],
+        "SourceDestCheck": true,
+        "SriovNetSupport": "simple",
+        "State": {
+          "Code": 16,
+          "Name": "running"
+        },
+        "StateReason": {
+          "Code": "",
+          "Message": ""
+        },
+        "StateTransitionReason": "",
+        "SubnetId": "subnet-a984942cd22989378",
+        "Tags": [
+          {
+            "Key": "env",
+            "Value": "prod"
+          },
+          {
+            "Key": "owner",
+            "Value": "orders"
+          },
+          {
+            "Key": "Name",
+            "Value": "orders-worker"
+          },
+          {
+            "Key": "aws:autoscaling:groupName",
+            "Value": "orders-workers"
+          }
+        ],
+        "VirtualizationType": "hvm",
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "i-e5bf25a3782252cae",
+      "name": "orders-worker",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "orders-worker",
+        "aws:autoscaling:groupName": "orders-workers",
+        "env": "prod",
+        "owner": "orders"
+      },
+      "type": "instance"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-090d86025880e631b",
+      "config": {
+        "AmiLaunchIndex": 1,
+        "Architecture": "x86_64",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "DeleteOnTermination": true,
+              "Status": "attached",
+              "VolumeId": "vol-607cf065e4ef3264e"
+            }
+          }
+        ],
+        "EbsOptimized": false,
+        "Hypervisor": "xen",
+        "ImageId": "ami-03cf127a",
+        "InstanceId": "i-090d86025880e631b",
+        "InstanceType": "t3.small",
+        "LaunchTime": "2026-11-10T21:49:34+00:00",
+        "MetadataOptions": {
+          "HttpEndpoint": "enabled",
+          "HttpProtocolIpv6": "disabled",
+          "HttpPutResponseHopLimit": 1,
+          "HttpTokens": "optional",
+          "InstanceMetadataTags": "disabled",
+          "State": "applied"
+        },
+        "Monitoring": {
+          "State": "disabled"
+        },
+        "NetworkInterfaces": [
+          {
+            "Association": {},
+            "Attachment": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "AttachmentId": "eni-attach-a987ecef2eeb7447b",
+              "DeleteOnTermination": false,
+              "DeviceIndex": 0,
+              "NetworkCardIndex": 0,
+              "Status": "attached"
+            },
+            "Description": "Primary network interface",
+            "Groups": [
+              {
+                "GroupId": "sg-a1d3626850e148a54",
+                "GroupName": "default"
+              }
+            ],
+            "InterfaceType": "interface",
+            "Ipv6Addresses": [],
+            "MacAddress": "02:00:00:63:8c:e0",
+            "NetworkInterfaceId": "eni-fb36932aa4e84f248",
+            "OwnerId": "123456789012",
+            "PrivateIpAddress": "10.10.2.8",
+            "PrivateIpAddresses": [
+              {
+                "Primary": true,
+                "PrivateIpAddress": "10.10.2.8"
+              }
+            ],
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-a984942cd22989378",
+            "VpcId": "vpc-504d1a00a30881fa9"
+          }
+        ],
+        "Placement": {
+          "AvailabilityZone": "eu-west-1a",
+          "GroupName": "",
+          "Tenancy": "default"
+        },
+        "Platform": "windows",
+        "PrivateDnsName": "ip-10-10-2-8.ec2.internal",
+        "PrivateIpAddress": "10.10.2.8",
+        "ProductCodes": [],
+        "RootDeviceName": "/dev/sda1",
+        "RootDeviceType": "ebs",
+        "SecurityGroups": [],
+        "SourceDestCheck": true,
+        "SriovNetSupport": "simple",
+        "State": {
+          "Code": 16,
+          "Name": "running"
+        },
+        "StateReason": {
+          "Code": "",
+          "Message": ""
+        },
+        "StateTransitionReason": "",
+        "SubnetId": "subnet-a984942cd22989378",
+        "Tags": [
+          {
+            "Key": "env",
+            "Value": "prod"
+          },
+          {
+            "Key": "owner",
+            "Value": "orders"
+          },
+          {
+            "Key": "Name",
+            "Value": "orders-worker"
+          },
+          {
+            "Key": "aws:autoscaling:groupName",
+            "Value": "orders-workers"
+          }
+        ],
+        "VirtualizationType": "hvm",
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "i-090d86025880e631b",
+      "name": "orders-worker",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "orders-worker",
+        "aws:autoscaling:groupName": "orders-workers",
+        "env": "prod",
+        "owner": "orders"
+      },
+      "type": "instance"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:instance/i-dbe3777512af986df",
+      "config": {
+        "AmiLaunchIndex": 0,
+        "Architecture": "x86_64",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "DeleteOnTermination": true,
+              "Status": "attached",
+              "VolumeId": "vol-04f0738658740a500"
+            }
+          }
+        ],
+        "ClientToken": "fa428dd2-7198-44dd-88d5-f9d6e2134b5b",
+        "EbsOptimized": false,
+        "HibernationOptions": {},
+        "Hypervisor": "xen",
+        "ImageId": "ami-03cf127a",
+        "InstanceId": "i-dbe3777512af986df",
+        "InstanceType": "t3.micro",
+        "LaunchTime": "2026-11-10T21:49:34+00:00",
+        "MetadataOptions": {
+          "HttpEndpoint": "enabled",
+          "HttpProtocolIpv6": "disabled",
+          "HttpPutResponseHopLimit": 1,
+          "HttpTokens": "optional",
+          "InstanceMetadataTags": "disabled",
+          "State": "applied"
+        },
+        "Monitoring": {
+          "State": "disabled"
+        },
+        "NetworkInterfaces": [
+          {
+            "Association": {
+              "IpOwnerId": "123456789012",
+              "PublicDnsName": "ip-54-214-93-233.ec2.internal",
+              "PublicIp": "54.214.93.233"
+            },
+            "Attachment": {
+              "AttachTime": "2026-11-10T21:49:34+00:00",
+              "AttachmentId": "eni-attach-4882ded31ca4542f6",
+              "DeleteOnTermination": false,
+              "DeviceIndex": 0,
+              "NetworkCardIndex": 0,
+              "Status": "attached"
+            },
+            "Description": "Primary network interface",
+            "Groups": [
+              {
+                "GroupId": "sg-47e5eed5cd756c896",
+                "GroupName": "staging-web"
+              }
+            ],
+            "InterfaceType": "interface",
+            "Ipv6Addresses": [],
+            "MacAddress": "02:00:00:05:92:4f",
+            "NetworkInterfaceId": "eni-f24d65a06925457ae",
+            "OwnerId": "123456789012",
+            "PrivateIpAddress": "10.20.1.4",
+            "PrivateIpAddresses": [
+              {
+                "Association": {
+                  "IpOwnerId": "123456789012",
+                  "PublicDnsName": "ip-54-214-93-233.ec2.internal",
+                  "PublicIp": "54.214.93.233"
+                },
+                "Primary": true,
+                "PrivateIpAddress": "10.20.1.4"
+              }
+            ],
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-44ac8edeff7e21aac",
+            "VpcId": "vpc-3fbf5766f186776eb"
+          }
+        ],
+        "Placement": {
+          "AvailabilityZone": "eu-west-1a",
+          "GroupName": "",
+          "Tenancy": "default"
+        },
+        "Platform": "windows",
+        "PrivateDnsName": "ip-10-20-1-4.eu-west-1.compute.internal",
+        "PrivateIpAddress": "10.20.1.4",
+        "ProductCodes": [],
+        "PublicDnsName": "ec2-54-214-93-233.eu-west-1.compute.amazonaws.com",
+        "PublicIpAddress": "54.214.93.233",
+        "RootDeviceName": "/dev/sda1",
+        "RootDeviceType": "ebs",
+        "SecurityGroups": [],
+        "SourceDestCheck": true,
+        "SriovNetSupport": "simple",
+        "State": {
+          "Code": 16,
+          "Name": "running"
+        },
+        "StateReason": {
+          "Code": "",
+          "Message": ""
+        },
+        "StateTransitionReason": "",
+        "SubnetId": "subnet-44ac8edeff7e21aac",
         "Tags": [
           {
             "Key": "Name",
@@ -1812,9 +2521,9 @@
           }
         ],
         "VirtualizationType": "hvm",
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "i-16f243ae04384aa3f",
+      "id": "i-dbe3777512af986df",
       "name": "staging-web-1",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1830,15 +2539,15 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-1ca0b0366be6256fb",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-c57595503754b6a6a",
       "config": {
         "Attachments": [
           {
             "State": "available",
-            "VpcId": "vpc-f0a1e10e04f89799f"
+            "VpcId": "vpc-504d1a00a30881fa9"
           }
         ],
-        "InternetGatewayId": "igw-1ca0b0366be6256fb",
+        "InternetGatewayId": "igw-c57595503754b6a6a",
         "OwnerId": "123456789012",
         "Tags": [
           {
@@ -1847,7 +2556,7 @@
           }
         ]
       },
-      "id": "igw-1ca0b0366be6256fb",
+      "id": "igw-c57595503754b6a6a",
       "name": "prod-igw",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1858,15 +2567,15 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-aacffd864d98fcb90",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:internet-gateway/igw-45515455df4fd760b",
       "config": {
         "Attachments": [
           {
             "State": "available",
-            "VpcId": "vpc-c7179ad575702d206"
+            "VpcId": "vpc-3fbf5766f186776eb"
           }
         ],
-        "InternetGatewayId": "igw-aacffd864d98fcb90",
+        "InternetGatewayId": "igw-45515455df4fd760b",
         "OwnerId": "123456789012",
         "Tags": [
           {
@@ -1875,7 +2584,7 @@
           }
         ]
       },
-      "id": "igw-aacffd864d98fcb90",
+      "id": "igw-45515455df4fd760b",
       "name": "staging-igw",
       "region": "eu-west-1",
       "service": "ec2",
@@ -1886,7 +2595,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-8218194d3f686bcf9",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-7dfabef53fac6713b",
       "config": {
         "Associations": [
           {
@@ -1894,12 +2603,12 @@
               "State": "associated"
             },
             "Main": true,
-            "RouteTableAssociationId": "rtbassoc-9e7cc898f0f263681",
-            "RouteTableId": "rtb-8218194d3f686bcf9"
+            "RouteTableAssociationId": "rtbassoc-de7a2daa1e67ce32b",
+            "RouteTableId": "rtb-7dfabef53fac6713b"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-8218194d3f686bcf9",
+        "RouteTableId": "rtb-7dfabef53fac6713b",
         "Routes": [
           {
             "DestinationCidrBlock": "172.31.0.0/16",
@@ -1909,9 +2618,9 @@
           }
         ],
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "rtb-8218194d3f686bcf9",
+      "id": "rtb-7dfabef53fac6713b",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -1920,7 +2629,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-9e6814c564cf8ff17",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-42399ee5b1d3ee1c2",
       "config": {
         "Associations": [
           {
@@ -1928,12 +2637,12 @@
               "State": "associated"
             },
             "Main": true,
-            "RouteTableAssociationId": "rtbassoc-f3b69d612ad5558c1",
-            "RouteTableId": "rtb-9e6814c564cf8ff17"
+            "RouteTableAssociationId": "rtbassoc-3197bb7bef15da48e",
+            "RouteTableId": "rtb-42399ee5b1d3ee1c2"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-9e6814c564cf8ff17",
+        "RouteTableId": "rtb-42399ee5b1d3ee1c2",
         "Routes": [
           {
             "DestinationCidrBlock": "10.10.0.0/16",
@@ -1943,9 +2652,9 @@
           }
         ],
         "Tags": [],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "rtb-9e6814c564cf8ff17",
+      "id": "rtb-42399ee5b1d3ee1c2",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -1954,7 +2663,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-0194256040064e144",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-6c2c4c6e68a59f78b",
       "config": {
         "Associations": [
           {
@@ -1962,13 +2671,22 @@
               "State": "associated"
             },
             "Main": false,
-            "RouteTableAssociationId": "rtbassoc-4c0bf4c0512585a9d",
-            "RouteTableId": "rtb-0194256040064e144",
-            "SubnetId": "subnet-94eb1ba1dfb8c9529"
+            "RouteTableAssociationId": "rtbassoc-acfc315d24903ac59",
+            "RouteTableId": "rtb-6c2c4c6e68a59f78b",
+            "SubnetId": "subnet-63c8ec6e395f01db8"
+          },
+          {
+            "AssociationState": {
+              "State": "associated"
+            },
+            "Main": false,
+            "RouteTableAssociationId": "rtbassoc-f6eb12fc508cedadf",
+            "RouteTableId": "rtb-6c2c4c6e68a59f78b",
+            "SubnetId": "subnet-f713f1b9cbaa6cc50"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-0194256040064e144",
+        "RouteTableId": "rtb-6c2c4c6e68a59f78b",
         "Routes": [
           {
             "DestinationCidrBlock": "10.10.0.0/16",
@@ -1978,7 +2696,7 @@
           },
           {
             "DestinationCidrBlock": "0.0.0.0/0",
-            "GatewayId": "igw-1ca0b0366be6256fb",
+            "GatewayId": "igw-c57595503754b6a6a",
             "Origin": "CreateRoute",
             "State": "active"
           }
@@ -1989,9 +2707,9 @@
             "Value": "prod-public-rt"
           }
         ],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "rtb-0194256040064e144",
+      "id": "rtb-6c2c4c6e68a59f78b",
       "name": "prod-public-rt",
       "region": "eu-west-1",
       "service": "ec2",
@@ -2002,7 +2720,64 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-4ccad54996eb04422",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-450b7351f98d86ec5",
+      "config": {
+        "Associations": [
+          {
+            "AssociationState": {
+              "State": "associated"
+            },
+            "Main": false,
+            "RouteTableAssociationId": "rtbassoc-867a796a14881afa4",
+            "RouteTableId": "rtb-450b7351f98d86ec5",
+            "SubnetId": "subnet-a984942cd22989378"
+          },
+          {
+            "AssociationState": {
+              "State": "associated"
+            },
+            "Main": false,
+            "RouteTableAssociationId": "rtbassoc-d70f3445692bc097b",
+            "RouteTableId": "rtb-450b7351f98d86ec5",
+            "SubnetId": "subnet-01e50783ff7f14f9c"
+          }
+        ],
+        "OwnerId": "123456789012",
+        "RouteTableId": "rtb-450b7351f98d86ec5",
+        "Routes": [
+          {
+            "DestinationCidrBlock": "10.10.0.0/16",
+            "GatewayId": "local",
+            "Origin": "CreateRouteTable",
+            "State": "active"
+          },
+          {
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "NatGatewayId": "nat-0e131166646cbd001",
+            "Origin": "CreateRoute",
+            "State": "active"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-private-rt"
+          }
+        ],
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "rtb-450b7351f98d86ec5",
+      "name": "prod-private-rt",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-private-rt"
+      },
+      "type": "route-table"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-51309ed2a01fbe705",
       "config": {
         "Associations": [
           {
@@ -2010,12 +2785,12 @@
               "State": "associated"
             },
             "Main": true,
-            "RouteTableAssociationId": "rtbassoc-5dac6bee27a0e5007",
-            "RouteTableId": "rtb-4ccad54996eb04422"
+            "RouteTableAssociationId": "rtbassoc-aa185fbd6c6e4da8a",
+            "RouteTableId": "rtb-51309ed2a01fbe705"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-4ccad54996eb04422",
+        "RouteTableId": "rtb-51309ed2a01fbe705",
         "Routes": [
           {
             "DestinationCidrBlock": "10.20.0.0/16",
@@ -2025,9 +2800,9 @@
           }
         ],
         "Tags": [],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "rtb-4ccad54996eb04422",
+      "id": "rtb-51309ed2a01fbe705",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -2036,7 +2811,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-b5eb18b2eea464aa6",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:route-table/rtb-e004b1f8b022f8d46",
       "config": {
         "Associations": [
           {
@@ -2044,13 +2819,13 @@
               "State": "associated"
             },
             "Main": false,
-            "RouteTableAssociationId": "rtbassoc-8355e2b4e2c7f97f4",
-            "RouteTableId": "rtb-b5eb18b2eea464aa6",
-            "SubnetId": "subnet-8b2963a3db377934f"
+            "RouteTableAssociationId": "rtbassoc-c5dbea85845642814",
+            "RouteTableId": "rtb-e004b1f8b022f8d46",
+            "SubnetId": "subnet-44ac8edeff7e21aac"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-b5eb18b2eea464aa6",
+        "RouteTableId": "rtb-e004b1f8b022f8d46",
         "Routes": [
           {
             "DestinationCidrBlock": "10.20.0.0/16",
@@ -2060,7 +2835,7 @@
           },
           {
             "DestinationCidrBlock": "0.0.0.0/0",
-            "GatewayId": "igw-aacffd864d98fcb90",
+            "GatewayId": "igw-45515455df4fd760b",
             "Origin": "CreateRoute",
             "State": "active"
           }
@@ -2071,9 +2846,9 @@
             "Value": "staging-public-rt"
           }
         ],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "rtb-b5eb18b2eea464aa6",
+      "id": "rtb-e004b1f8b022f8d46",
       "name": "staging-public-rt",
       "region": "eu-west-1",
       "service": "ec2",
@@ -2084,23 +2859,23 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-d66c72ee75f1cf2f7",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b45583705b4024f71",
       "config": {
         "Associations": [
           {
-            "NetworkAclAssociationId": "aclassoc-dbf7cab186a78c668",
-            "NetworkAclId": "acl-d66c72ee75f1cf2f7",
-            "SubnetId": "subnet-442092425a1963a65"
+            "NetworkAclAssociationId": "aclassoc-8b462070c5f74a255",
+            "NetworkAclId": "acl-b45583705b4024f71",
+            "SubnetId": "subnet-52c8a7609a563a1a6"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-466a3d3b888652f8b",
-            "NetworkAclId": "acl-d66c72ee75f1cf2f7",
-            "SubnetId": "subnet-011149dd66e6530c0"
+            "NetworkAclAssociationId": "aclassoc-7d6b31ef7feec2e8a",
+            "NetworkAclId": "acl-b45583705b4024f71",
+            "SubnetId": "subnet-3b73724df87efef58"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-b4e245e0f58d8bfcb",
-            "NetworkAclId": "acl-d66c72ee75f1cf2f7",
-            "SubnetId": "subnet-946361ae336818496"
+            "NetworkAclAssociationId": "aclassoc-e6307d05ae4c0086d",
+            "NetworkAclId": "acl-b45583705b4024f71",
+            "SubnetId": "subnet-b3618e2b5e80ebd89"
           }
         ],
         "Entries": [
@@ -2134,12 +2909,12 @@
           }
         ],
         "IsDefault": true,
-        "NetworkAclId": "acl-d66c72ee75f1cf2f7",
+        "NetworkAclId": "acl-b45583705b4024f71",
         "OwnerId": "123456789012",
         "Tags": [],
-        "VpcId": "vpc-a3acb8adbebcc1a66"
+        "VpcId": "vpc-abc232b3d3f5fbcc4"
       },
-      "id": "acl-d66c72ee75f1cf2f7",
+      "id": "acl-b45583705b4024f71",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -2148,18 +2923,28 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-c579bc42bcf3e39b0",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-65287d9b84f0e8342",
       "config": {
         "Associations": [
           {
-            "NetworkAclAssociationId": "aclassoc-4606f4734b7a5428d",
-            "NetworkAclId": "acl-c579bc42bcf3e39b0",
-            "SubnetId": "subnet-94eb1ba1dfb8c9529"
+            "NetworkAclAssociationId": "aclassoc-4a460ae94ba8c3dce",
+            "NetworkAclId": "acl-65287d9b84f0e8342",
+            "SubnetId": "subnet-63c8ec6e395f01db8"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-0c9d46210d2098789",
-            "NetworkAclId": "acl-c579bc42bcf3e39b0",
-            "SubnetId": "subnet-a4e20de93500114ba"
+            "NetworkAclAssociationId": "aclassoc-1c0ef10ea0841f56b",
+            "NetworkAclId": "acl-65287d9b84f0e8342",
+            "SubnetId": "subnet-a984942cd22989378"
+          },
+          {
+            "NetworkAclAssociationId": "aclassoc-7e2f854c8c788a3d8",
+            "NetworkAclId": "acl-65287d9b84f0e8342",
+            "SubnetId": "subnet-f713f1b9cbaa6cc50"
+          },
+          {
+            "NetworkAclAssociationId": "aclassoc-5ac97924bccb6dc3a",
+            "NetworkAclId": "acl-65287d9b84f0e8342",
+            "SubnetId": "subnet-01e50783ff7f14f9c"
           }
         ],
         "Entries": [
@@ -2193,12 +2978,12 @@
           }
         ],
         "IsDefault": true,
-        "NetworkAclId": "acl-c579bc42bcf3e39b0",
+        "NetworkAclId": "acl-65287d9b84f0e8342",
         "OwnerId": "123456789012",
         "Tags": [],
-        "VpcId": "vpc-f0a1e10e04f89799f"
+        "VpcId": "vpc-504d1a00a30881fa9"
       },
-      "id": "acl-c579bc42bcf3e39b0",
+      "id": "acl-65287d9b84f0e8342",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -2207,13 +2992,13 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-2625adefbf7417f37",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-b8a7456379ac27c3f",
       "config": {
         "Associations": [
           {
-            "NetworkAclAssociationId": "aclassoc-101527019a28cc61e",
-            "NetworkAclId": "acl-2625adefbf7417f37",
-            "SubnetId": "subnet-2b1d5f01e3b7b6b26"
+            "NetworkAclAssociationId": "aclassoc-a39b4f5f7065ec98e",
+            "NetworkAclId": "acl-b8a7456379ac27c3f",
+            "SubnetId": "subnet-1c33d3e13b991028e"
           }
         ],
         "Entries": [
@@ -2247,12 +3032,12 @@
           }
         ],
         "IsDefault": true,
-        "NetworkAclId": "acl-2625adefbf7417f37",
+        "NetworkAclId": "acl-b8a7456379ac27c3f",
         "OwnerId": "123456789012",
         "Tags": [],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "acl-2625adefbf7417f37",
+      "id": "acl-b8a7456379ac27c3f",
       "name": null,
       "region": "eu-west-1",
       "service": "ec2",
@@ -2261,13 +3046,13 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-9294d5ea56df2428b",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:network-acl/acl-e3458c1e688cb3d41",
       "config": {
         "Associations": [
           {
-            "NetworkAclAssociationId": "aclassoc-4e2e10736a9b96399",
-            "NetworkAclId": "acl-9294d5ea56df2428b",
-            "SubnetId": "subnet-8b2963a3db377934f"
+            "NetworkAclAssociationId": "aclassoc-39fe570b1a5bc7c03",
+            "NetworkAclId": "acl-e3458c1e688cb3d41",
+            "SubnetId": "subnet-44ac8edeff7e21aac"
           }
         ],
         "Entries": [
@@ -2291,7 +3076,7 @@
           }
         ],
         "IsDefault": false,
-        "NetworkAclId": "acl-9294d5ea56df2428b",
+        "NetworkAclId": "acl-e3458c1e688cb3d41",
         "OwnerId": "123456789012",
         "Tags": [
           {
@@ -2299,9 +3084,9 @@
             "Value": "staging-public-acl"
           }
         ],
-        "VpcId": "vpc-c7179ad575702d206"
+        "VpcId": "vpc-3fbf5766f186776eb"
       },
-      "id": "acl-9294d5ea56df2428b",
+      "id": "acl-e3458c1e688cb3d41",
       "name": "staging-public-acl",
       "region": "eu-west-1",
       "service": "ec2",
@@ -2312,12 +3097,469 @@
     },
     {
       "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-0636fd4cb51ff0e09",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:33+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-378a2d78c6ce9d8de",
+            "State": "attached",
+            "VolumeId": "vol-0636fd4cb51ff0e09"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:33+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-0636fd4cb51ff0e09",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-0636fd4cb51ff0e09",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-491299216efa5a0ac",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:33+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-4668d9527de90dc75",
+            "State": "attached",
+            "VolumeId": "vol-491299216efa5a0ac"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:33+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-491299216efa5a0ac",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-491299216efa5a0ac",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-0af1cafc1590dee0d",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:33+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-31d98de1f9454a940",
+            "State": "attached",
+            "VolumeId": "vol-0af1cafc1590dee0d"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:33+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-0af1cafc1590dee0d",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-0af1cafc1590dee0d",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-5e13dc31b459bd3a4",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:33+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-25710db5ebe78ee9f",
+            "State": "attached",
+            "VolumeId": "vol-5e13dc31b459bd3a4"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:33+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-5e13dc31b459bd3a4",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-5e13dc31b459bd3a4",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-0907698ca35bbd1f9",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:34+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-da3fe42e31d1f25d8",
+            "State": "attached",
+            "VolumeId": "vol-0907698ca35bbd1f9"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-0907698ca35bbd1f9",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-0907698ca35bbd1f9",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-83f5790b31375dfea",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:34+00:00",
+            "Device": "/dev/sdf",
+            "InstanceId": "i-31d98de1f9454a940",
+            "State": "attached",
+            "VolumeId": "vol-83f5790b31375dfea"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "Encrypted": false,
+        "Size": 200,
+        "State": "in-use",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-db-data"
+          },
+          {
+            "Key": "owner",
+            "Value": "data"
+          }
+        ],
+        "VolumeId": "vol-83f5790b31375dfea",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-83f5790b31375dfea",
+      "name": "prod-db-data",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-db-data",
+        "owner": "data"
+      },
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-f6f7bc7f57d9be4d4",
+      "config": {
+        "Attachments": [],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "Encrypted": true,
+        "KmsKeyId": "arn:aws:kms:eu-west-1:123456789012:key/3633acc1-2f13-49cf-af04-a6a448981914",
+        "Size": 100,
+        "State": "available",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "old-export"
+          },
+          {
+            "Key": "owner",
+            "Value": "data"
+          },
+          {
+            "Key": "env",
+            "Value": "prod"
+          }
+        ],
+        "VolumeId": "vol-f6f7bc7f57d9be4d4",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-f6f7bc7f57d9be4d4",
+      "name": "old-export",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "old-export",
+        "env": "prod",
+        "owner": "data"
+      },
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-99e2c62a7a511e9fd",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:34+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-e5bf25a3782252cae",
+            "State": "attached",
+            "VolumeId": "vol-99e2c62a7a511e9fd"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-99e2c62a7a511e9fd",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-99e2c62a7a511e9fd",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-607cf065e4ef3264e",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:34+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-090d86025880e631b",
+            "State": "attached",
+            "VolumeId": "vol-607cf065e4ef3264e"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-607cf065e4ef3264e",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-607cf065e4ef3264e",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-04f0738658740a500",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:34+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-dbe3777512af986df",
+            "State": "attached",
+            "VolumeId": "vol-04f0738658740a500"
+          }
+        ],
+        "AvailabilityZone": "eu-west-1a",
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-04f0738658740a500",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-04f0738658740a500",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:snapshot/snap-d9a91b8fdd46ee8a9",
+      "config": {
+        "Description": "export before migration",
+        "Encrypted": true,
+        "OwnerId": "123456789012",
+        "Progress": "100%",
+        "SnapshotId": "snap-d9a91b8fdd46ee8a9",
+        "StartTime": "2026-03-02T09:00:00+00:00",
+        "State": "completed",
+        "StorageTier": "standard",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "old-export-2026-03"
+          }
+        ],
+        "VolumeId": "vol-f6f7bc7f57d9be4d4",
+        "VolumeSize": 100
+      },
+      "id": "snap-d9a91b8fdd46ee8a9",
+      "name": "old-export-2026-03",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "old-export-2026-03"
+      },
+      "type": "snapshot"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:snapshot/snap-1f52ae1baee2b8949",
+      "config": {
+        "Description": "before upgrade",
+        "Encrypted": false,
+        "OwnerId": "123456789012",
+        "Progress": "100%",
+        "SnapshotId": "snap-1f52ae1baee2b8949",
+        "StartTime": "2026-03-02T09:00:00+00:00",
+        "State": "completed",
+        "StorageTier": "standard",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-db-data-2026-03"
+          }
+        ],
+        "VolumeId": "vol-83f5790b31375dfea",
+        "VolumeSize": 200
+      },
+      "id": "snap-1f52ae1baee2b8949",
+      "name": "prod-db-data-2026-03",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-db-data-2026-03"
+      },
+      "type": "snapshot"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:elastic-ip/eipalloc-eba0943c254347bd2",
+      "config": {
+        "AllocationId": "eipalloc-eba0943c254347bd2",
+        "AssociationId": "eipassoc-171ee9d0984b2fc43",
+        "Domain": "vpc",
+        "InstanceId": "",
+        "NetworkInterfaceId": "eni-3088dec54a1da5f50",
+        "NetworkInterfaceOwnerId": "123456789012",
+        "PrivateIpAddress": "10.66.242.86",
+        "PublicIp": "127.251.232.12",
+        "Tags": []
+      },
+      "id": "eipalloc-eba0943c254347bd2",
+      "name": null,
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "elastic-ip"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:elastic-ip/eipalloc-a7cfb5d7fdb4b377d",
+      "config": {
+        "AllocationId": "eipalloc-a7cfb5d7fdb4b377d",
+        "Domain": "vpc",
+        "InstanceId": "",
+        "NetworkInterfaceId": "",
+        "PublicIp": "127.254.169.44",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "old-office-vpn"
+          }
+        ]
+      },
+      "id": "eipalloc-a7cfb5d7fdb4b377d",
+      "name": "old-office-vpn",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "old-office-vpn"
+      },
+      "type": "elastic-ip"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:nat-gateway/nat-0e131166646cbd001",
+      "config": {
+        "CreateTime": "2026-11-10T21:49:34+00:00",
+        "NatGatewayAddresses": [
+          {
+            "AllocationId": "eipalloc-eba0943c254347bd2",
+            "AssociationId": "eipassoc-171ee9d0984b2fc43",
+            "NetworkInterfaceId": "eni-3088dec54a1da5f50",
+            "PrivateIp": "10.66.242.86",
+            "PublicIp": "127.251.232.12"
+          }
+        ],
+        "NatGatewayId": "nat-0e131166646cbd001",
+        "State": "available",
+        "SubnetId": "subnet-63c8ec6e395f01db8",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "prod-nat"
+          }
+        ],
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "nat-0e131166646cbd001",
+      "name": "prod-nat",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "prod-nat"
+      },
+      "type": "nat-gateway"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:eu-west-1:123456789012:scamallscope-setting/ebs-encryption-by-default",
+      "config": {
+        "Enabled": false
+      },
+      "id": "ebs-encryption-by-default",
+      "name": "ebs-encryption-by-default (eu-west-1)",
+      "region": "eu-west-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
       "arn": "arn:aws:lambda:eu-west-1:123456789012:function:orders-webhook",
       "config": {
         "Architectures": [
           "x86_64"
         ],
-        "CodeSha256": "lEnytUw36rUT1WqDHxO60oeJBMrIzNfRimSLz45+ENE=",
+        "CodeSha256": "FAyOr1cWDiNPg+A60Tn1R6UlFDwoRVcw6nThACsSjh4=",
         "CodeSize": 159,
         "Description": "",
         "DetailErrors": {},
@@ -2334,11 +3576,11 @@
           {
             "AuthType": "NONE",
             "FunctionArn": "arn:aws:lambda:eu-west-1:123456789012:function:orders-webhook",
-            "FunctionUrl": "https://97f7df467e854361a613652702236302.lambda-url.eu-west-1.on.aws"
+            "FunctionUrl": "https://5db1c2a6afc04f0ab7c45c4af8b73885.lambda-url.eu-west-1.on.aws"
           }
         ],
         "Handler": "index.handler",
-        "LastModified": "2026-11-05T09:11:10.669047000Z",
+        "LastModified": "2026-11-10T21:49:34.025491000Z",
         "LastUpdateStatus": "Successful",
         "Layers": [],
         "MemorySize": 128,
@@ -2372,7 +3614,7 @@
         "Architectures": [
           "x86_64"
         ],
-        "CodeSha256": "lEnytUw36rUT1WqDHxO60oeJBMrIzNfRimSLz45+ENE=",
+        "CodeSha256": "Tvpt7idJDZ4Cx3WVJ/TBcYt3rE4WIl9N7TO6zz7sBvo=",
         "CodeSize": 159,
         "Description": "",
         "DetailErrors": {},
@@ -2384,7 +3626,7 @@
         "FunctionName": "orders-worker",
         "FunctionUrlConfigs": [],
         "Handler": "index.handler",
-        "LastModified": "2026-11-05T09:11:10.675801000Z",
+        "LastModified": "2026-11-10T21:49:34.037261000Z",
         "LastUpdateStatus": "Successful",
         "Layers": [],
         "MemorySize": 128,
@@ -2403,10 +3645,10 @@
         "Version": "$LATEST",
         "VpcConfig": {
           "SecurityGroupIds": [
-            "sg-fd41a74ffbcf7ce7a"
+            "sg-d8049ca9d66990111"
           ],
           "SubnetIds": [
-            "subnet-a4e20de93500114ba"
+            "subnet-a984942cd22989378"
           ],
           "VpcId": "vpc-123abc"
         }
@@ -2429,7 +3671,7 @@
         "Architectures": [
           "x86_64"
         ],
-        "CodeSha256": "lEnytUw36rUT1WqDHxO60oeJBMrIzNfRimSLz45+ENE=",
+        "CodeSha256": "Tvpt7idJDZ4Cx3WVJ/TBcYt3rE4WIl9N7TO6zz7sBvo=",
         "CodeSize": 159,
         "Description": "",
         "DetailErrors": {},
@@ -2441,7 +3683,7 @@
         "FunctionName": "legacy-report",
         "FunctionUrlConfigs": [],
         "Handler": "index.handler",
-        "LastModified": "2026-11-05T09:11:10.677112000Z",
+        "LastModified": "2026-11-10T21:49:34.040705000Z",
         "LastUpdateStatus": "Successful",
         "Layers": [],
         "MemorySize": 128,
@@ -2471,12 +3713,517 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-55f855a56b0253be5",
+      "arn": "arn:aws:rds:eu-west-1:123456789012:db:orders-db",
+      "config": {
+        "AllocatedStorage": 50,
+        "AssociatedRoles": [],
+        "AutoMinorVersionUpgrade": true,
+        "AvailabilityZone": "eu-west-1a",
+        "BackupRetentionPeriod": 0,
+        "CACertificateIdentifier": "rds-ca-default",
+        "CopyTagsToSnapshot": false,
+        "DBInstanceArn": "arn:aws:rds:eu-west-1:123456789012:db:orders-db",
+        "DBInstanceClass": "db.t3.medium",
+        "DBInstanceIdentifier": "orders-db",
+        "DBInstanceStatus": "available",
+        "DBParameterGroups": [
+          {
+            "DBParameterGroupName": "default.postgres9.3",
+            "ParameterApplyStatus": "in-sync"
+          }
+        ],
+        "DBSecurityGroups": [],
+        "DBSubnetGroup": {
+          "DBSubnetGroupArn": "arn:aws:rds:eu-west-1:123456789012:subgrp:prod-db",
+          "DBSubnetGroupDescription": "prod",
+          "DBSubnetGroupName": "prod-db",
+          "SubnetGroupStatus": "Complete",
+          "Subnets": [
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "eu-west-1a"
+              },
+              "SubnetIdentifier": "subnet-a984942cd22989378",
+              "SubnetStatus": "Active"
+            },
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "eu-west-1b"
+              },
+              "SubnetIdentifier": "subnet-01e50783ff7f14f9c",
+              "SubnetStatus": "Active"
+            }
+          ],
+          "VpcId": "vpc-504d1a00a30881fa9"
+        },
+        "DbInstancePort": 5432,
+        "DbiResourceId": "db-M5ENSHXFPU6XHZ4G4ZEI5QIO2U",
+        "DeletionProtection": false,
+        "DomainMemberships": [],
+        "EnabledCloudwatchLogsExports": [],
+        "EndpointPort": 5432,
+        "Engine": "postgres",
+        "EngineVersion": "9.3.3",
+        "IAMDatabaseAuthenticationEnabled": false,
+        "InstanceCreateTime": "2026-11-10T21:49:34.497445+00:00",
+        "LatestRestorableTime": "2026-11-10T21:49:36.584080+00:00",
+        "LicenseModel": "general-public-license",
+        "MasterUsername": "orders",
+        "MonitoringInterval": 0,
+        "MultiAZ": false,
+        "OptionGroupMemberships": [
+          {
+            "OptionGroupName": "default:postgres-9-3",
+            "Status": "in-sync"
+          }
+        ],
+        "PreferredBackupWindow": "13:14-13:44",
+        "PreferredMaintenanceWindow": "wed:06:38-wed:07:08",
+        "PubliclyAccessible": false,
+        "ReadReplicaDBInstanceIdentifiers": [],
+        "StorageEncrypted": false,
+        "StorageType": "gp2",
+        "VpcSecurityGroups": [
+          {
+            "Status": "active",
+            "VpcSecurityGroupId": "sg-d8049ca9d66990111"
+          }
+        ]
+      },
+      "id": "orders-db",
+      "name": "orders-db",
+      "region": "eu-west-1",
+      "service": "rds",
+      "tags": {
+        "env": "prod",
+        "owner": "orders"
+      },
+      "type": "db-instance"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:rds:eu-west-1:123456789012:db:reporting-db",
+      "config": {
+        "AllocatedStorage": 20,
+        "AssociatedRoles": [],
+        "AutoMinorVersionUpgrade": true,
+        "AvailabilityZone": "eu-west-1a",
+        "BackupRetentionPeriod": 7,
+        "CACertificateIdentifier": "rds-ca-default",
+        "CopyTagsToSnapshot": false,
+        "DBInstanceArn": "arn:aws:rds:eu-west-1:123456789012:db:reporting-db",
+        "DBInstanceClass": "db.t3.small",
+        "DBInstanceIdentifier": "reporting-db",
+        "DBInstanceStatus": "available",
+        "DBParameterGroups": [
+          {
+            "DBParameterGroupName": "default.mysql5.6",
+            "ParameterApplyStatus": "in-sync"
+          }
+        ],
+        "DBSecurityGroups": [],
+        "DBSubnetGroup": {
+          "DBSubnetGroupArn": "arn:aws:rds:eu-west-1:123456789012:subgrp:reporting",
+          "DBSubnetGroupDescription": "reporting",
+          "DBSubnetGroupName": "reporting",
+          "SubnetGroupStatus": "Complete",
+          "Subnets": [
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "eu-west-1a"
+              },
+              "SubnetIdentifier": "subnet-63c8ec6e395f01db8",
+              "SubnetStatus": "Active"
+            },
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "eu-west-1b"
+              },
+              "SubnetIdentifier": "subnet-f713f1b9cbaa6cc50",
+              "SubnetStatus": "Active"
+            }
+          ],
+          "VpcId": "vpc-504d1a00a30881fa9"
+        },
+        "DbInstancePort": 3306,
+        "DbiResourceId": "db-M5ENSHXFPU6XHZ4G4ZEI5QIO2U",
+        "DeletionProtection": false,
+        "DomainMemberships": [],
+        "EnabledCloudwatchLogsExports": [],
+        "EndpointPort": 3306,
+        "Engine": "mysql",
+        "EngineVersion": "5.6.21",
+        "IAMDatabaseAuthenticationEnabled": false,
+        "InstanceCreateTime": "2026-11-10T21:49:34.509870+00:00",
+        "KmsKeyId": "default_kms_key_id",
+        "LatestRestorableTime": "2026-11-10T21:49:36.585007+00:00",
+        "LicenseModel": "general-public-license",
+        "MasterUsername": "report",
+        "MonitoringInterval": 0,
+        "MultiAZ": false,
+        "OptionGroupMemberships": [
+          {
+            "OptionGroupName": "default:mysql-5-6",
+            "Status": "in-sync"
+          }
+        ],
+        "PreferredBackupWindow": "13:14-13:44",
+        "PreferredMaintenanceWindow": "wed:06:38-wed:07:08",
+        "PubliclyAccessible": true,
+        "ReadReplicaDBInstanceIdentifiers": [],
+        "StorageEncrypted": true,
+        "StorageType": "gp2",
+        "VpcSecurityGroups": [
+          {
+            "Status": "active",
+            "VpcSecurityGroupId": "sg-0983b830c87182ec3"
+          }
+        ]
+      },
+      "id": "reporting-db",
+      "name": "reporting-db",
+      "region": "eu-west-1",
+      "service": "rds",
+      "tags": {
+        "env": "staging",
+        "owner": "finance"
+      },
+      "type": "db-instance"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
+      "config": {
+        "AvailabilityZones": [
+          {
+            "SubnetId": "subnet-63c8ec6e395f01db8",
+            "ZoneName": "eu-west-1a"
+          },
+          {
+            "SubnetId": "subnet-f713f1b9cbaa6cc50",
+            "ZoneName": "eu-west-1b"
+          }
+        ],
+        "CanonicalHostedZoneId": "Z2P70J7EXAMPLE",
+        "CreatedTime": "2026-11-10T21:49:34.232000+00:00",
+        "IpAddressType": "ipv4",
+        "Listeners": [
+          {
+            "DefaultActions": [
+              {
+                "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+                "Type": "forward"
+              }
+            ],
+            "Port": 80,
+            "Protocol": "HTTP",
+            "SslPolicy": "ELBSecurityPolicy-2016-08",
+            "SslProtocols": []
+          },
+          {
+            "DefaultActions": [
+              {
+                "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+                "Type": "forward"
+              }
+            ],
+            "Port": 443,
+            "Protocol": "HTTPS",
+            "SslPolicy": "ELBSecurityPolicy-2016-08",
+            "SslProtocols": [
+              "TLSv1.2",
+              "TLSv1.1",
+              "TLSv1"
+            ]
+          }
+        ],
+        "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
+        "LoadBalancerName": "prod-web",
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          "sg-0983b830c87182ec3"
+        ],
+        "State": {
+          "Code": "active"
+        },
+        "Type": "application",
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "prod-web",
+      "name": "prod-web",
+      "region": "eu-west-1",
+      "service": "elasticloadbalancing",
+      "tags": {
+        "env": "prod",
+        "owner": "web"
+      },
+      "type": "load-balancer"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/orders-workers/a99fbfd7329ec15e",
+      "config": {
+        "HealthCheckEnabled": true,
+        "HealthCheckIntervalSeconds": 30,
+        "HealthCheckPath": "/",
+        "HealthCheckPort": "traffic-port",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "IpAddressType": "ipv4",
+        "LoadBalancerArns": [],
+        "Matcher": {
+          "HttpCode": "200"
+        },
+        "Port": 8080,
+        "Protocol": "HTTP",
+        "ProtocolVersion": "HTTP1",
+        "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/orders-workers/a99fbfd7329ec15e",
+        "TargetGroupName": "orders-workers",
+        "TargetHealth": [
+          {
+            "Id": "i-e5bf25a3782252cae",
+            "Port": 8080,
+            "Reason": null,
+            "State": "healthy"
+          },
+          {
+            "Id": "i-090d86025880e631b",
+            "Port": 8080,
+            "Reason": null,
+            "State": "healthy"
+          }
+        ],
+        "TargetType": "instance",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "orders-workers",
+      "name": "orders-workers",
+      "region": "eu-west-1",
+      "service": "elasticloadbalancing",
+      "tags": {},
+      "type": "target-group"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+      "config": {
+        "HealthCheckEnabled": true,
+        "HealthCheckIntervalSeconds": 30,
+        "HealthCheckPath": "/",
+        "HealthCheckPort": "traffic-port",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "IpAddressType": "ipv4",
+        "LoadBalancerArns": [
+          "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5",
+          "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/prod-web/7ef7a1c5b9f6e3e5"
+        ],
+        "Matcher": {
+          "HttpCode": "200"
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+        "ProtocolVersion": "HTTP1",
+        "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/prod-web/a7758fdafccbb663",
+        "TargetGroupName": "prod-web",
+        "TargetHealth": [
+          {
+            "Id": "i-378a2d78c6ce9d8de",
+            "Port": 80,
+            "Reason": null,
+            "State": "healthy"
+          },
+          {
+            "Id": "i-da3fe42e31d1f25d8",
+            "Port": 80,
+            "Reason": "Target.FailedHealthChecks",
+            "State": "unhealthy"
+          }
+        ],
+        "TargetType": "instance",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": "vpc-504d1a00a30881fa9"
+      },
+      "id": "prod-web",
+      "name": "prod-web",
+      "region": "eu-west-1",
+      "service": "elasticloadbalancing",
+      "tags": {
+        "env": "prod"
+      },
+      "type": "target-group"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:autoscaling:eu-west-1:123456789012:autoScalingGroup:fb6a0ec1-df90-40af-87a6-444a9c1b4fe6:autoScalingGroupName/orders-workers",
+      "config": {
+        "AutoScalingGroupARN": "arn:aws:autoscaling:eu-west-1:123456789012:autoScalingGroup:fb6a0ec1-df90-40af-87a6-444a9c1b4fe6:autoScalingGroupName/orders-workers",
+        "AutoScalingGroupName": "orders-workers",
+        "AvailabilityZones": [
+          "eu-west-1a"
+        ],
+        "CapacityRebalance": false,
+        "CreatedTime": "2026-11-10T21:49:34.412525+00:00",
+        "DefaultCooldown": 300,
+        "DesiredCapacity": 2,
+        "EnabledMetrics": [],
+        "HealthCheckGracePeriod": 300,
+        "HealthCheckType": "EC2",
+        "Instances": [
+          {
+            "AvailabilityZone": "eu-west-1a",
+            "HealthStatus": "Healthy",
+            "InstanceId": "i-e5bf25a3782252cae",
+            "InstanceType": "t3.small",
+            "LaunchConfigurationName": "orders-workers",
+            "LifecycleState": "InService",
+            "ProtectedFromScaleIn": false
+          },
+          {
+            "AvailabilityZone": "eu-west-1a",
+            "HealthStatus": "Healthy",
+            "InstanceId": "i-090d86025880e631b",
+            "InstanceType": "t3.small",
+            "LaunchConfigurationName": "orders-workers",
+            "LifecycleState": "InService",
+            "ProtectedFromScaleIn": false
+          }
+        ],
+        "LaunchConfigurationName": "orders-workers",
+        "LoadBalancerNames": [],
+        "MaxSize": 4,
+        "MinSize": 2,
+        "NewInstancesProtectedFromScaleIn": false,
+        "ServiceLinkedRoleARN": "arn:aws:iam::123456789012:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+        "SuspendedProcesses": [],
+        "Tags": [
+          {
+            "Key": "env",
+            "PropagateAtLaunch": true,
+            "ResourceId": "orders-workers",
+            "ResourceType": "auto-scaling-group",
+            "Value": "prod"
+          },
+          {
+            "Key": "owner",
+            "PropagateAtLaunch": true,
+            "ResourceId": "orders-workers",
+            "ResourceType": "auto-scaling-group",
+            "Value": "orders"
+          },
+          {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "ResourceId": "orders-workers",
+            "ResourceType": "auto-scaling-group",
+            "Value": "orders-worker"
+          }
+        ],
+        "TargetGroupARNs": [
+          "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/orders-workers/a99fbfd7329ec15e"
+        ],
+        "TerminationPolicies": [
+          "Default"
+        ],
+        "VPCZoneIdentifier": "subnet-a984942cd22989378"
+      },
+      "id": "orders-workers",
+      "name": "orders-worker",
+      "region": "eu-west-1",
+      "service": "autoscaling",
+      "tags": {
+        "Name": "orders-worker",
+        "env": "prod",
+        "owner": "orders"
+      },
+      "type": "autoscaling-group"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:acm:eu-west-1:123456789012:certificate/2acad35c-5290-4e15-8b24-fa0adf949c9a",
+      "config": {
+        "DomainName": "shop.example.com",
+        "InUseBy": [
+          "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/prod-web/7ef7a1c5b9f6e3e5/a36d4683cca4fb61"
+        ],
+        "KeyAlgorithm": "RSA_2048",
+        "NotAfter": "2026-11-24T00:00:00+00:00",
+        "NotBefore": "2026-11-10T21:49:34+00:00",
+        "RenewalEligibility": "INELIGIBLE",
+        "Status": "PENDING_VALIDATION",
+        "Type": "AMAZON_ISSUED"
+      },
+      "id": "2acad35c-5290-4e15-8b24-fa0adf949c9a",
+      "name": "shop.example.com",
+      "region": "eu-west-1",
+      "service": "acm",
+      "tags": {},
+      "type": "certificate"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:guardduty:eu-west-1:123456789012:scamallscope-setting/guardduty",
+      "config": {
+        "Detectors": [
+          {
+            "Id": "bb89ce286062c04f0dcfbf874299bbf5",
+            "Status": "ENABLED"
+          }
+        ]
+      },
+      "id": "guardduty",
+      "name": "guardduty (eu-west-1)",
+      "region": "eu-west-1",
+      "service": "guardduty",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:backup:eu-west-1:123456789012:scamallscope-setting/backup-protected",
+      "config": {
+        "Resources": []
+      },
+      "id": "backup-protected",
+      "name": "backup-protected (eu-west-1)",
+      "region": "eu-west-1",
+      "service": "backup",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ssm:eu-west-1:123456789012:scamallscope-setting/ssm-managed",
+      "config": {
+        "Instances": [
+          {
+            "InstanceId": "i-4668d9527de90dc75",
+            "PingStatus": "Online"
+          },
+          {
+            "InstanceId": "i-da3fe42e31d1f25d8",
+            "PingStatus": "Online"
+          }
+        ]
+      },
+      "id": "ssm-managed",
+      "name": "ssm-managed (eu-west-1)",
+      "region": "eu-west-1",
+      "service": "ssm",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-fe3be0e79e256397c",
       "config": {
         "CidrBlock": "172.31.0.0/16",
         "CidrBlockAssociationSet": [
           {
-            "AssociationId": "vpc-cidr-assoc-945ca34246ea68ddb",
+            "AssociationId": "vpc-cidr-assoc-a060e5ebe830b1e58",
             "CidrBlock": "172.31.0.0/16",
             "CidrBlockState": {
               "State": "associated"
@@ -2490,9 +4237,9 @@
         "OwnerId": "123456789012",
         "State": "available",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "vpc-55f855a56b0253be5",
+      "id": "vpc-fe3be0e79e256397c",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2501,12 +4248,12 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-01fb7223f8e5193f2",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:vpc/vpc-e94c10acba5b3162b",
       "config": {
         "CidrBlock": "10.30.0.0/16",
         "CidrBlockAssociationSet": [
           {
-            "AssociationId": "vpc-cidr-assoc-3a6bcd96e9b8fe26e",
+            "AssociationId": "vpc-cidr-assoc-d0957df203fe1a518",
             "CidrBlock": "10.30.0.0/16",
             "CidrBlockState": {
               "State": "associated"
@@ -2529,9 +4276,9 @@
             "Value": "shared"
           }
         ],
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "vpc-01fb7223f8e5193f2",
+      "id": "vpc-e94c10acba5b3162b",
       "name": "tools",
       "region": "us-east-1",
       "service": "ec2",
@@ -2543,7 +4290,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-58e7f1324cd27279d",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f1e9ea6082c9ab699",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "us-east-1a",
@@ -2561,12 +4308,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-58e7f1324cd27279d",
-        "SubnetId": "subnet-58e7f1324cd27279d",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f1e9ea6082c9ab699",
+        "SubnetId": "subnet-f1e9ea6082c9ab699",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "subnet-58e7f1324cd27279d",
+      "id": "subnet-f1e9ea6082c9ab699",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2575,7 +4322,85 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e644f882e78c03ebf",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ca64f95fa04d62108",
+      "config": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "us-east-1a",
+        "AvailabilityZoneId": "use1-az6",
+        "AvailableIpAddressCount": 250,
+        "CidrBlock": "10.30.1.0/24",
+        "DefaultForAz": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": false,
+        "MapPublicIpOnLaunch": false,
+        "OwnerId": "123456789012",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsAAAARecord": false,
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name"
+        },
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ca64f95fa04d62108",
+        "SubnetId": "subnet-ca64f95fa04d62108",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "tools-public"
+          }
+        ],
+        "VpcId": "vpc-e94c10acba5b3162b"
+      },
+      "id": "subnet-ca64f95fa04d62108",
+      "name": "tools-public",
+      "region": "us-east-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "tools-public"
+      },
+      "type": "subnet"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-42357c1de975f5061",
+      "config": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "us-east-1a",
+        "AvailabilityZoneId": "use1-az6",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "10.30.2.0/24",
+        "DefaultForAz": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": false,
+        "MapPublicIpOnLaunch": false,
+        "OwnerId": "123456789012",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsAAAARecord": false,
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name"
+        },
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-42357c1de975f5061",
+        "SubnetId": "subnet-42357c1de975f5061",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "tools-private"
+          }
+        ],
+        "VpcId": "vpc-e94c10acba5b3162b"
+      },
+      "id": "subnet-42357c1de975f5061",
+      "name": "tools-private",
+      "region": "us-east-1",
+      "service": "ec2",
+      "tags": {
+        "Name": "tools-private"
+      },
+      "type": "subnet"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-bf3d05e8e3246c747",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "us-east-1b",
@@ -2593,12 +4418,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e644f882e78c03ebf",
-        "SubnetId": "subnet-e644f882e78c03ebf",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-bf3d05e8e3246c747",
+        "SubnetId": "subnet-bf3d05e8e3246c747",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "subnet-e644f882e78c03ebf",
+      "id": "subnet-bf3d05e8e3246c747",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2607,7 +4432,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-3a133faf11c023b1e",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8c08bbccc2a093cec",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "us-east-1c",
@@ -2625,12 +4450,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-3a133faf11c023b1e",
-        "SubnetId": "subnet-3a133faf11c023b1e",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8c08bbccc2a093cec",
+        "SubnetId": "subnet-8c08bbccc2a093cec",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "subnet-3a133faf11c023b1e",
+      "id": "subnet-8c08bbccc2a093cec",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2639,46 +4464,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-fc09670a03034ed31",
-      "config": {
-        "AssignIpv6AddressOnCreation": false,
-        "AvailabilityZone": "us-east-1c",
-        "AvailabilityZoneId": "use1-az2",
-        "AvailableIpAddressCount": 250,
-        "CidrBlock": "10.30.1.0/24",
-        "DefaultForAz": false,
-        "Ipv6CidrBlockAssociationSet": [],
-        "Ipv6Native": false,
-        "MapPublicIpOnLaunch": false,
-        "OwnerId": "123456789012",
-        "PrivateDnsNameOptionsOnLaunch": {
-          "EnableResourceNameDnsAAAARecord": false,
-          "EnableResourceNameDnsARecord": false,
-          "HostnameType": "ip-name"
-        },
-        "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-fc09670a03034ed31",
-        "SubnetId": "subnet-fc09670a03034ed31",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "tools-public"
-          }
-        ],
-        "VpcId": "vpc-01fb7223f8e5193f2"
-      },
-      "id": "subnet-fc09670a03034ed31",
-      "name": "tools-public",
-      "region": "us-east-1",
-      "service": "ec2",
-      "tags": {
-        "Name": "tools-public"
-      },
-      "type": "subnet"
-    },
-    {
-      "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0df4ccd3d4d6c8b67",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f7c2c7a8b19e859e3",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "us-east-1d",
@@ -2696,12 +4482,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0df4ccd3d4d6c8b67",
-        "SubnetId": "subnet-0df4ccd3d4d6c8b67",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-f7c2c7a8b19e859e3",
+        "SubnetId": "subnet-f7c2c7a8b19e859e3",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "subnet-0df4ccd3d4d6c8b67",
+      "id": "subnet-f7c2c7a8b19e859e3",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2710,46 +4496,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-02abbf977686d1657",
-      "config": {
-        "AssignIpv6AddressOnCreation": false,
-        "AvailabilityZone": "us-east-1d",
-        "AvailabilityZoneId": "use1-az4",
-        "AvailableIpAddressCount": 251,
-        "CidrBlock": "10.30.2.0/24",
-        "DefaultForAz": false,
-        "Ipv6CidrBlockAssociationSet": [],
-        "Ipv6Native": false,
-        "MapPublicIpOnLaunch": false,
-        "OwnerId": "123456789012",
-        "PrivateDnsNameOptionsOnLaunch": {
-          "EnableResourceNameDnsAAAARecord": false,
-          "EnableResourceNameDnsARecord": false,
-          "HostnameType": "ip-name"
-        },
-        "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-02abbf977686d1657",
-        "SubnetId": "subnet-02abbf977686d1657",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "tools-private"
-          }
-        ],
-        "VpcId": "vpc-01fb7223f8e5193f2"
-      },
-      "id": "subnet-02abbf977686d1657",
-      "name": "tools-private",
-      "region": "us-east-1",
-      "service": "ec2",
-      "tags": {
-        "Name": "tools-private"
-      },
-      "type": "subnet"
-    },
-    {
-      "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0b8ecbcbe6993a26f",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ce33b306effd813d5",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "us-east-1e",
@@ -2767,12 +4514,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-0b8ecbcbe6993a26f",
-        "SubnetId": "subnet-0b8ecbcbe6993a26f",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-ce33b306effd813d5",
+        "SubnetId": "subnet-ce33b306effd813d5",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "subnet-0b8ecbcbe6993a26f",
+      "id": "subnet-ce33b306effd813d5",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2781,7 +4528,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8e668fa09f3e7d9fb",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e18da0ce6fa9d4fa2",
       "config": {
         "AssignIpv6AddressOnCreation": false,
         "AvailabilityZone": "us-east-1f",
@@ -2799,12 +4546,12 @@
           "HostnameType": "ip-name"
         },
         "State": "available",
-        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-8e668fa09f3e7d9fb",
-        "SubnetId": "subnet-8e668fa09f3e7d9fb",
+        "SubnetArn": "arn:aws:ec2:us-east-1:123456789012:subnet/subnet-e18da0ce6fa9d4fa2",
+        "SubnetId": "subnet-e18da0ce6fa9d4fa2",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "subnet-8e668fa09f3e7d9fb",
+      "id": "subnet-e18da0ce6fa9d4fa2",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2813,10 +4560,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-015ca0eebcc12e311",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-82140f2a3abe11646",
       "config": {
         "Description": "default VPC security group",
-        "GroupId": "sg-015ca0eebcc12e311",
+        "GroupId": "sg-82140f2a3abe11646",
         "GroupName": "default",
         "IpPermissions": [],
         "IpPermissionsEgress": [
@@ -2833,11 +4580,11 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-015ca0eebcc12e311",
+        "SecurityGroupArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-82140f2a3abe11646",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "sg-015ca0eebcc12e311",
+      "id": "sg-82140f2a3abe11646",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2846,10 +4593,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-4fd32abc7382eb3c1",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-a82fb19faab4d15b3",
       "config": {
         "Description": "default VPC security group",
-        "GroupId": "sg-4fd32abc7382eb3c1",
+        "GroupId": "sg-a82fb19faab4d15b3",
         "GroupName": "default",
         "IpPermissions": [],
         "IpPermissionsEgress": [
@@ -2866,11 +4613,11 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-4fd32abc7382eb3c1",
+        "SecurityGroupArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-a82fb19faab4d15b3",
         "Tags": [],
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "sg-4fd32abc7382eb3c1",
+      "id": "sg-a82fb19faab4d15b3",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -2879,10 +4626,10 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-e3bfa16e2682cdf1b",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-c10fa2828ac686424",
       "config": {
         "Description": "tools-bastion",
-        "GroupId": "sg-e3bfa16e2682cdf1b",
+        "GroupId": "sg-c10fa2828ac686424",
         "GroupName": "tools-bastion",
         "IpPermissions": [
           {
@@ -2913,16 +4660,16 @@
           }
         ],
         "OwnerId": "123456789012",
-        "SecurityGroupArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-e3bfa16e2682cdf1b",
+        "SecurityGroupArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-c10fa2828ac686424",
         "Tags": [
           {
             "Key": "Name",
             "Value": "tools-bastion"
           }
         ],
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "sg-e3bfa16e2682cdf1b",
+      "id": "sg-c10fa2828ac686424",
       "name": "tools-bastion",
       "region": "us-east-1",
       "service": "ec2",
@@ -2933,7 +4680,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:instance/i-54f5924886e470545",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:instance/i-5976c0c25eba950f8",
       "config": {
         "AmiLaunchIndex": 0,
         "Architecture": "x86_64",
@@ -2941,21 +4688,21 @@
           {
             "DeviceName": "/dev/sda1",
             "Ebs": {
-              "AttachTime": "2026-11-05T09:11:11+00:00",
+              "AttachTime": "2026-11-10T21:49:35+00:00",
               "DeleteOnTermination": true,
               "Status": "attached",
-              "VolumeId": "vol-bef4f85fcecdc1a5f"
+              "VolumeId": "vol-89806a164f72b8bf4"
             }
           }
         ],
-        "ClientToken": "b049887d-5641-45c0-8d70-68d2b07fc631",
+        "ClientToken": "01d4aad6-59da-4621-9d53-af4caa3ea7b6",
         "EbsOptimized": false,
         "HibernationOptions": {},
         "Hypervisor": "xen",
         "ImageId": "ami-03cf127a",
-        "InstanceId": "i-54f5924886e470545",
+        "InstanceId": "i-5976c0c25eba950f8",
         "InstanceType": "t3.micro",
-        "LaunchTime": "2026-11-05T09:11:11+00:00",
+        "LaunchTime": "2026-11-10T21:49:35+00:00",
         "MetadataOptions": {
           "HttpEndpoint": "enabled",
           "HttpProtocolIpv6": "disabled",
@@ -2971,12 +4718,12 @@
           {
             "Association": {
               "IpOwnerId": "123456789012",
-              "PublicDnsName": "ip-54-214-248-102.ec2.internal",
-              "PublicIp": "54.214.248.102"
+              "PublicDnsName": "ip-54-214-114-179.ec2.internal",
+              "PublicIp": "54.214.114.179"
             },
             "Attachment": {
-              "AttachTime": "2026-11-05T09:11:11+00:00",
-              "AttachmentId": "eni-attach-e9568a560da81ea99",
+              "AttachTime": "2026-11-10T21:49:35+00:00",
+              "AttachmentId": "eni-attach-1ebd25b980caa7805",
               "DeleteOnTermination": false,
               "DeviceIndex": 0,
               "NetworkCardIndex": 0,
@@ -2985,22 +4732,22 @@
             "Description": "Primary network interface",
             "Groups": [
               {
-                "GroupId": "sg-e3bfa16e2682cdf1b",
+                "GroupId": "sg-c10fa2828ac686424",
                 "GroupName": "tools-bastion"
               }
             ],
             "InterfaceType": "interface",
             "Ipv6Addresses": [],
-            "MacAddress": "02:00:00:e7:78:10",
-            "NetworkInterfaceId": "eni-56cc748c0ab6da737",
+            "MacAddress": "02:00:00:10:43:13",
+            "NetworkInterfaceId": "eni-79237aa83e87988b1",
             "OwnerId": "123456789012",
             "PrivateIpAddress": "10.30.1.4",
             "PrivateIpAddresses": [
               {
                 "Association": {
                   "IpOwnerId": "123456789012",
-                  "PublicDnsName": "ip-54-214-248-102.ec2.internal",
-                  "PublicIp": "54.214.248.102"
+                  "PublicDnsName": "ip-54-214-114-179.ec2.internal",
+                  "PublicIp": "54.214.114.179"
                 },
                 "Primary": true,
                 "PrivateIpAddress": "10.30.1.4"
@@ -3008,12 +4755,12 @@
             ],
             "SourceDestCheck": true,
             "Status": "in-use",
-            "SubnetId": "subnet-fc09670a03034ed31",
-            "VpcId": "vpc-01fb7223f8e5193f2"
+            "SubnetId": "subnet-ca64f95fa04d62108",
+            "VpcId": "vpc-e94c10acba5b3162b"
           }
         ],
         "Placement": {
-          "AvailabilityZone": "us-east-1c",
+          "AvailabilityZone": "us-east-1a",
           "GroupName": "",
           "Tenancy": "default"
         },
@@ -3021,8 +4768,8 @@
         "PrivateDnsName": "ip-10-30-1-4.ec2.internal",
         "PrivateIpAddress": "10.30.1.4",
         "ProductCodes": [],
-        "PublicDnsName": "ec2-54-214-248-102.compute-1.amazonaws.com",
-        "PublicIpAddress": "54.214.248.102",
+        "PublicDnsName": "ec2-54-214-114-179.compute-1.amazonaws.com",
+        "PublicIpAddress": "54.214.114.179",
         "RootDeviceName": "/dev/sda1",
         "RootDeviceType": "ebs",
         "SecurityGroups": [],
@@ -3037,7 +4784,7 @@
           "Message": ""
         },
         "StateTransitionReason": "",
-        "SubnetId": "subnet-fc09670a03034ed31",
+        "SubnetId": "subnet-ca64f95fa04d62108",
         "Tags": [
           {
             "Key": "Name",
@@ -3057,9 +4804,9 @@
           }
         ],
         "VirtualizationType": "hvm",
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "i-54f5924886e470545",
+      "id": "i-5976c0c25eba950f8",
       "name": "tools-bastion-1",
       "region": "us-east-1",
       "service": "ec2",
@@ -3073,15 +4820,15 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:internet-gateway/igw-f1fe18be3c89fe70d",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:internet-gateway/igw-6ae4bea4ea36df8a7",
       "config": {
         "Attachments": [
           {
             "State": "available",
-            "VpcId": "vpc-01fb7223f8e5193f2"
+            "VpcId": "vpc-e94c10acba5b3162b"
           }
         ],
-        "InternetGatewayId": "igw-f1fe18be3c89fe70d",
+        "InternetGatewayId": "igw-6ae4bea4ea36df8a7",
         "OwnerId": "123456789012",
         "Tags": [
           {
@@ -3090,7 +4837,7 @@
           }
         ]
       },
-      "id": "igw-f1fe18be3c89fe70d",
+      "id": "igw-6ae4bea4ea36df8a7",
       "name": "tools-igw",
       "region": "us-east-1",
       "service": "ec2",
@@ -3101,7 +4848,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-97b296ae00300642a",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-93a8471d84f283f01",
       "config": {
         "Associations": [
           {
@@ -3109,12 +4856,12 @@
               "State": "associated"
             },
             "Main": true,
-            "RouteTableAssociationId": "rtbassoc-79403fb07b933d00c",
-            "RouteTableId": "rtb-97b296ae00300642a"
+            "RouteTableAssociationId": "rtbassoc-b8c1fe4d4e2cfd592",
+            "RouteTableId": "rtb-93a8471d84f283f01"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-97b296ae00300642a",
+        "RouteTableId": "rtb-93a8471d84f283f01",
         "Routes": [
           {
             "DestinationCidrBlock": "172.31.0.0/16",
@@ -3124,9 +4871,9 @@
           }
         ],
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "rtb-97b296ae00300642a",
+      "id": "rtb-93a8471d84f283f01",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -3135,7 +4882,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-ce41f00a7b358d5d8",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-e467581ba877d8a6a",
       "config": {
         "Associations": [
           {
@@ -3143,12 +4890,12 @@
               "State": "associated"
             },
             "Main": true,
-            "RouteTableAssociationId": "rtbassoc-ebe8751567ca4e7e6",
-            "RouteTableId": "rtb-ce41f00a7b358d5d8"
+            "RouteTableAssociationId": "rtbassoc-d5536d77d56eaf2a2",
+            "RouteTableId": "rtb-e467581ba877d8a6a"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-ce41f00a7b358d5d8",
+        "RouteTableId": "rtb-e467581ba877d8a6a",
         "Routes": [
           {
             "DestinationCidrBlock": "10.30.0.0/16",
@@ -3158,9 +4905,9 @@
           }
         ],
         "Tags": [],
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "rtb-ce41f00a7b358d5d8",
+      "id": "rtb-e467581ba877d8a6a",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -3169,7 +4916,7 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-c5202c84c51ad5cd5",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:route-table/rtb-5e8735b28cc331481",
       "config": {
         "Associations": [
           {
@@ -3177,13 +4924,13 @@
               "State": "associated"
             },
             "Main": false,
-            "RouteTableAssociationId": "rtbassoc-87659af80d5755f95",
-            "RouteTableId": "rtb-c5202c84c51ad5cd5",
-            "SubnetId": "subnet-fc09670a03034ed31"
+            "RouteTableAssociationId": "rtbassoc-5abb18149dc5947f2",
+            "RouteTableId": "rtb-5e8735b28cc331481",
+            "SubnetId": "subnet-ca64f95fa04d62108"
           }
         ],
         "OwnerId": "123456789012",
-        "RouteTableId": "rtb-c5202c84c51ad5cd5",
+        "RouteTableId": "rtb-5e8735b28cc331481",
         "Routes": [
           {
             "DestinationCidrBlock": "10.30.0.0/16",
@@ -3193,7 +4940,7 @@
           },
           {
             "DestinationCidrBlock": "0.0.0.0/0",
-            "GatewayId": "igw-f1fe18be3c89fe70d",
+            "GatewayId": "igw-6ae4bea4ea36df8a7",
             "Origin": "CreateRoute",
             "State": "active"
           }
@@ -3204,9 +4951,9 @@
             "Value": "tools-public-rt"
           }
         ],
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "rtb-c5202c84c51ad5cd5",
+      "id": "rtb-5e8735b28cc331481",
       "name": "tools-public-rt",
       "region": "us-east-1",
       "service": "ec2",
@@ -3217,38 +4964,38 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-569c0e3d41348681a",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-a2c4d1506292d59f8",
       "config": {
         "Associations": [
           {
-            "NetworkAclAssociationId": "aclassoc-9419d9622560b0d27",
-            "NetworkAclId": "acl-569c0e3d41348681a",
-            "SubnetId": "subnet-58e7f1324cd27279d"
+            "NetworkAclAssociationId": "aclassoc-74554f06e077bf8d8",
+            "NetworkAclId": "acl-a2c4d1506292d59f8",
+            "SubnetId": "subnet-f1e9ea6082c9ab699"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-147d479aeffc675a5",
-            "NetworkAclId": "acl-569c0e3d41348681a",
-            "SubnetId": "subnet-e644f882e78c03ebf"
+            "NetworkAclAssociationId": "aclassoc-acbd59b64b399776d",
+            "NetworkAclId": "acl-a2c4d1506292d59f8",
+            "SubnetId": "subnet-bf3d05e8e3246c747"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-3950692030f892133",
-            "NetworkAclId": "acl-569c0e3d41348681a",
-            "SubnetId": "subnet-3a133faf11c023b1e"
+            "NetworkAclAssociationId": "aclassoc-7ccd01dc8e44eac5f",
+            "NetworkAclId": "acl-a2c4d1506292d59f8",
+            "SubnetId": "subnet-8c08bbccc2a093cec"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-8c467e511b3dfda30",
-            "NetworkAclId": "acl-569c0e3d41348681a",
-            "SubnetId": "subnet-0df4ccd3d4d6c8b67"
+            "NetworkAclAssociationId": "aclassoc-1ce0ed05d7def14da",
+            "NetworkAclId": "acl-a2c4d1506292d59f8",
+            "SubnetId": "subnet-f7c2c7a8b19e859e3"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-ab124754ae1e8236c",
-            "NetworkAclId": "acl-569c0e3d41348681a",
-            "SubnetId": "subnet-0b8ecbcbe6993a26f"
+            "NetworkAclAssociationId": "aclassoc-91cb040b356d3416d",
+            "NetworkAclId": "acl-a2c4d1506292d59f8",
+            "SubnetId": "subnet-ce33b306effd813d5"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-156a1abd4c86267da",
-            "NetworkAclId": "acl-569c0e3d41348681a",
-            "SubnetId": "subnet-8e668fa09f3e7d9fb"
+            "NetworkAclAssociationId": "aclassoc-2e2541e93be3dc0bf",
+            "NetworkAclId": "acl-a2c4d1506292d59f8",
+            "SubnetId": "subnet-e18da0ce6fa9d4fa2"
           }
         ],
         "Entries": [
@@ -3282,12 +5029,12 @@
           }
         ],
         "IsDefault": true,
-        "NetworkAclId": "acl-569c0e3d41348681a",
+        "NetworkAclId": "acl-a2c4d1506292d59f8",
         "OwnerId": "123456789012",
         "Tags": [],
-        "VpcId": "vpc-55f855a56b0253be5"
+        "VpcId": "vpc-fe3be0e79e256397c"
       },
-      "id": "acl-569c0e3d41348681a",
+      "id": "acl-a2c4d1506292d59f8",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
@@ -3296,18 +5043,18 @@
     },
     {
       "account_id": "123456789012",
-      "arn": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-ca16cebb8a2310b86",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:network-acl/acl-6c20a9911cf7f85fe",
       "config": {
         "Associations": [
           {
-            "NetworkAclAssociationId": "aclassoc-aae1ddc450d6309af",
-            "NetworkAclId": "acl-ca16cebb8a2310b86",
-            "SubnetId": "subnet-fc09670a03034ed31"
+            "NetworkAclAssociationId": "aclassoc-ce9849d92832bcc04",
+            "NetworkAclId": "acl-6c20a9911cf7f85fe",
+            "SubnetId": "subnet-ca64f95fa04d62108"
           },
           {
-            "NetworkAclAssociationId": "aclassoc-36c53de045d9421f7",
-            "NetworkAclId": "acl-ca16cebb8a2310b86",
-            "SubnetId": "subnet-02abbf977686d1657"
+            "NetworkAclAssociationId": "aclassoc-beaf96830f88a704f",
+            "NetworkAclId": "acl-6c20a9911cf7f85fe",
+            "SubnetId": "subnet-42357c1de975f5061"
           }
         ],
         "Entries": [
@@ -3341,17 +5088,97 @@
           }
         ],
         "IsDefault": true,
-        "NetworkAclId": "acl-ca16cebb8a2310b86",
+        "NetworkAclId": "acl-6c20a9911cf7f85fe",
         "OwnerId": "123456789012",
         "Tags": [],
-        "VpcId": "vpc-01fb7223f8e5193f2"
+        "VpcId": "vpc-e94c10acba5b3162b"
       },
-      "id": "acl-ca16cebb8a2310b86",
+      "id": "acl-6c20a9911cf7f85fe",
       "name": null,
       "region": "us-east-1",
       "service": "ec2",
       "tags": {},
       "type": "network-acl"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:volume/vol-89806a164f72b8bf4",
+      "config": {
+        "Attachments": [
+          {
+            "AttachTime": "2026-11-10T21:49:35+00:00",
+            "Device": "/dev/sda1",
+            "InstanceId": "i-5976c0c25eba950f8",
+            "State": "attached",
+            "VolumeId": "vol-89806a164f72b8bf4"
+          }
+        ],
+        "AvailabilityZone": "us-east-1a",
+        "CreateTime": "2026-11-10T21:49:35+00:00",
+        "Encrypted": false,
+        "Size": 8,
+        "State": "in-use",
+        "VolumeId": "vol-89806a164f72b8bf4",
+        "VolumeType": "gp2"
+      },
+      "id": "vol-89806a164f72b8bf4",
+      "name": null,
+      "region": "us-east-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "volume"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ec2:us-east-1:123456789012:scamallscope-setting/ebs-encryption-by-default",
+      "config": {
+        "Enabled": false
+      },
+      "id": "ebs-encryption-by-default",
+      "name": "ebs-encryption-by-default (us-east-1)",
+      "region": "us-east-1",
+      "service": "ec2",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:guardduty:us-east-1:123456789012:scamallscope-setting/guardduty",
+      "config": {
+        "Detectors": []
+      },
+      "id": "guardduty",
+      "name": "guardduty (us-east-1)",
+      "region": "us-east-1",
+      "service": "guardduty",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:backup:us-east-1:123456789012:scamallscope-setting/backup-protected",
+      "config": {
+        "Resources": []
+      },
+      "id": "backup-protected",
+      "name": "backup-protected (us-east-1)",
+      "region": "us-east-1",
+      "service": "backup",
+      "tags": {},
+      "type": "setting"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:ssm:us-east-1:123456789012:scamallscope-setting/ssm-managed",
+      "config": {
+        "Instances": []
+      },
+      "id": "ssm-managed",
+      "name": "ssm-managed (us-east-1)",
+      "region": "us-east-1",
+      "service": "ssm",
+      "tags": {},
+      "type": "setting"
     },
     {
       "account_id": "123456789012",
@@ -3359,16 +5186,16 @@
       "config": {
         "Arn": "arn:aws:iam::123456789012:user/alex.admin",
         "AttachedManagedPolicies": [],
-        "CreateDate": "2026-11-05T09:11:10.385649+00:00",
+        "CreateDate": "2026-11-10T21:49:33.729712+00:00",
         "GroupList": [
           "platform-admins"
         ],
         "Path": "/",
-        "UserId": "sntkc4gbn2j8m027vc6n",
+        "UserId": "ddpaa4hkbxe40a8zdnld",
         "UserName": "alex.admin",
         "UserPolicyList": []
       },
-      "id": "sntkc4gbn2j8m027vc6n",
+      "id": "ddpaa4hkbxe40a8zdnld",
       "name": "alex.admin",
       "region": "global",
       "service": "iam",
@@ -3386,14 +5213,14 @@
             "PolicyName": "deploy-site"
           }
         ],
-        "CreateDate": "2026-11-05T09:11:10.391353+00:00",
+        "CreateDate": "2026-11-10T21:49:33.737289+00:00",
         "GroupList": [],
         "Path": "/",
-        "UserId": "1iht15leyv21n8lgm6yi",
+        "UserId": "ml1hc5m03qs5hp01581q",
         "UserName": "ci-deployer",
         "UserPolicyList": []
       },
-      "id": "1iht15leyv21n8lgm6yi",
+      "id": "ml1hc5m03qs5hp01581q",
       "name": "ci-deployer",
       "region": "global",
       "service": "iam",
@@ -3411,13 +5238,13 @@
             "PolicyName": "AdministratorAccess"
           }
         ],
-        "CreateDate": "2026-11-05T09:11:10.381863+00:00",
-        "GroupId": "e00vxeh34j6pn68cqhcn",
+        "CreateDate": "2026-11-10T21:49:33.725051+00:00",
+        "GroupId": "6ld2rscw28j6yup9mpxc",
         "GroupName": "platform-admins",
         "GroupPolicyList": [],
         "Path": "/"
       },
-      "id": "e00vxeh34j6pn68cqhcn",
+      "id": "6ld2rscw28j6yup9mpxc",
       "name": "platform-admins",
       "region": "global",
       "service": "iam",
@@ -3447,12 +5274,12 @@
             "PolicyName": "AmazonS3ReadOnlyAccess"
           }
         ],
-        "CreateDate": "2026-11-05T09:11:10.371856+00:00",
+        "CreateDate": "2026-11-10T21:49:33.711415+00:00",
         "InstanceProfileList": [
           {
             "Arn": "arn:aws:iam::123456789012:instance-profile/prod-web-profile",
-            "CreateDate": "2026-11-05T09:11:10.376954+00:00",
-            "InstanceProfileId": "714w939wf6kvh1hgmghx",
+            "CreateDate": "2026-11-10T21:49:33.717022+00:00",
+            "InstanceProfileId": "p6dhe0whrx8p0fnfmq1u",
             "InstanceProfileName": "prod-web-profile",
             "Path": "/",
             "Roles": [
@@ -3470,10 +5297,10 @@
                   ],
                   "Version": "2012-10-17"
                 },
-                "CreateDate": "2026-11-05T09:11:10.371856+00:00",
+                "CreateDate": "2026-11-10T21:49:33.711415+00:00",
                 "MaxSessionDuration": 3600,
                 "Path": "/",
-                "RoleId": "AROARZPUZDIKMBQEUKCSW",
+                "RoleId": "AROARZPUZDIKHMRBCXU77",
                 "RoleLastUsed": {},
                 "RoleName": "prod-web-role",
                 "Tags": []
@@ -3483,13 +5310,13 @@
           }
         ],
         "Path": "/",
-        "RoleId": "AROARZPUZDIKMBQEUKCSW",
+        "RoleId": "AROARZPUZDIKHMRBCXU77",
         "RoleLastUsed": {},
         "RoleName": "prod-web-role",
         "RolePolicyList": [],
         "Tags": []
       },
-      "id": "AROARZPUZDIKMBQEUKCSW",
+      "id": "AROARZPUZDIKHMRBCXU77",
       "name": "prod-web-role",
       "region": "global",
       "service": "iam",
@@ -3514,16 +5341,16 @@
           "Version": "2012-10-17"
         },
         "AttachedManagedPolicies": [],
-        "CreateDate": "2026-11-05T09:11:10.380085+00:00",
+        "CreateDate": "2026-11-10T21:49:33.722115+00:00",
         "InstanceProfileList": [],
         "Path": "/",
-        "RoleId": "AROARZPUZDIKFQIGYBTJ3",
+        "RoleId": "AROARZPUZDIKD6MORNKFF",
         "RoleLastUsed": {},
         "RoleName": "orders-api-role",
         "RolePolicyList": [],
         "Tags": []
       },
-      "id": "AROARZPUZDIKFQIGYBTJ3",
+      "id": "AROARZPUZDIKD6MORNKFF",
       "name": "orders-api-role",
       "region": "global",
       "service": "iam",
@@ -3536,14 +5363,14 @@
       "config": {
         "Arn": "arn:aws:iam::123456789012:policy/deploy-site",
         "AttachmentCount": 1,
-        "CreateDate": "2026-11-05T09:11:10.389029+00:00",
+        "CreateDate": "2026-11-10T21:49:33.734589+00:00",
         "DefaultVersionId": "v1",
         "Description": "",
         "IsAttachable": true,
         "Path": "/",
         "PolicyVersionList": [
           {
-            "CreateDate": "2026-11-05T09:11:10.389026+00:00",
+            "CreateDate": "2026-11-10T21:49:33.734585+00:00",
             "Document": {
               "Statement": [
                 {
@@ -3561,7 +5388,7 @@
             "VersionId": "v1"
           }
         ],
-        "UpdateDate": "2026-11-05T09:11:10.389030+00:00"
+        "UpdateDate": "2026-11-10T21:49:33.734591+00:00"
       },
       "id": "deploy-site",
       "name": "deploy-site",
@@ -3605,7 +5432,7 @@
       "arn": "arn:aws:s3:::demo-site-public",
       "config": {
         "AccountPublicAccessBlock": null,
-        "CreationDate": "2026-11-05T09:11:10+00:00",
+        "CreationDate": "2026-11-10T21:49:33+00:00",
         "DetailErrors": {},
         "Encryption": {
           "Rules": [
@@ -3653,7 +5480,7 @@
       "arn": "arn:aws:s3:::demo-reports",
       "config": {
         "AccountPublicAccessBlock": null,
-        "CreationDate": "2026-11-05T09:11:10+00:00",
+        "CreationDate": "2026-11-10T21:49:33+00:00",
         "DetailErrors": {},
         "Encryption": {
           "Rules": [
@@ -3701,7 +5528,7 @@
       "arn": "arn:aws:s3:::demo-backups",
       "config": {
         "AccountPublicAccessBlock": null,
-        "CreationDate": "2026-11-05T09:11:10+00:00",
+        "CreationDate": "2026-11-10T21:49:33+00:00",
         "DetailErrors": {},
         "Encryption": {
           "Rules": [
@@ -3736,6 +5563,106 @@
         "env": "prod"
       },
       "type": "bucket"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:s3:::demo-cloudtrail",
+      "config": {
+        "AccountPublicAccessBlock": null,
+        "CreationDate": "2026-11-10T21:49:34+00:00",
+        "DetailErrors": {},
+        "Encryption": null,
+        "Grants": [
+          {
+            "Grantee": {
+              "ID": "75aa57f09aa0c8caeab4f8c24e99d10f8e7faeebf76c078efc7c6caea54ba06a",
+              "Type": "CanonicalUser"
+            },
+            "Permission": "FULL_CONTROL"
+          }
+        ],
+        "Name": "demo-cloudtrail",
+        "PolicyStatus": null,
+        "PublicAccessBlock": null,
+        "Region": "eu-west-1",
+        "Versioning": null
+      },
+      "id": "demo-cloudtrail",
+      "name": "demo-cloudtrail",
+      "region": "global",
+      "service": "s3",
+      "tags": {},
+      "type": "bucket"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:iam::123456789012:scamallscope-setting/credential-report",
+      "config": {
+        "Rows": [
+          {
+            "access_key_1_active": "false",
+            "access_key_1_last_rotated": "N/A",
+            "access_key_1_last_used_date": "N/A",
+            "access_key_2_active": "false",
+            "access_key_2_last_rotated": "N/A",
+            "access_key_2_last_used_date": "N/A",
+            "arn": "arn:aws:iam::123456789012:root",
+            "mfa_active": "false",
+            "password_enabled": "not_supported",
+            "user": "<root_account>"
+          },
+          {
+            "access_key_1_active": "false",
+            "access_key_1_last_rotated": "N/A",
+            "access_key_1_last_used_date": "N/A",
+            "access_key_2_active": "false",
+            "access_key_2_last_rotated": "N/A",
+            "access_key_2_last_used_date": "N/A",
+            "arn": "arn:aws:iam::123456789012:user/alex.admin",
+            "mfa_active": "false",
+            "password_enabled": "true",
+            "user": "alex.admin"
+          },
+          {
+            "access_key_1_active": "true",
+            "access_key_1_last_rotated": "2026-01-15T10:00:00+00:00",
+            "access_key_1_last_used_date": "2026-11-03T22:00:00+00:00",
+            "access_key_2_active": "false",
+            "access_key_2_last_rotated": "N/A",
+            "access_key_2_last_used_date": "N/A",
+            "arn": "arn:aws:iam::123456789012:user/ci-deployer",
+            "mfa_active": "false",
+            "password_enabled": "false",
+            "user": "ci-deployer"
+          }
+        ]
+      },
+      "id": "credential-report",
+      "name": "IAM credential report",
+      "region": "global",
+      "service": "iam",
+      "tags": {},
+      "type": "credential-report"
+    },
+    {
+      "account_id": "123456789012",
+      "arn": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/main",
+      "config": {
+        "HomeRegion": "eu-west-1",
+        "IsLogging": true,
+        "IsMultiRegionTrail": false,
+        "IsOrganizationTrail": false,
+        "KmsKeyId": null,
+        "LogFileValidationEnabled": false,
+        "Name": "main",
+        "TrailARN": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/main"
+      },
+      "id": "main",
+      "name": "main",
+      "region": "global",
+      "service": "cloudtrail",
+      "tags": {},
+      "type": "trail"
     }
   ],
   "schema_version": 1,
@@ -3749,7 +5676,7 @@
       "status": "ok"
     },
     {
-      "count": 7,
+      "count": 9,
       "error": null,
       "region": "eu-west-1",
       "resource_type": "subnet",
@@ -3765,7 +5692,7 @@
       "status": "ok"
     },
     {
-      "count": 5,
+      "count": 8,
       "error": null,
       "region": "eu-west-1",
       "resource_type": "instance",
@@ -3781,7 +5708,7 @@
       "status": "ok"
     },
     {
-      "count": 5,
+      "count": 6,
       "error": null,
       "region": "eu-west-1",
       "resource_type": "route-table",
@@ -3797,11 +5724,131 @@
       "status": "ok"
     },
     {
+      "count": 10,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "volume",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 2,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "snapshot",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 2,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "elastic-ip",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "nat-gateway",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "vpc-endpoint",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "flow-log",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "setting",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
       "count": 3,
       "error": null,
       "region": "eu-west-1",
       "resource_type": "function",
       "service": "lambda",
+      "status": "ok"
+    },
+    {
+      "count": 2,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "db-instance",
+      "service": "rds",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "load-balancer",
+      "service": "elasticloadbalancing",
+      "status": "ok"
+    },
+    {
+      "count": 2,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "target-group",
+      "service": "elasticloadbalancing",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "autoscaling-group",
+      "service": "autoscaling",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "certificate",
+      "service": "acm",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "setting",
+      "service": "guardduty",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "setting",
+      "service": "backup",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "eu-west-1",
+      "resource_type": "setting",
+      "service": "ssm",
       "status": "ok"
     },
     {
@@ -3861,11 +5908,131 @@
       "status": "ok"
     },
     {
+      "count": 1,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "volume",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "snapshot",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "elastic-ip",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "nat-gateway",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "vpc-endpoint",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "flow-log",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "setting",
+      "service": "ec2",
+      "status": "ok"
+    },
+    {
       "count": 0,
       "error": null,
       "region": "us-east-1",
       "resource_type": "function",
       "service": "lambda",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "db-instance",
+      "service": "rds",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "load-balancer",
+      "service": "elasticloadbalancing",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "target-group",
+      "service": "elasticloadbalancing",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "autoscaling-group",
+      "service": "autoscaling",
+      "status": "ok"
+    },
+    {
+      "count": 0,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "certificate",
+      "service": "acm",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "setting",
+      "service": "guardduty",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "setting",
+      "service": "backup",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "us-east-1",
+      "resource_type": "setting",
+      "service": "ssm",
       "status": "ok"
     },
     {
@@ -3901,11 +6068,27 @@
       "status": "ok"
     },
     {
-      "count": 3,
+      "count": 4,
       "error": null,
       "region": "global",
       "resource_type": "bucket",
       "service": "s3",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "global",
+      "resource_type": "credential-report",
+      "service": "iam",
+      "status": "ok"
+    },
+    {
+      "count": 1,
+      "error": null,
+      "region": "global",
+      "resource_type": "trail",
+      "service": "cloudtrail",
       "status": "ok"
     }
   ]

@@ -127,7 +127,8 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
         node["finding_counts"] = counts(by_resource.get(arn, []))
 
     if cost_summary is not None:
-        idle = {f["resource"] for f in findings if f["check_id"] == "HYG-EC2-002"}
+        idle = {f["resource"] for f in findings if f["check_id"] in ("HYG-EC2-002", "COST-HUB-Stop")
+                and not f["duplicate_of"]}
         cost_summary["idle_monthly_usd"] = round(sum(
             (nodes[a].get("cost") or {}).get("monthly_usd", 0) for a in idle if a in nodes), 2)
         top = sorted(((n.get("cost") or {}).get("monthly_usd", 0), n["label"], arn) for arn, n in nodes.items()

@@ -3,6 +3,10 @@
 Writes samples/demo.snapshot.json, samples/integrations/*.json (fake raw files in the real
 response shapes) and samples/demo.graph.json (graph v2, built by enrich).
 
+moto cannot set creation times and has no SSM or AWS Backup, so a few values are set on the
+snapshot after collect (see phase_b_after_collect): old snapshot and key dates, the root row of
+the credential report, a certificate that expires soon, and the SSM-managed instances.
+
 Run from collector/:  uv run python scripts/make_sample.py
 """
 
@@ -26,7 +30,8 @@ import boto3  # noqa: E402
 from moto import mock_aws  # noqa: E402
 
 from scamallscope import enrich, snapshot  # noqa: E402
-from scamallscope.model import Snapshot  # noqa: E402
+from scamallscope.collectors import account  # noqa: E402
+from scamallscope.model import Snapshot, make_setting  # noqa: E402
 
 REGIONS = ["eu-west-1", "us-east-1"]
 SAMPLES = Path(__file__).resolve().parents[2] / "samples"
@@ -41,9 +46,10 @@ def tag(kind: str, name: str, **extra: str) -> list[dict]:
 
 def vpc_with_public_and_private(ec2, name: str, cidr: str, env: str) -> dict:
     vpc = ec2.create_vpc(CidrBlock=f"{cidr}.0.0/16", TagSpecifications=tag("vpc", name, env=env))["Vpc"]["VpcId"]
-    public = ec2.create_subnet(VpcId=vpc, CidrBlock=f"{cidr}.1.0/24",
+    az = f"{ec2.meta.region_name}a"  # fixed, so the availability rules give the same answer every run
+    public = ec2.create_subnet(VpcId=vpc, CidrBlock=f"{cidr}.1.0/24", AvailabilityZone=az,
                                TagSpecifications=tag("subnet", f"{name}-public"))["Subnet"]["SubnetId"]
-    private = ec2.create_subnet(VpcId=vpc, CidrBlock=f"{cidr}.2.0/24",
+    private = ec2.create_subnet(VpcId=vpc, CidrBlock=f"{cidr}.2.0/24", AvailabilityZone=az,
                                 TagSpecifications=tag("subnet", f"{name}-private"))["Subnet"]["SubnetId"]
     igw = ec2.create_internet_gateway(TagSpecifications=tag("internet-gateway", f"{name}-igw"))
     igw = igw["InternetGateway"]["InternetGatewayId"]
@@ -172,6 +178,7 @@ def build(session: boto3.Session) -> None:
     old = instance(ec2, image, prod["private"], [app], "prod-batch-old", False, "batch", owner="data", env="prod")
     ec2.stop_instances(InstanceIds=[old])                                                   # stopped
     build_lambda(session, iam_ids["lambda_role"], prod["private"], app)
+    build_phase_b(session, ec2, image, prod, web, app)
 
     stg = vpc_with_public_and_private(ec2, "staging", "10.20", "staging")
     stg_web = sg(ec2, stg["vpc"], "staging-web", [("tcp", 22, 22, "0.0.0.0/0"), ("tcp", 80, 80, "0.0.0.0/0")])
@@ -195,6 +202,150 @@ def build(session: boto3.Session) -> None:
     tools = vpc_with_public_and_private(use1, "tools", "10.30", "shared")
     bastion = sg(use1, tools["vpc"], "tools-bastion", [("tcp", 22, 22, "203.0.113.0/24")])
     instance(use1, image1, tools["public"], [bastion], "tools-bastion-1", True, "bastion", owner="platform", env="shared")
+
+
+def subnet(ec2, vpc: str, cidr: str, az: str, name: str) -> str:
+    return ec2.create_subnet(VpcId=vpc, CidrBlock=cidr, AvailabilityZone=az,
+                             TagSpecifications=tag("subnet", name))["Subnet"]["SubnetId"]
+
+
+def build_phase_b(session: boto3.Session, ec2, image: str, prod: dict, web_sg: str, app_sg: str) -> None:
+    """Availability, cost and account-control examples (spec 12): at least one hit per rule."""
+    for sid, az in ((prod["public"], "eu-west-1a"), (prod["private"], "eu-west-1a")):
+        assert ec2.describe_subnets(SubnetIds=[sid])["Subnets"][0]["AvailabilityZone"] == az
+    public_b = subnet(ec2, prod["vpc"], "10.10.3.0/24", "eu-west-1b", "prod-public-b")
+    private_b = subnet(ec2, prod["vpc"], "10.10.4.0/24", "eu-west-1b", "prod-private-b")
+    public_rt = ec2.describe_route_tables(Filters=[{"Name": "association.subnet-id", "Values": [prod["public"]]}])
+    ec2.associate_route_table(RouteTableId=public_rt["RouteTables"][0]["RouteTableId"], SubnetId=public_b)
+
+    # One NAT gateway for private subnets in two AZs, and no S3 gateway endpoint (REL-AZ-004, COST-NAT-001).
+    eip = ec2.allocate_address(Domain="vpc")["AllocationId"]
+    nat = ec2.create_nat_gateway(SubnetId=prod["public"], AllocationId=eip,
+                                 TagSpecifications=tag("natgateway", "prod-nat"))["NatGateway"]["NatGatewayId"]
+    rt = ec2.create_route_table(VpcId=prod["vpc"], TagSpecifications=tag("route-table", "prod-private-rt"))
+    rt = rt["RouteTable"]["RouteTableId"]
+    ec2.create_route(RouteTableId=rt, DestinationCidrBlock="0.0.0.0/0", NatGatewayId=nat)
+    for sid in (prod["private"], private_b):
+        ec2.associate_route_table(RouteTableId=rt, SubnetId=sid)
+    ec2.allocate_address(Domain="vpc", TagSpecifications=tag("elastic-ip", "old-office-vpn"))  # idle (COST-EIP-001)
+
+    # A second web instance in the same AZ: the "shop-web" app runs in one AZ (REL-AZ-001).
+    web2 = instance(ec2, image, prod["public"], [web_sg], "prod-web-2", True, "web", owner="web", env="prod",
+                    app="shop-web")
+    web1 = ec2.describe_instances(Filters=[{"Name": "tag:Name", "Values": ["prod-web-1"]}])
+    web1 = web1["Reservations"][0]["Instances"][0]["InstanceId"]
+    ec2.create_tags(Resources=[web1], Tags=[{"Key": "app", "Value": "shop-web"}])
+
+    # Volumes: a data volume on the database host with no backup, and an unattached gp2 volume.
+    db_host = ec2.describe_instances(Filters=[{"Name": "tag:Name", "Values": ["prod-db-1"]}])
+    db_host = db_host["Reservations"][0]["Instances"][0]["InstanceId"]
+    data = ec2.create_volume(AvailabilityZone="eu-west-1a", Size=200, VolumeType="gp2",
+                             TagSpecifications=tag("volume", "prod-db-data", owner="data"))["VolumeId"]
+    ec2.attach_volume(VolumeId=data, InstanceId=db_host, Device="/dev/sdf")
+    loose = ec2.create_volume(AvailabilityZone="eu-west-1a", Size=100, VolumeType="gp2", Encrypted=True,
+                              TagSpecifications=tag("volume", "old-export", owner="data", env="prod"))["VolumeId"]
+    ec2.create_snapshot(VolumeId=loose, Description="export before migration",
+                        TagSpecifications=tag("snapshot", "old-export-2026-03"))
+    ec2.create_snapshot(VolumeId=data, Description="before upgrade",   # unencrypted (REL-BAK-003), old
+                        TagSpecifications=tag("snapshot", "prod-db-data-2026-03"))
+
+    # Load balancer: plain HTTP listener and an old TLS policy; targets in one AZ, one unhealthy.
+    elb = session.client("elbv2", region_name="eu-west-1")
+    lb = elb.create_load_balancer(Name="prod-web", Subnets=[prod["public"], public_b], SecurityGroups=[web_sg],
+                                  Scheme="internet-facing",
+                                  Tags=[{"Key": "env", "Value": "prod"}, {"Key": "owner", "Value": "web"}])["LoadBalancers"][0]
+    tg = elb.create_target_group(Name="prod-web", Protocol="HTTP", Port=80, VpcId=prod["vpc"], TargetType="instance",
+                                 Tags=[{"Key": "env", "Value": "prod"}])["TargetGroups"][0]
+    elb.register_targets(TargetGroupArn=tg["TargetGroupArn"], Targets=[{"Id": web1}, {"Id": web2}])
+    elb.create_listener(LoadBalancerArn=lb["LoadBalancerArn"], Protocol="HTTP", Port=80,
+                        DefaultActions=[{"Type": "forward", "TargetGroupArn": tg["TargetGroupArn"]}])
+    acm = session.client("acm", region_name="eu-west-1")
+    cert = acm.request_certificate(DomainName="shop.example.com")["CertificateArn"]
+    elb.create_listener(LoadBalancerArn=lb["LoadBalancerArn"], Protocol="HTTPS", Port=443,
+                        SslPolicy="ELBSecurityPolicy-2016-08", Certificates=[{"CertificateArn": cert}],
+                        DefaultActions=[{"Type": "forward", "TargetGroupArn": tg["TargetGroupArn"]}])
+
+    # Workers in an Auto Scaling group in one AZ, with EC2 health checks behind a target group.
+    workers_tg = elb.create_target_group(Name="orders-workers", Protocol="HTTP", Port=8080, VpcId=prod["vpc"],
+                                         TargetType="instance")["TargetGroups"][0]
+    asg = session.client("autoscaling", region_name="eu-west-1")
+    asg.create_launch_configuration(LaunchConfigurationName="orders-workers", ImageId=image, InstanceType="t3.small")
+    asg.create_auto_scaling_group(AutoScalingGroupName="orders-workers", LaunchConfigurationName="orders-workers",
+                                  MinSize=2, MaxSize=4, DesiredCapacity=2, VPCZoneIdentifier=prod["private"],
+                                  TargetGroupARNs=[workers_tg["TargetGroupArn"]], HealthCheckType="EC2",
+                                  Tags=[{"Key": "env", "Value": "prod", "PropagateAtLaunch": True},
+                                        {"Key": "owner", "Value": "orders", "PropagateAtLaunch": True},
+                                        {"Key": "Name", "Value": "orders-worker", "PropagateAtLaunch": True}])
+
+    # Database: single AZ, not encrypted, no automated backups.
+    rds = session.client("rds", region_name="eu-west-1")
+    rds.create_db_subnet_group(DBSubnetGroupName="prod-db", DBSubnetGroupDescription="prod",
+                               SubnetIds=[prod["private"], private_b])
+    rds.create_db_instance(DBInstanceIdentifier="orders-db", Engine="postgres", DBInstanceClass="db.t3.medium",
+                           MasterUsername="orders", MasterUserPassword="made-up-not-real",  # pragma: allowlist secret
+                           AllocatedStorage=50, DBSubnetGroupName="prod-db", VpcSecurityGroupIds=[app_sg],
+                           MultiAZ=False, StorageEncrypted=False, PubliclyAccessible=False, BackupRetentionPeriod=0,
+                           Tags=[{"Key": "env", "Value": "prod"}, {"Key": "owner", "Value": "orders"}])
+
+    # A reporting copy in the public subnets, publicly accessible (SEC-RDS-002 critical).
+    rds.create_db_subnet_group(DBSubnetGroupName="reporting", DBSubnetGroupDescription="reporting",
+                               SubnetIds=[prod["public"], public_b])
+    rds.create_db_instance(DBInstanceIdentifier="reporting-db", Engine="mysql", DBInstanceClass="db.t3.small",
+                           MasterUsername="report", MasterUserPassword="made-up-not-real",  # pragma: allowlist secret
+                           AllocatedStorage=20, DBSubnetGroupName="reporting", VpcSecurityGroupIds=[web_sg],
+                           MultiAZ=False, StorageEncrypted=True, PubliclyAccessible=True, BackupRetentionPeriod=7,
+                           Tags=[{"Key": "env", "Value": "staging"}, {"Key": "owner", "Value": "finance"}])
+
+    # Account controls: a trail in one Region only, GuardDuty only in eu-west-1, a console user without MFA.
+    s3 = session.client("s3", region_name="eu-west-1")
+    s3.create_bucket(Bucket="demo-cloudtrail", CreateBucketConfiguration={"LocationConstraint": "eu-west-1"})
+    ct = session.client("cloudtrail", region_name="eu-west-1")
+    ct.create_trail(Name="main", S3BucketName="demo-cloudtrail", IsMultiRegionTrail=False)  # SEC-LOG-001
+    ct.start_logging(Name="main")
+    session.client("guardduty", region_name="eu-west-1").create_detector(Enable=True)
+    iam = session.client("iam")
+    iam.create_login_profile(UserName="alex.admin", Password="made-up-not-real-1!")  # pragma: allowlist secret
+    iam.create_access_key(UserName="ci-deployer")
+
+
+def no_ssm_or_backup_in_moto() -> None:
+    """moto 5.2.5 has neither ssm:DescribeInstanceInformation nor backup:ListProtectedResources."""
+    def empty(service, setting_id, key):
+        return lambda client, ctx: ([make_setting(ctx["partition"], service, ctx["region"], ctx["account_id"],
+                                                  setting_id, {key: []})], [])
+    fake = {"backup": empty("backup", "backup-protected", "Resources"), "ssm": empty("ssm", "ssm-managed", "Instances")}
+    account.REGIONAL = [(s, t, c, fake.get(s, fn)) for s, t, c, fn in account.REGIONAL]
+    account.REPORT_WAIT_S = 0
+
+
+def phase_b_after_collect(snap: Snapshot) -> None:
+    """Values moto cannot produce (see the module docstring). All made up."""
+    by_name = {r["name"]: r for r in snap["resources"]}
+    ids = {r["name"]: r["id"] for r in snap["resources"] if r["type"] == "instance"}
+    for r in snap["resources"]:
+        if r["type"] == "snapshot":
+            r["config"]["StartTime"] = "2026-03-02T09:00:00+00:00"   # 247 days before the demo date
+        if r["type"] == "certificate":
+            r["config"]["NotAfter"] = "2026-11-24T00:00:00+00:00"    # 20 days after the demo date
+        if r["type"] == "setting" and r["id"] == "ssm-managed" and r["region"] == "eu-west-1":
+            r["config"]["Instances"] = [{"InstanceId": ids[n], "PingStatus": "Online"} for n in ("prod-app-1", "prod-web-2")]
+        if r["type"] == "credential-report":
+            rows = r["config"]["Rows"]
+            for row in rows:
+                if row["user"] == "ci-deployer":
+                    row["access_key_1_last_rotated"] = "2026-01-15T10:00:00+00:00"
+                    row["access_key_1_last_used_date"] = "2026-11-03T22:00:00+00:00"
+            rows.insert(0, {"user": "<root_account>", "arn": f"arn:aws:iam::{snap['account_id']}:root",
+                            "password_enabled": "not_supported", "mfa_active": "false",
+                            "access_key_1_active": "false", "access_key_1_last_rotated": "N/A",
+                            "access_key_1_last_used_date": "N/A", "access_key_2_active": "false",
+                            "access_key_2_last_rotated": "N/A", "access_key_2_last_used_date": "N/A"})
+        if r["type"] == "target-group" and r["name"] == "prod-web":
+            for t in r["config"]["TargetHealth"]:
+                if t["Id"] == ids["prod-web-2"]:
+                    t.update(State="unhealthy", Reason="Target.FailedHealthChecks")  # REL-HEAL-003
+    # The instance that runs alone has automatic recovery turned off (REL-HEAL-001).
+    by_name["prod-db-1"]["config"].setdefault("MaintenanceOptions", {})["AutoRecovery"] = "disabled"
 
 
 def fake_integrations(snap: Snapshot) -> dict[str, object]:
@@ -228,8 +379,9 @@ def fake_integrations(snap: Snapshot) -> dict[str, object]:
              fix="Remove the rule; use Session Manager instead of SSH."),
         ocsf("FAIL", "Medium", "ec2_instance_managed_by_ssm", "Check if EC2 instances are managed by Systems Manager",
              i_arn(db), "eu-west-1", ["SEC01-BP06", "SEC06-BP04", "SEC06-BP05"], detail="Instance is not managed by SSM."),
-        ocsf("PASS", "Medium", "cloudtrail_multi_region_enabled", "Ensure CloudTrail is enabled in all regions",
-             f"arn:aws:cloudtrail:eu-west-1:{acct}:trail/main", "eu-west-1", ["SEC04-BP02", "SEC04-BP03"]),
+        ocsf("FAIL", "Medium", "cloudtrail_multi_region_enabled", "Ensure CloudTrail is enabled in all regions",
+             f"arn:aws:cloudtrail:eu-west-1:{acct}:trail/main", "eu-west-1", ["SEC04-BP02", "SEC04-BP03"],
+             detail="Trail main logs eu-west-1 only."),
         ocsf("FAIL", "Medium", "guardduty_is_enabled", "Check if GuardDuty is enabled",
              f"arn:aws:guardduty:us-east-1:{acct}:detector/unknown", "us-east-1", ["SEC04-BP04", "SEC05-BP04"],
              detail="GuardDuty is not enabled in us-east-1."),
@@ -332,9 +484,34 @@ def fake_integrations(snap: Snapshot) -> dict[str, object]:
         start = f"2026-10-{21 + d:02d}" if 21 + d <= 31 else f"2026-11-{d - 10:02d}"
         end = f"2026-10-{22 + d:02d}" if 22 + d <= 31 else f"2026-11-{d - 9:02d}"
         by_resource.append(month(start, end, daily, True))
-    cost = {"fetched_at": "2026-11-04", "tag_key": "env", "by_service": by_service, "by_tag": by_tag, "by_resource": by_resource}
+    window = {"Start": "2026-10-05", "End": "2026-11-04"}
+    sp_coverage = [{"TimePeriod": window, "Coverage": {"SpendCoveredBySavingsPlans": "0", "OnDemandCost": "68.40",
+                                                       "TotalCost": "68.40", "CoveragePercentage": "0"}}]
+    ri_coverage = [{"TimePeriod": window, "Total": {"CoverageHours": {"OnDemandHours": "3600", "ReservedHours": "0",
+                                                                      "TotalRunningHours": "3600"}}}]
+    cost = {"fetched_at": "2026-11-04", "tag_key": "env", "by_service": by_service, "by_tag": by_tag,
+            "by_resource": by_resource, "coverage_window": window, "sp_coverage": sp_coverage, "ri_coverage": ri_coverage}
+    # Inflate on-demand so the coverage rule's 100 USD floor is passed in the demo.
+    sp_coverage[0]["Coverage"].update(OnDemandCost="168.40", TotalCost="168.40")
+
+    vol = {r["name"]: r["arn"] for r in snap["resources"] if r["type"] == "volume"}
+
+    def hub(rid, arn, action, saving, rtype, **extra):
+        return {"recommendationId": f"made-up-{rid}", "accountId": acct, "region": "eu-west-1", "resourceId": rid,
+                "resourceArn": arn, "currentResourceType": rtype, "actionType": action,
+                "estimatedMonthlySavings": saving, "estimatedMonthlyCost": round(saving * 1.6, 2), "currencyCode": "USD",
+                "implementationEffort": "Low", "restartNeeded": action in ("Rightsize", "Stop"),
+                "rollbackPossible": action != "Delete", "recommendationLookbackPeriodInDays": 14, **extra}
+    costhub = {"fetched_at": at, "enabled": True, "reason": None, "compute_optimizer": "Active", "recommendations": [
+        hub(web, i_arn(web), "Rightsize", 14.6, "Ec2Instance", currentResourceSummary="t3.large",
+            recommendedResourceSummary="t3.medium"),
+        hub(stg, i_arn(stg), "Stop", 7.3, "Ec2Instance"),
+        hub(vol["old-export"].split("/")[-1], vol["old-export"], "Delete", 10.0, "EbsVolume"),
+        hub("compute-sp", None, "PurchaseSavingsPlans", 22.8, "ComputeSavingsPlans",
+            recommendedResourceType="ComputeSavingsPlans", recommendedResourceSummary="$0.08/hour, 1 year, no upfront",
+            recommendationLookbackPeriodInDays=30)]}
     return {"prowler.ocsf.json": prowler, "wazuh.json": wazuh, "github.json": github, "ansible.json": ansible,
-            "cloudwatch.json": cloudwatch, "prometheus.json": prometheus, "cost.json": cost}
+            "cloudwatch.json": cloudwatch, "prometheus.json": prometheus, "cost.json": cost, "costhub.json": costhub}
 
 
 def write(path: Path, data: object) -> None:
@@ -343,12 +520,14 @@ def write(path: Path, data: object) -> None:
 
 
 def main() -> None:
+    no_ssm_or_backup_in_moto()
     with mock_aws():
         session = boto3.Session(region_name="eu-west-1")
         build(session)
         stand_in_for_list_function_url_configs(session)
         snap = snapshot.collect(session, REGIONS)
     snap["collected_at"] = "2026-11-04T06:00:00+00:00"
+    phase_b_after_collect(snap)
     write(SAMPLES / "demo.snapshot.json", snap)
     for name, data in fake_integrations(snap).items():
         write(RAW / name, data)
@@ -361,6 +540,11 @@ def main() -> None:
     for f in result["findings"]:
         sev[f["severity"]] = sev.get(f["severity"], 0) + 1
     print(f"{len(result['findings'])} findings {sev}")
+    print(f"summary {result['summary']}")
+    from scamallscope import hygiene
+    rule_ids = {r.id for r in hygiene.rules(hygiene.DEFAULT_REQUIRED_TAGS)}
+    missing = sorted(rule_ids - {f["check_id"] for f in result["findings"]} - {"HYG-EC2-002"})
+    print(f"rules with no example in the demo: {missing or 'none'} (HYG-EC2-002 is off: the hub is loaded)")
     for pillar, p in result["posture"].items():
         print(f"  {pillar:<12} {p['summary']}")
     nodes = [e for e in result["elements"] if e["group"] == "nodes"]

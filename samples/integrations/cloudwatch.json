@@ -9,7 +9,7 @@
           "Dimensions": [
             {
               "Name": "InstanceId",
-              "Value": "i-06bcb7f777169cd41"
+              "Value": "i-378a2d78c6ce9d8de"
             }
           ]
         },
@@ -18,24 +18,44 @@
           "Dimensions": [
             {
               "Name": "InstanceId",
-              "Value": "i-2e866114b400cf4e5"
+              "Value": "i-31d98de1f9454a940"
             }
           ]
         }
       ],
       "queries": {
-        "q0_avg": "i-06bcb7f777169cd41|avg",
-        "q0_max": "i-06bcb7f777169cd41|max",
-        "q1_avg": "i-16f243ae04384aa3f|avg",
-        "q1_max": "i-16f243ae04384aa3f|max",
-        "q2_avg": "i-2e866114b400cf4e5|avg",
-        "q2_max": "i-2e866114b400cf4e5|max",
-        "q3_avg": "i-de5f7cb5498462b88|avg",
-        "q3_max": "i-de5f7cb5498462b88|max"
+        "q0_avg": "i-31d98de1f9454a940|avg",
+        "q0_max": "i-31d98de1f9454a940|max",
+        "q1_avg": "i-378a2d78c6ce9d8de|avg",
+        "q1_max": "i-378a2d78c6ce9d8de|max",
+        "q2_avg": "i-4668d9527de90dc75|avg",
+        "q2_max": "i-4668d9527de90dc75|max",
+        "q3_avg": "i-dbe3777512af986df|avg",
+        "q3_max": "i-dbe3777512af986df|max"
       },
       "results": [
         {
           "Id": "q0_avg",
+          "Label": "CPUUtilization",
+          "StatusCode": "Complete",
+          "Timestamps": [],
+          "Values": [
+            12.0,
+            15.5
+          ]
+        },
+        {
+          "Id": "q0_max",
+          "Label": "CPUUtilization",
+          "StatusCode": "Complete",
+          "Timestamps": [],
+          "Values": [
+            40.0,
+            55.0
+          ]
+        },
+        {
+          "Id": "q1_avg",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -46,7 +66,7 @@
           ]
         },
         {
-          "Id": "q0_max",
+          "Id": "q1_max",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -56,47 +76,7 @@
           ]
         },
         {
-          "Id": "q1_avg",
-          "Label": "CPUUtilization",
-          "StatusCode": "Complete",
-          "Timestamps": [],
-          "Values": [
-            0.9,
-            1.1
-          ]
-        },
-        {
-          "Id": "q1_max",
-          "Label": "CPUUtilization",
-          "StatusCode": "Complete",
-          "Timestamps": [],
-          "Values": [
-            3.0,
-            4.2
-          ]
-        },
-        {
           "Id": "q2_avg",
-          "Label": "CPUUtilization",
-          "StatusCode": "Complete",
-          "Timestamps": [],
-          "Values": [
-            12.0,
-            15.5
-          ]
-        },
-        {
-          "Id": "q2_max",
-          "Label": "CPUUtilization",
-          "StatusCode": "Complete",
-          "Timestamps": [],
-          "Values": [
-            40.0,
-            55.0
-          ]
-        },
-        {
-          "Id": "q3_avg",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -107,7 +87,7 @@
           ]
         },
         {
-          "Id": "q3_max",
+          "Id": "q2_max",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -115,14 +95,34 @@
             8.0,
             11.5
           ]
+        },
+        {
+          "Id": "q3_avg",
+          "Label": "CPUUtilization",
+          "StatusCode": "Complete",
+          "Timestamps": [],
+          "Values": [
+            0.9,
+            1.1
+          ]
+        },
+        {
+          "Id": "q3_max",
+          "Label": "CPUUtilization",
+          "StatusCode": "Complete",
+          "Timestamps": [],
+          "Values": [
+            3.0,
+            4.2
+          ]
         }
       ]
     },
     "us-east-1": {
       "alarms": [],
       "queries": {
-        "q0_avg": "i-54f5924886e470545|avg",
-        "q0_max": "i-54f5924886e470545|max"
+        "q0_avg": "i-5976c0c25eba950f8|avg",
+        "q0_max": "i-5976c0c25eba950f8|max"
       },
       "results": [
         {

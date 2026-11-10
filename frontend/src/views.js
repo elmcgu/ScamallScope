@@ -119,8 +119,9 @@ export function postureSummary(graph) {
 }
 
 /** Findings about one resource, worst first (for the details panel). */
+/** A resource's findings, each issue once (duplicates from other sources are left out, spec 13). */
 export function findingsFor(graph, id) {
-  return sortFindings((graph.findings || []).filter((f) => f.resource === id));
+  return sortFindings((graph.findings || []).filter((f) => f.resource === id && !f.duplicate_of));
 }
 
 /** Which integrations were loaded, for the header. */
