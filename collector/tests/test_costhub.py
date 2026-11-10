@@ -36,15 +36,16 @@ def stubbed(pages=None, hub_error=None, co_status="Active"):
         hs.add_client_error("list_recommendations", service_error_code=hub_error, service_message="not enrolled")
     else:
         for n, items in enumerate(pages or [[]]):
-            resp = {"items": items}
+            resp: dict = {"items": items}
             if n < len(pages or [[]]) - 1:
                 resp["nextToken"] = f"t{n}"  # pragma: allowlist secret
-            params = {"includeAllRecommendations": False}
+            params: dict = {"includeAllRecommendations": False}
             if n:
                 params["nextToken"] = f"t{n - 1}"  # pragma: allowlist secret
             hs.add_response("list_recommendations", resp, params)
     cs.add_response("get_enrollment_status", {"status": co_status})
-    hs.activate(), cs.activate()
+    hs.activate()
+    cs.activate()
     return FakeSession(hub, co)
 
 
@@ -74,7 +75,7 @@ def test_COH_4_delete_volume():
     (f,) = parsed(rec("vol-0old", VOL, "Delete", 12.5))["findings"]
     assert (f["check_id"], f["best_practices"], f["savings_usd"], f["severity"], f["pillar"]) == \
         ("COST-HUB-Delete", ["COST04-BP03"], 12.5, "low", "cost")
-    assert f["resource"] == VOL and f["remediation"].startswith("Review in Cost Optimization Hub")
+    assert f["resource"] == VOL and str(f["remediation"]).startswith("Review in Cost Optimization Hub")
 
 
 def test_COH_5_rightsize_instance():
