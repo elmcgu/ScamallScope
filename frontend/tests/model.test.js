@@ -199,3 +199,17 @@ describe("admin and details", () => {
 function nodesOfSample() {
   return sample.elements.filter((e) => e.group === "nodes").map((e) => e.data);
 }
+
+describe("map types", () => {
+  it("snapshots, settings and other rule inputs are not drawn", async () => {
+    const { toCyElements, facets } = await import("../src/model.js");
+    const g = { schema_version: 2, elements: [
+      { group: "nodes", data: { id: "v", type: "volume", region: "r", label: "v" } },
+      { group: "nodes", data: { id: "s", type: "snapshot", region: "r", label: "s" } },
+      { group: "nodes", data: { id: "x", type: "setting", region: "r", label: "x" } },
+      { group: "edges", data: { id: "e", source: "s", target: "v", type: "snapshot_of" } }] };
+    const els = toCyElements(g);
+    expect(els.map((e) => e.data.id)).toEqual(["v"]);
+    expect(facets(g).types).toEqual(["volume"]);
+  });
+});

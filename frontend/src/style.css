@@ -95,3 +95,4 @@ a { color: var(--accent); }
 .card-head strong { font-weight: 700; }
 .saving { color: #7ee787; font-weight: 700; }
 .note { background: var(--warn-bg); color: var(--warn); border-left: 4px solid var(--warn); padding: 0.35rem 0.5rem; margin: 0 0 0.6rem; font-size: 0.92rem; }
+table.grid td.bad { color: #ff7b72; font-weight: 700; }

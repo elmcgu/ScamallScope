@@ -6,9 +6,12 @@ export const SCHEMA_VERSIONS = [1, 2]; // 2 = built by "enrich" (findings, postu
 
 // "contains" edges that become nesting (child drawn inside parent) instead of lines.
 const NEST = {
-  vpc: new Set(["subnet", "security-group", "route-table", "network-acl"]),
-  subnet: new Set(["instance"]),
+  vpc: new Set(["subnet", "security-group", "route-table", "network-acl", "vpc-endpoint", "db-instance", "load-balancer"]),
+  subnet: new Set(["instance", "nat-gateway"]),
 };
+
+// Types that feed rules and views but are not drawn on the map (spec 10).
+export const NOT_ON_MAP = new Set(["snapshot", "setting", "trail", "credential-report", "certificate", "flow-log"]);
 
 export function parseGraph(json) {
   const g = typeof json === "string" ? JSON.parse(json) : json;
@@ -25,20 +28,25 @@ export function nodesOf(graph) {
   return graph.elements.filter((e) => e.group === "nodes").map((e) => e.data);
 }
 
+/** Nodes drawn on the map. */
+export function mapNodesOf(graph) {
+  return nodesOf(graph).filter((n) => !NOT_ON_MAP.has(n.type));
+}
+
 export function edgesOf(graph) {
   return graph.elements.filter((e) => e.group === "edges").map((e) => e.data);
 }
 
 /** Cytoscape elements: nest VPC > subnet > instance, and drop the "contains" lines that became nesting. */
 export function toCyElements(graph) {
-  const nodes = new Map(nodesOf(graph).map((n) => [n.id, { ...n }]));
+  const nodes = new Map(mapNodesOf(graph).map((n) => [n.id, { ...n }]));
   const edges = [];
   for (const e of edgesOf(graph)) {
     const src = nodes.get(e.source);
     const dst = nodes.get(e.target);
     if (e.type === "contains" && src && dst && NEST[src.type]?.has(dst.type) && !dst.parent) {
       dst.parent = src.id;
-    } else {
+    } else if (src && dst) {
       edges.push({ group: "edges", data: { ...e } });
     }
   }
@@ -57,11 +65,13 @@ export function displayLabel(node) {
 
 export const SEVERITIES = ["critical", "high", "medium", "low", "info"];
 
-/** Worst severity in a node's finding_counts, or null. */
-export function worstSeverity(node) {
-  const counts = node.finding_counts || {};
+/** Worst severity in a node's finding_counts (or one pillar's counts), or null. */
+export function worstSeverity(node, pillar = null) {
+  const counts = (pillar ? node.finding_counts_by_pillar?.[pillar] : node.finding_counts) || {};
   return SEVERITIES.find((s) => counts[s] > 0) ?? null;
 }
+
+export const PILLAR_MODES = { "pillar-security": "security", "pillar-cost": "cost", "pillar-reliability": "reliability" };
 
 /** Cost band for colouring: top third of the most expensive node is "high", and so on. */
 export function costBand(node, maxCost) {
@@ -80,13 +90,15 @@ export function classesFor(node, mode = "exposure", ctx = {}) {
   if (kind) c.push(`icon-${kind}`);
   if (mode === "exposure" && node.exposure) c.push(`exposure-${node.exposure}`);
   if (mode === "severity" && worstSeverity(node)) c.push(`sev-${worstSeverity(node)}`);
+  const pillar = PILLAR_MODES[mode];
+  if (pillar && worstSeverity(node, pillar)) c.push(`sev-${worstSeverity(node, pillar)}`);
   if (mode === "cost" && costBand(node, ctx.maxCost)) c.push(`cost-${costBand(node, ctx.maxCost)}`);
   if (node.admin) c.push("admin");
   return c.join(" ");
 }
 
 export function facets(graph) {
-  const nodes = nodesOf(graph);
+  const nodes = mapNodesOf(graph);
   return {
     types: [...new Set(nodes.map((n) => n.type))].sort(),
     regions: [...new Set(nodes.map((n) => n.region))].sort(),
@@ -197,7 +209,7 @@ export function summary(graph) {
 /** Rows [label, value] for the details panel. Values are plain strings; the UI sets them as text. */
 export function detailRows(node) {
   const skip = new Set(["id", "parent", "label", "display_label", "exposed_ports", "tags", "ingress", "egress", "routes", "entries",
-    "wazuh", "deploy", "config_run", "metrics", "cost", "finding_counts"]);
+    "wazuh", "deploy", "config_run", "metrics", "cost", "finding_counts", "finding_counts_by_pillar", "listeners"]);
   const rows = [["Name", node.label], ["ARN", node.id]];
   for (const [k, v] of Object.entries(node)) {
     if (skip.has(k) || v === null || v === undefined) continue;

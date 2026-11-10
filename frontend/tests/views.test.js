@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { classesFor, parseGraph, worstSeverity } from "../src/model.js";
 import {
   bpInfo, columnNotes, costSummary, filterFindings, findingsFor, hasEnrichment, hostRows, overviewColumns,
-  overviewTotals, postureRows, postureSummary, safeUrl, savingText, sortFindings, sortRows,
+  overviewTotals, postureRows, postureSummary, safeUrl, savingText, sortFindings, sortRows, workloadRows,
 } from "../src/views.js";
 
 const sample = parseGraph(readFileSync(new URL("../../samples/demo.graph.json", import.meta.url), "utf8"));
@@ -140,5 +140,28 @@ describe("overview", () => {
     expect(t.spof).toBeGreaterThan(0);
     const first = cols[0].items[0];
     expect(bpInfo(sample, first.best_practices[0]).url).toMatch(/^https:\/\/docs\.aws\.amazon\.com\//);
+  });
+});
+
+describe("availability", () => {
+  it("VIEW-12 prod filter", () => {
+    const g = { workloads: [{ name: "a", prod: true, azs: ["x"], members: [] }, { name: "b", prod: false, azs: [], members: [] }] };
+    expect(workloadRows(g, true).map((w) => w.name)).toEqual(["a"]);
+    expect(workloadRows(g).map((w) => [w.name, w.az_count, w.azs_text])).toEqual([["a", 1, "x"], ["b", 0, "?"]]);
+  });
+
+  it("sample has workloads with one-AZ apps first", () => {
+    const rows = workloadRows(sample);
+    expect(rows.length).toBeGreaterThan(5);
+    expect(rows[0].findings).toBeGreaterThan(0);
+    expect(rows.find((w) => w.name === "app shop-web").az_count).toBe(1);
+  });
+
+  it("VIEW-13 colour by one pillar uses only that pillar's findings", () => {
+    const node = { type: "instance", finding_counts: { critical: 1 }, finding_counts_by_pillar: {
+      security: { critical: 1 }, cost: { low: 1 }, reliability: {} } };
+    expect(classesFor(node, "pillar-security")).toContain("sev-critical");
+    expect(classesFor(node, "pillar-cost")).toContain("sev-low");
+    expect(classesFor(node, "pillar-reliability")).not.toContain("sev-");
   });
 });

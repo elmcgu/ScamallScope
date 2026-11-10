@@ -3,13 +3,13 @@ import fcose from "cytoscape-fcose";
 import { LAYOUT } from "./layout.js";
 import { ICON_FILES, iconStyles, installedIcons } from "./icons.js";
 import {
-  ALL_REGIONS, classesFor, defaultRegion, detailRows, facets, parseGraph, portText, regionsFor, summary,
+  ALL_REGIONS, PILLAR_MODES, classesFor, defaultRegion, detailRows, facets, parseGraph, portText, regionsFor, summary,
   toCyElements, visibleIds, warnings,
 } from "./model.js";
 import {
   PILLARS, PILLAR_LABELS, bpInfo, costSummary, filterFindings, findingFacets, findingsFor, hasEnrichment, hostRows,
   integrationStatus, money, overviewColumns, overviewTotals, postureRows, postureSummary, safeUrl, savingText,
-  sortFindings, sortRows,
+  sortFindings, sortRows, workloadRows,
 } from "./views.js";
 
 cytoscape.use(fcose);
@@ -141,6 +141,7 @@ function load(json, source) {
     renderHosts();
     renderCost();
     renderWa();
+    renderAvailability();
   }
   showView(enriched ? "overview" : "map");
 }
@@ -154,13 +155,14 @@ function recolour() {
     n.classes(classesFor(n.data(), colourMode, { maxCost }));
     if (hidden) n.addClass("hidden");
   }));
-  for (const mode of ["exposure", "severity", "cost"]) $(`legend-${mode}`).hidden = mode !== colourMode;
+  const legend = PILLAR_MODES[colourMode] ? "severity" : colourMode;
+  for (const mode of ["exposure", "severity", "cost"]) $(`legend-${mode}`).hidden = mode !== legend;
 }
 
 function showView(name) {
   for (const b of document.querySelectorAll("#views button")) b.setAttribute("aria-pressed", String(b.dataset.view === name));
   $("view-map").hidden = name !== "map";
-  for (const v of ["overview", "findings", "hosts", "cost", "wa"]) $(`view-${v}`).hidden = name !== v;
+  for (const v of ["overview", "findings", "hosts", "cost", "wa", "availability"]) $(`view-${v}`).hidden = name !== v;
   if (name === "map" && cy) cy.resize();
 }
 
@@ -330,6 +332,29 @@ function renderCost() {
   );
 }
 
+function renderAvailability() {
+  const rows = workloadRows(graph, $("a-prod").checked);
+  $("a-count").textContent = `${rows.length} workload(s)`;
+  const nodeIds = new Set(cy ? cy.nodes().map((n) => n.id()) : []);
+  const cls = (bad) => ({ className: bad ? "bad" : "" });
+  const t = table(["Workload", "Kind", "Region", "VPC", "AZs", "Prod", "Healing", "Backup", "Monitoring", "Availability findings"],
+    rows.map((w) => {
+      const target = nodeIds.has(w.id) ? w.id : w.members.find((m) => nodeIds.has(m));
+      return [
+        target ? el("button", { type: "button", className: "link-button", textContent: w.name, onclick: () => openOnMap(target) }) : w.name,
+        w.kind, w.region, w.vpc,
+        { text: `${w.az_count}: ${w.azs_text}`, ...cls(w.az_count < 2) },
+        w.prod ? "yes" : "no",
+        { text: w.healing, ...cls(w.healing === "none") },
+        { text: w.backup, ...cls(w.backup === "missing") },
+        { text: w.monitoring, ...cls(w.monitoring === "none") },
+        { text: w.findings, className: "num" },
+      ];
+    }));
+  t.id = "availability-table";
+  $("availability-table").replaceWith(t);
+}
+
 function renderWa() {
   const statuses = new Set([...document.querySelectorAll(".wa-status")].filter((b) => b.checked).map((b) => b.value));
   const parts = [];
@@ -495,6 +520,7 @@ for (const b of document.querySelectorAll("#views button")) b.addEventListener("
 for (const id of ["f-pillar", "f-severity", "f-source"]) $(id).addEventListener("change", () => graph && renderFindings());
 $("f-search").addEventListener("input", () => graph && renderFindings());
 for (const b of document.querySelectorAll(".wa-status")) b.addEventListener("change", () => graph && renderWa());
+$("a-prod").addEventListener("change", () => graph && renderAvailability());
 
 function typeLegend() {
   const names = {

@@ -195,3 +195,10 @@ export function overviewTotals(graph) {
 export function savingText(v) {
   return typeof v === "number" && v > 0 ? `${money(v)} a month` : "";
 }
+
+/** Availability view rows (spec 14). The graph already sorts them; prodOnly keeps prod workloads (VIEW-12). */
+export function workloadRows(graph, prodOnly = false) {
+  return (graph.workloads ?? []).filter((w) => !prodOnly || w.prod).map((w) => ({
+    ...w, az_count: w.azs.length, azs_text: w.azs.join(", ") || "?",
+  }));
+}

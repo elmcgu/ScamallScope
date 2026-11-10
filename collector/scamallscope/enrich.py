@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from . import graph, hosts, hygiene, posture, rank
+from . import availability, graph, hosts, hygiene, posture, rank
 from .findings import Coverage, Finding, Parsed, counts
 from .integrations import ansible, cloudwatch, cost, costhub, github, prometheus, prowler, wazuh
 from .model import Snapshot
@@ -125,6 +125,8 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
             by_resource.setdefault(f["resource"], []).append(f)
     for arn, node in nodes.items():
         node["finding_counts"] = counts(by_resource.get(arn, []))
+        node["finding_counts_by_pillar"] = {p: counts([f for f in by_resource.get(arn, []) if f["pillar"] == p])
+                                            for p in ("security", "cost", "reliability")}
 
     if cost_summary is not None:
         idle = {f["resource"] for f in findings if f["check_id"] in ("HYG-EC2-002", "COST-HUB-Stop")
@@ -139,6 +141,7 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
     g["meta"]["integrations"] = meta
     g["findings"] = findings
     g["summary"] = summary
+    g["workloads"] = availability.workloads(snap, nodes, rule_sources, findings, today)
     g["posture"] = posture.scorecard(findings, coverage)
     g["cost"] = cost_summary
     return g

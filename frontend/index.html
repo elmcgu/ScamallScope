@@ -20,6 +20,7 @@
         <button type="button" data-view="findings" aria-pressed="false">Findings</button>
         <button type="button" data-view="hosts" aria-pressed="false">Hosts</button>
         <button type="button" data-view="cost" aria-pressed="false">Cost</button>
+        <button type="button" data-view="availability" aria-pressed="false">Availability</button>
         <button type="button" data-view="wa" aria-pressed="false">Well-Architected</button>
       </nav>
       <span id="source">No graph loaded</span>
@@ -50,6 +51,9 @@
             <option value="exposure">Internet exposure</option>
             <option value="severity">Worst finding</option>
             <option value="cost">Monthly cost</option>
+            <option value="pillar-security">Worst security finding</option>
+            <option value="pillar-cost">Worst cost finding</option>
+            <option value="pillar-reliability">Worst availability finding</option>
           </select>
         </section>
         <section>
@@ -112,6 +116,11 @@
     </section>
     <section id="view-cost" class="view" hidden>
       <div id="cost-body"></div>
+    </section>
+    <section id="view-availability" class="view" hidden>
+      <p class="muted">One row per workload: instances with the same <code>app</code> tag, an Auto Scaling group, a target group, a database, or an instance on its own. "unknown" means the source or collection unit it needs is missing.</p>
+      <div class="toolbar"><label><input id="a-prod" type="checkbox" /> Prod only</label><span id="a-count" class="muted"></span></div>
+      <table class="grid" id="availability-table" aria-label="Workloads"></table>
     </section>
     <section id="view-wa" class="view" hidden>
       <p class="muted">AWS Well-Architected best practices for security, reliability and cost. "Clear" means a loaded source checked it and found nothing. "Not checked" means nothing loaded covers it: it is not a pass.</p>
