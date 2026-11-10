@@ -42,7 +42,7 @@ says "estimate".
 | COST-SNAP-001 | snapshot | `StartTime` > 180 days ago, no `aws:backup:source-resource` or `aws:dlm:lifecycle-policy-id` tag | size x 0.05 (upper bound) | by saving | COST04-BP05 |
 | COST-EIP-001 | elastic-ip | Not associated | 3.65 | low | COST04-BP03 |
 | COST-NAT-001 | nat-gateway | `available`, and its VPC has no gateway endpoint for S3 or DynamoDB | null | low | COST08-BP02 |
-| COST-COV-001 | account (cost loaded) | `cost.coverage.savings_plans_pct` + `reservations_pct` < 50 and on-demand spend > 100 a month | null | medium | COST07-BP04 |
+| COST-COV-001 | account (cost loaded, coverage present) | Savings Plans coverage < 50% and RI coverage < 50% (or null), and `on_demand_usd` > 100 over 30 days | null | medium | COST07-BP04 |
 
 HYG-EC2-002 (idle by CPU) does not run when `costhub` is loaded and enabled (decision 0003).
 

@@ -14,6 +14,7 @@ SOURCE = "cost"
 METRIC = "UnblendedCost"
 EC2_COMPUTE = "Amazon Elastic Compute Cloud - Compute"
 RESOURCE_DAYS = 14
+COVERAGE_DAYS = 30
 UNTAGGED_SHARE = 0.10
 OPTIONAL_ERRORS = {"DataUnavailableException", "AccessDeniedException", "ValidationException"}
 
@@ -54,8 +55,55 @@ def fetch(session: Any, tag_key: str = "env", today: date | None = None) -> dict
         if exc.response.get("Error", {}).get("Code") not in OPTIONAL_ERRORS:
             raise
         by_resource = None  # resource-level data is opt-in (R35)
+    window = {"Start": ((today or date.today()) - timedelta(days=COVERAGE_DAYS)).isoformat(),
+              "End": (today or date.today()).isoformat()}
+    sp = _optional(lambda: _pages(ce.get_savings_plans_coverage, "SavingsPlansCoverages", "NextToken",
+                                  TimePeriod=window, Granularity="MONTHLY"))
+    ri = _optional(lambda: _pages(ce.get_reservation_coverage, "CoveragesByTime", "NextPageToken",
+                                  TimePeriod=window, Granularity="MONTHLY"))
     return {"fetched_at": (today or date.today()).isoformat(), "tag_key": tag_key,
-            "by_service": by_service, "by_tag": by_tag, "by_resource": by_resource}
+            "by_service": by_service, "by_tag": by_tag, "by_resource": by_resource,
+            "coverage_window": window, "sp_coverage": sp, "ri_coverage": ri}
+
+
+def _pages(call: Any, key: str, token_name: str, **kwargs: Any) -> list[dict[str, Any]]:
+    """Savings Plans coverage pages with NextToken, reservation coverage with NextPageToken."""
+    items, token = [], None
+    while True:
+        resp = call(**kwargs, **({token_name: token} if token else {}))
+        items.extend(resp.get(key, []))
+        token = resp.get(token_name)  # pragma: allowlist secret
+        if not token:
+            return items
+
+
+def _optional(run: Any) -> Any:
+    try:
+        return run()
+    except ClientError as exc:
+        if exc.response.get("Error", {}).get("Code") not in OPTIONAL_ERRORS:
+            raise
+        return None
+
+
+def coverage(raw: dict[str, Any]) -> dict[str, Any] | None:
+    """Savings Plans coverage by spend, RI coverage by hours, over the coverage window (spec 11)."""
+    sp, ri = raw.get("sp_coverage"), raw.get("ri_coverage")
+    if sp is None and ri is None:
+        return None
+    out: dict[str, Any] = {"savings_plans_pct": None, "reservations_pct": None, "on_demand_usd": None,
+                           "days": COVERAGE_DAYS}
+    if sp is not None:
+        covered = sum(float((c.get("Coverage") or {}).get("SpendCoveredBySavingsPlans") or 0) for c in sp)
+        total = sum(float((c.get("Coverage") or {}).get("TotalCost") or 0) for c in sp)
+        out["on_demand_usd"] = round(sum(float((c.get("Coverage") or {}).get("OnDemandCost") or 0) for c in sp), 2)
+        out["savings_plans_pct"] = round(100 * covered / total, 1) if total else None
+    if ri is not None:
+        hours = [(c.get("Total") or {}).get("CoverageHours") or {} for c in ri]
+        reserved = sum(float(h.get("ReservedHours") or 0) for h in hours)
+        running = sum(float(h.get("TotalRunningHours") or 0) for h in hours)
+        out["reservations_pct"] = round(100 * reserved / running, 1) if running else None
+    return out
 
 
 def _amount(group: dict[str, Any]) -> float:
@@ -78,7 +126,7 @@ def summary(raw: dict[str, Any]) -> dict[str, Any]:
             values[k.split("$", 1)[1] if "$" in k else k] = round(_amount(g), 2)
         tags.append({"start": m["TimePeriod"]["Start"], "values": values})
     return {"currency": "USD", "months": months, "by_tag": {"key": key, "months": tags},
-            "estimated": any(m["estimated"] for m in months)}
+            "estimated": any(m["estimated"] for m in months), "coverage": coverage(raw)}
 
 
 def last_full_month(items: list[dict[str, Any]], today: date) -> dict[str, Any] | None:

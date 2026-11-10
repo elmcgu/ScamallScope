@@ -38,11 +38,15 @@ Coverage: COST04-BP03, COST06-BP02, COST07-BP04 checked whenever the hub is enab
 
 ## Commitment coverage (part of `fetch cost`)
 
-`GetSavingsPlansCoverage` and `GetReservationCoverage`, last 30 days, `MONTHLY`, total only.
-Both $0.01 a request [R34]. Raw: added to `cost.json` as `sp_coverage` and `ri_coverage`
-(`null` if the call fails with the optional errors in spec 07).
+`GetSavingsPlansCoverage` (paged with `NextToken`) and `GetReservationCoverage` (paged with
+`NextPageToken`), last 30 days, `MONTHLY`, no grouping. Both $0.01 a request [R34]. Raw: added to
+`cost.json` as `coverage_window`, `sp_coverage` and `ri_coverage` (`null` if the call fails with
+the optional errors in spec 07).
 
-`cost.coverage` in the graph: `{"savings_plans_pct", "reservations_pct", "on_demand_usd"}`.
+`cost.coverage` in the graph: `{"savings_plans_pct", "reservations_pct", "on_demand_usd", "days"}`.
+Savings Plans coverage is by spend (`SpendCoveredBySavingsPlans` / `TotalCost`); RI coverage is
+by hours (`ReservedHours` / `TotalRunningHours`). They are different units, so they are never
+added together. `on_demand_usd` is the Savings Plans-eligible on-demand spend in the window.
 
 ## Tests
 
