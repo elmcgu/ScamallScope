@@ -14,7 +14,7 @@ unit (`units` in the snapshot): a failed unit means "unknown", never "nothing th
 | `vpc-endpoint` | ec2 | `DescribeVpcEndpoints` | region | vpc `contains` vpc-endpoint |
 | `flow-log` | ec2 | `DescribeFlowLogs` | region | flow-log `logs` vpc, subnet or ENI |
 | `db-instance` | rds | `DescribeDBInstances` | region | vpc `contains` db-instance; db-instance `uses` security group |
-| `load-balancer` | elbv2 | `DescribeLoadBalancers`, `DescribeListeners`, `DescribeSslPolicies` | region | vpc `contains` lb; lb `uses` security group; lb `routes_to` target group |
+| `load-balancer` | elbv2 | `DescribeLoadBalancers`, `DescribeListeners`, `DescribeSslPolicies`, `DescribeTags` | region | vpc `contains` lb; lb `uses` security group; lb `routes_to` target group |
 | `target-group` | elbv2 | `DescribeTargetGroups`, `DescribeTargetHealth` | region | target-group `targets` instance |
 | `autoscaling-group` | autoscaling | `DescribeAutoScalingGroups` | region | asg `manages` instance; asg `registers` target group |
 | `certificate` | acm | `ListCertificates`, `DescribeCertificate` | region | |
@@ -74,7 +74,8 @@ certificates are not drawn on the map; they feed rules and views.
 `ec2:GetEbsEncryptionByDefault`, `rds:DescribeDBInstances`,
 `elasticloadbalancing:DescribeLoadBalancers`, `elasticloadbalancing:DescribeListeners`,
 `elasticloadbalancing:DescribeSSLPolicies`, `elasticloadbalancing:DescribeTargetGroups`,
-`elasticloadbalancing:DescribeTargetHealth`, `autoscaling:DescribeAutoScalingGroups`,
+`elasticloadbalancing:DescribeTargetHealth`, `elasticloadbalancing:DescribeTags`,
+`autoscaling:DescribeAutoScalingGroups`,
 `acm:ListCertificates`, `acm:DescribeCertificate`, `cloudtrail:DescribeTrails`,
 `cloudtrail:GetTrailStatus`, `iam:GenerateCredentialReport`, `iam:GetCredentialReport`,
 `guardduty:ListDetectors`, `guardduty:GetDetector`, `backup:ListProtectedResources`,

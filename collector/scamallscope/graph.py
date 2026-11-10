@@ -113,6 +113,47 @@ def _flow_log(c: dict[str, Any]) -> dict[str, Any]:
             "status": c.get("FlowLogStatus")}
 
 
+def _db_instance(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "engine": c.get("Engine"),
+        "instance_class": c.get("DBInstanceClass"),
+        "multi_az": bool(c.get("MultiAZ")),
+        "encrypted": bool(c.get("StorageEncrypted")),
+        "publicly_accessible": bool(c.get("PubliclyAccessible")),
+        "backup_retention_days": c.get("BackupRetentionPeriod"),
+        "availability_zone": c.get("AvailabilityZone"),
+        "cluster": c.get("DBClusterIdentifier"),
+    }
+
+
+def redirects_to_https(listener: dict[str, Any]) -> bool:
+    return any(a.get("Type") == "redirect" and (a.get("RedirectConfig") or {}).get("Protocol") == "HTTPS"
+               for a in listener.get("DefaultActions") or [])
+
+
+def _load_balancer(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "scheme": c.get("Scheme"),
+        "lb_type": c.get("Type"),
+        "availability_zones": sorted(z.get("ZoneName") for z in c.get("AvailabilityZones") or [] if z.get("ZoneName")),
+        "listeners": [{"protocol": x.get("Protocol"), "port": x.get("Port"),
+                       "redirects_to_https": redirects_to_https(x), "tls_protocols": x.get("SslProtocols") or []}
+                      for x in c.get("Listeners") or []],
+    }
+
+
+def _target_group(c: dict[str, Any]) -> dict[str, Any]:
+    states = [t.get("State") for t in c.get("TargetHealth") or []]
+    return {"protocol": c.get("Protocol"), "port": c.get("Port"),
+            "healthy": states.count("healthy"), "unhealthy": states.count("unhealthy")}
+
+
+def _autoscaling_group(c: dict[str, Any]) -> dict[str, Any]:
+    return {"availability_zones": sorted(c.get("AvailabilityZones") or []), "min": c.get("MinSize"),
+            "max": c.get("MaxSize"), "desired": c.get("DesiredCapacity"),
+            "health_check_type": c.get("HealthCheckType")}
+
+
 def _setting(c: dict[str, Any]) -> dict[str, Any]:
     # Settings feed rules; the graph only says whether a simple on/off setting is on.
     return {"enabled": c["Enabled"]} if isinstance(c.get("Enabled"), bool) else {}
@@ -223,6 +264,10 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "vpc-endpoint": _vpc_endpoint,
     "flow-log": _flow_log,
     "setting": _setting,
+    "db-instance": _db_instance,
+    "load-balancer": _load_balancer,
+    "target-group": _target_group,
+    "autoscaling-group": _autoscaling_group,
 }
 
 

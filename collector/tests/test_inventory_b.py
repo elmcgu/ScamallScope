@@ -147,3 +147,84 @@ def test_snapshot_manager():
     assert graph.snapshot_manager({"Tags": [{"Key": "aws:dlm:lifecycle-policy-id", "Value": "x"}]}) == "dlm"
     assert graph.snapshot_manager({"Description": "This snapshot is created by the AWS Backup service on ..."}) == "backup"
     assert graph.snapshot_manager({"Description": "by hand"}) is None
+
+
+def _second_subnet(ec2, vpc):
+    azs = [z["ZoneName"] for z in ec2.describe_availability_zones()["AvailabilityZones"]]
+    return ec2.create_subnet(VpcId=vpc, CidrBlock="10.0.2.0/24", AvailabilityZone=azs[1])["Subnet"]["SubnetId"]
+
+
+def test_INV_7_rds_instance(session, estate):
+    ec2, vpc, subnet, sg, instance = estate
+    other = _second_subnet(ec2, vpc)
+    rds = session.client("rds", region_name=REGION)
+    rds.create_db_subnet_group(DBSubnetGroupName="db", DBSubnetGroupDescription="db", SubnetIds=[subnet, other])
+    db = rds.create_db_instance(DBInstanceIdentifier="orders-db", Engine="postgres", DBInstanceClass="db.t3.micro",
+                                MasterUsername="admin", MasterUserPassword="example-not-real",  # pragma: allowlist secret
+                                AllocatedStorage=20, DBSubnetGroupName="db", VpcSecurityGroupIds=[sg],
+                                MultiAZ=False, StorageEncrypted=False, PubliclyAccessible=True,
+                                BackupRetentionPeriod=0, Tags=[{"Key": "env", "Value": "prod"}])["DBInstance"]
+
+    snap = collect(session)
+    r = by_type(snap, "db-instance")["orders-db"]
+    assert r["arn"] == db["DBInstanceArn"] and r["tags"] == {"env": "prod"}
+    assert r["config"]["MultiAZ"] is False and r["config"]["PubliclyAccessible"] is True
+    assert "Endpoint" not in r["config"] and "MasterUserPassword" not in str(r["config"])
+    assert (arn("vpc", vpc), r["arn"], "contains") in links(snap)
+    assert (r["arn"], arn("security-group", sg), "uses") in links(snap)
+    node = {e["data"]["id"]: e["data"] for e in graph.to_graph(snap)["elements"] if e["group"] == "nodes"}[r["arn"]]
+    assert (node["multi_az"], node["encrypted"], node["publicly_accessible"], node["backup_retention_days"]) == (False, False, True, 0)
+
+
+def _alb(session, ec2, vpc, subnet, sg, instance):
+    other = _second_subnet(ec2, vpc)
+    elb = session.client("elbv2", region_name=REGION)
+    lb = elb.create_load_balancer(Name="web", Subnets=[subnet, other], SecurityGroups=[sg], Scheme="internet-facing",
+                                  Tags=[{"Key": "app", "Value": "web"}])["LoadBalancers"][0]
+    tg = elb.create_target_group(Name="web", Protocol="HTTP", Port=80, VpcId=vpc, TargetType="instance")["TargetGroups"][0]
+    elb.register_targets(TargetGroupArn=tg["TargetGroupArn"], Targets=[{"Id": instance}])
+    elb.create_listener(LoadBalancerArn=lb["LoadBalancerArn"], Protocol="HTTP", Port=80,
+                        DefaultActions=[{"Type": "forward", "TargetGroupArn": tg["TargetGroupArn"]}])
+    acm = session.client("acm", region_name=REGION)
+    cert = acm.request_certificate(DomainName="web.example.com")["CertificateArn"]
+    elb.create_listener(LoadBalancerArn=lb["LoadBalancerArn"], Protocol="HTTPS", Port=443,
+                        SslPolicy="ELBSecurityPolicy-2016-08", Certificates=[{"CertificateArn": cert}],
+                        DefaultActions=[{"Type": "forward", "TargetGroupArn": tg["TargetGroupArn"]}])
+    return lb, tg
+
+
+def test_INV_8_load_balancer_listeners_and_targets(session, estate):
+    ec2, vpc, subnet, sg, instance = estate
+    lb, tg = _alb(session, ec2, vpc, subnet, sg, instance)
+
+    snap = collect(session)
+    r = by_type(snap, "load-balancer")["web"]
+    assert r["tags"] == {"app": "web"} and "DNSName" not in r["config"]
+    listeners = {x["Protocol"]: x for x in r["config"]["Listeners"]}
+    assert listeners["HTTP"]["SslProtocols"] == []
+    assert "TLSv1.2" in listeners["HTTPS"]["SslProtocols"]  # from DescribeSSLPolicies, not a list in our code
+    t = by_type(snap, "target-group")["web"]
+    assert [h["Id"] for h in t["config"]["TargetHealth"]] == [instance]
+    assert (lb["LoadBalancerArn"], tg["TargetGroupArn"], "routes_to") in links(snap)
+    assert (tg["TargetGroupArn"], arn("instance", instance), "targets") in links(snap)
+    node = {e["data"]["id"]: e["data"] for e in graph.to_graph(snap)["elements"] if e["group"] == "nodes"}[r["arn"]]
+    assert len(node["availability_zones"]) == 2 and node["scheme"] == "internet-facing"
+    assert {(x["protocol"], x["redirects_to_https"]) for x in node["listeners"]} == {("HTTP", False), ("HTTPS", False)}
+
+
+def test_INV_9_autoscaling_group(session, estate):
+    ec2, vpc, subnet, sg, instance = estate
+    lb, tg = _alb(session, ec2, vpc, subnet, sg, instance)
+    image = ec2.describe_images(Owners=["amazon"])["Images"][0]["ImageId"]
+    asg = session.client("autoscaling", region_name=REGION)
+    asg.create_launch_configuration(LaunchConfigurationName="web", ImageId=image, InstanceType="t3.micro")
+    asg.create_auto_scaling_group(AutoScalingGroupName="web", LaunchConfigurationName="web", MinSize=1, MaxSize=2,
+                                  DesiredCapacity=1, VPCZoneIdentifier=subnet, TargetGroupARNs=[tg["TargetGroupArn"]],
+                                  HealthCheckType="EC2", Tags=[{"Key": "env", "Value": "prod", "PropagateAtLaunch": True}])
+
+    snap = collect(session)
+    g = by_type(snap, "autoscaling-group")["web"]
+    assert g["tags"] == {"env": "prod"} and len(g["config"]["AvailabilityZones"]) == 1
+    managed = [l for l in links(snap) if l[0] == g["arn"] and l[2] == "manages"]
+    assert len(managed) == 1
+    assert (g["arn"], tg["TargetGroupArn"], "registers") in links(snap)

@@ -11,7 +11,7 @@ from typing import Any, Callable
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
-from .collectors import ec2, iam, lambda_, s3
+from .collectors import autoscaling, ec2, elbv2, iam, lambda_, rds, s3
 from .model import GLOBAL, Link, Resource, Snapshot, error_unit, link, new_snapshot, ok_unit
 
 
@@ -23,7 +23,7 @@ def _error_text(exc: Exception) -> str:
 
 
 def collect(session: boto3.Session, regions: list[str], include_global: bool = True) -> Snapshot:
-    """Collect EC2 and Lambda in each region, and IAM and S3 once (region "global")."""
+    """Collect EC2, Lambda, RDS, ELB and Auto Scaling in each region, and IAM and S3 once (region "global")."""
     identity = session.client("sts").get_caller_identity()
     account_id = identity["Account"]
     partition = identity["Arn"].split(":")[1]
@@ -43,6 +43,17 @@ def collect(session: boto3.Session, regions: list[str], include_global: bool = T
         lam = session.client("lambda", region_name=region)
         _unit(snap, "lambda", ["function"], region,
               lambda: {"function": lambda_.collect_functions(lam, partition, account_id, region)})
+        rds_client = session.client("rds", region_name=region)
+        _unit(snap, "rds", ["db-instance"], region,
+              lambda: {"db-instance": rds.collect_db_instances(rds_client, ctx)})
+        elb = session.client("elbv2", region_name=region)
+        _unit(snap, "elasticloadbalancing", ["load-balancer"], region,
+              lambda: {"load-balancer": elbv2.collect_load_balancers(elb, ctx)})
+        _unit(snap, "elasticloadbalancing", ["target-group"], region,
+              lambda: {"target-group": elbv2.collect_target_groups(elb, ctx)})
+        asg = session.client("autoscaling", region_name=region)
+        _unit(snap, "autoscaling", ["autoscaling-group"], region,
+              lambda: {"autoscaling-group": autoscaling.collect_groups(asg, ctx)})
 
     if include_global:
         iam_client = session.client("iam")
