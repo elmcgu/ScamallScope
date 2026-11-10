@@ -1,0 +1,16 @@
+{"fetched_at": "2026-11-04T06:00:00+00:00", "days": 14, "regions": {"eu-west-1": {
+  "queries": {"q0_avg": "i-0app1|avg", "q0_max": "i-0app1|max", "q1_avg": "i-0db1|avg", "q1_max": "i-0db1|max",
+              "q2_avg": "i-0web1|avg", "q2_max": "i-0web1|max", "q3_avg": "i-0dup1|avg", "q3_max": "i-0dup1|max"},
+  "results": [
+    {"Id": "q0_avg", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": [1.2, 2.0, 2.4]},
+    {"Id": "q0_max", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": [4.0, 9.0, 6.0]},
+    {"Id": "q1_avg", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": [3.0, 1.0]},
+    {"Id": "q1_max", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": [60.0, 12.0]},
+    {"Id": "q2_avg", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": [35.0, 45.0]},
+    {"Id": "q2_max", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": [88.0, 70.0]},
+    {"Id": "q3_avg", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": []},
+    {"Id": "q3_max", "Label": "CPUUtilization", "StatusCode": "Complete", "Timestamps": [], "Values": []}
+  ],
+  "alarms": [{"AlarmName": "prod-web-1-cpu-high", "Dimensions": [{"Name": "InstanceId", "Value": "i-0web1"}]},
+             {"AlarmName": "billing", "Dimensions": [{"Name": "Currency", "Value": "USD"}]}]
+}}}

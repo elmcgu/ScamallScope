@@ -1,0 +1,54 @@
+{
+  "custom_stats": {},
+  "global_custom_stats": {},
+  "plays": [
+    {
+      "play": {
+        "duration": {
+          "start": "2026-11-04T05:30:00Z"
+        },
+        "id": "made-up",
+        "name": "base"
+      },
+      "tasks": []
+    }
+  ],
+  "stats": {
+    "prod-app-1": {
+      "changed": 2,
+      "failures": 0,
+      "ignored": 0,
+      "ok": 15,
+      "rescued": 0,
+      "skipped": 1,
+      "unreachable": 0
+    },
+    "prod-db-1": {
+      "changed": 0,
+      "failures": 0,
+      "ignored": 0,
+      "ok": 4,
+      "rescued": 0,
+      "skipped": 1,
+      "unreachable": 1
+    },
+    "prod-web-1": {
+      "changed": 0,
+      "failures": 0,
+      "ignored": 0,
+      "ok": 18,
+      "rescued": 0,
+      "skipped": 1,
+      "unreachable": 0
+    },
+    "staging-web-1": {
+      "changed": 0,
+      "failures": 0,
+      "ignored": 0,
+      "ok": 18,
+      "rescued": 0,
+      "skipped": 1,
+      "unreachable": 0
+    }
+  }
+}

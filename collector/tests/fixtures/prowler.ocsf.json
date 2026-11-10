@@ -1,0 +1,205 @@
+[
+ {
+  "message": "Root account has MFA disabled",
+  "status_code": "FAIL",
+  "status_detail": "MFA is not enabled for root account.",
+  "severity_id": 5,
+  "severity": "Critical",
+  "metadata": {
+   "event_code": "iam_root_mfa_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler"
+   }
+  },
+  "finding_info": {
+   "uid": "prowler-aws-iam_root_mfa_enabled-123456789012-us-east-1-root",
+   "title": "Ensure MFA is enabled for the root account"
+  },
+  "resources": [
+   {
+    "uid": "arn:aws:iam::123456789012:root",
+    "name": "<root_account>",
+    "region": "us-east-1",
+    "type": "Other"
+   }
+  ],
+  "remediation": {
+   "desc": "Enable MFA for the root account.",
+   "references": []
+  },
+  "cloud": {
+   "provider": "aws",
+   "region": "us-east-1",
+   "account": {
+    "uid": "123456789012",
+    "type": "AWS Account"
+   }
+  },
+  "unmapped": {
+   "compliance": {
+    "CIS-3.0": [
+     "1.5"
+    ],
+    "AWS-Well-Architected-Framework-Security-Pillar": [
+     "SEC01-BP02"
+    ]
+   }
+  }
+ },
+ {
+  "status_code": "FAIL",
+  "status_detail": "S3 Bucket demo-backups has versioning suspended.",
+  "severity": "Medium",
+  "metadata": {
+   "event_code": "s3_bucket_object_versioning"
+  },
+  "finding_info": {
+   "uid": "prowler-aws-s3_bucket_object_versioning-123456789012-eu-west-1-demo-backups",
+   "title": "Check if S3 buckets have object versioning enabled"
+  },
+  "resources": [
+   {
+    "uid": "arn:aws:s3:::demo-backups",
+    "name": "demo-backups",
+    "region": "eu-west-1"
+   }
+  ],
+  "remediation": {
+   "desc": "Enable versioning."
+  },
+  "cloud": {
+   "account": {
+    "uid": "123456789012"
+   }
+  },
+  "unmapped": {
+   "compliance": {
+    "AWS-Well-Architected-Framework-Security-Pillar": [
+     "SEC08-BP04"
+    ]
+   }
+  }
+ },
+ {
+  "status_code": "PASS",
+  "severity": "High",
+  "metadata": {
+   "event_code": "iam_no_root_access_key"
+  },
+  "finding_info": {
+   "uid": "prowler-aws-iam_no_root_access_key-123456789012-us-east-1-root",
+   "title": "Ensure no root account access key exists"
+  },
+  "resources": [
+   {
+    "uid": "arn:aws:iam::123456789012:root",
+    "region": "us-east-1"
+   }
+  ],
+  "cloud": {
+   "account": {
+    "uid": "123456789012"
+   }
+  },
+  "unmapped": {
+   "compliance": {
+    "AWS-Well-Architected-Framework-Security-Pillar": [
+     "SEC01-BP02"
+    ]
+   }
+  }
+ },
+ {
+  "status_code": "MANUAL",
+  "severity": "Low",
+  "metadata": {
+   "event_code": "account_maintain_current_contact_details"
+  },
+  "finding_info": {
+   "uid": "prowler-aws-account_contact-123456789012",
+   "title": "Maintain current contact details"
+  },
+  "resources": [
+   {
+    "uid": "arn:aws:iam::123456789012:root",
+    "region": "us-east-1"
+   }
+  ],
+  "cloud": {
+   "account": {
+    "uid": "123456789012"
+   }
+  },
+  "unmapped": {
+   "compliance": {}
+  }
+ },
+ {
+  "status_code": "FAIL",
+  "severity": "High",
+  "metadata": {
+   "event_code": "ec2_instance_imdsv2_enabled"
+  },
+  "finding_info": {
+   "uid": "prowler-aws-ec2_instance_imdsv2_enabled-123456789012-eu-west-1-i-0web1",
+   "title": "Ensure EC2 instances use IMDSv2"
+  },
+  "resources": [
+   {
+    "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-0web1",
+    "region": "eu-west-1"
+   }
+  ],
+  "remediation": {
+   "desc": "Set HttpTokens to required."
+  },
+  "cloud": {
+   "account": {
+    "uid": "123456789012"
+   }
+  },
+  "unmapped": {
+   "compliance": {
+    "AWS-Well-Architected-Framework-Security-Pillar": [
+     "SEC03-BP01",
+     "SEC06-BP01"
+    ]
+   }
+  }
+ },
+ {
+  "status_code": "FAIL",
+  "severity": "Medium",
+  "status_detail": "RDS Instance orders-db does not have backups enabled.",
+  "metadata": {
+   "event_code": "rds_instance_backup_enabled"
+  },
+  "finding_info": {
+   "uid": "prowler-aws-rds_instance_backup_enabled-123456789012-eu-west-1-orders-db",
+   "title": "Check if RDS instances have backups enabled"
+  },
+  "resources": [
+   {
+    "uid": "arn:aws:rds:eu-west-1:123456789012:db:orders-db",
+    "name": "orders-db",
+    "region": "eu-west-1"
+   }
+  ],
+  "remediation": {
+   "desc": "Set a backup retention period."
+  },
+  "cloud": {
+   "account": {
+    "uid": "123456789012"
+   }
+  },
+  "unmapped": {
+   "compliance": {
+    "AWS-Well-Architected-Framework-Reliability-Pillar": [
+     "REL09-BP03"
+    ]
+   }
+  }
+ }
+]

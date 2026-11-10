@@ -1,0 +1,198 @@
+{
+  "agents": {
+    "data": {
+      "affected_items": [
+        {
+          "id": "000",
+          "lastKeepAlive": "2026-11-04T06:00:00+00:00",
+          "name": "wazuh-manager",
+          "os": {
+            "name": "Amazon Linux",
+            "platform": "amzn",
+            "version": "2023"
+          },
+          "status": "active"
+        },
+        {
+          "id": "001",
+          "lastKeepAlive": "2026-11-04T06:00:00+00:00",
+          "name": "prod-web-1",
+          "os": {
+            "name": "Ubuntu",
+            "platform": "ubuntu",
+            "version": "22.04.4 LTS"
+          },
+          "status": "active"
+        },
+        {
+          "id": "002",
+          "lastKeepAlive": "2026-11-04T06:00:00+00:00",
+          "name": "i-de5f7cb5498462b88",
+          "os": {
+            "name": "Amazon Linux",
+            "platform": "amzn",
+            "version": "2023"
+          },
+          "status": "active"
+        },
+        {
+          "id": "004",
+          "lastKeepAlive": "2026-10-29T08:00:00+00:00",
+          "name": "staging-web-1",
+          "os": {
+            "name": "Ubuntu",
+            "platform": "ubuntu",
+            "version": "20.04.6 LTS"
+          },
+          "status": "disconnected"
+        },
+        {
+          "id": "005",
+          "lastKeepAlive": "2026-11-04T06:00:00+00:00",
+          "name": "i-54f5924886e470545",
+          "os": {
+            "name": "Amazon Linux",
+            "platform": "amzn",
+            "version": "2023"
+          },
+          "status": "active"
+        },
+        {
+          "id": "006",
+          "lastKeepAlive": "2026-10-29T08:00:00+00:00",
+          "name": "old-laptop",
+          "os": {
+            "name": "",
+            "platform": "",
+            "version": ""
+          },
+          "status": "never_connected"
+        }
+      ],
+      "total_affected_items": 6
+    }
+  },
+  "fetched_at": "2026-11-04T06:00:00+00:00",
+  "vulnerabilities": {
+    "hits": {
+      "hits": [
+        {
+          "_source": {
+            "agent": {
+              "id": "001",
+              "name": "prod-web-1"
+            },
+            "package": {
+              "name": "openssl",
+              "version": "3.0.2-0ubuntu1.15"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1001",
+              "severity": "Critical"
+            }
+          }
+        },
+        {
+          "_source": {
+            "agent": {
+              "id": "001",
+              "name": "prod-web-1"
+            },
+            "package": {
+              "name": "openssl",
+              "version": "3.0.2-0ubuntu1.15"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1002",
+              "severity": "High"
+            }
+          }
+        },
+        {
+          "_source": {
+            "agent": {
+              "id": "001",
+              "name": "prod-web-1"
+            },
+            "package": {
+              "name": "nginx",
+              "version": "1.18.0-6ubuntu14.4"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1003",
+              "severity": "High"
+            }
+          }
+        },
+        {
+          "_source": {
+            "agent": {
+              "id": "001",
+              "name": "prod-web-1"
+            },
+            "package": {
+              "name": "curl",
+              "version": "7.81.0-1ubuntu1.16"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1004",
+              "severity": "Medium"
+            }
+          }
+        },
+        {
+          "_source": {
+            "agent": {
+              "id": "002",
+              "name": "prod-app-1"
+            },
+            "package": {
+              "name": "glibc",
+              "version": "2.34-100.amzn2023"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1005",
+              "severity": "Medium"
+            }
+          }
+        },
+        {
+          "_source": {
+            "agent": {
+              "id": "004",
+              "name": "staging-web-1"
+            },
+            "package": {
+              "name": "openssh-server",
+              "version": "1:8.2p1-4ubuntu0.11"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1006",
+              "severity": "High"
+            }
+          }
+        },
+        {
+          "_source": {
+            "agent": {
+              "id": "004",
+              "name": "staging-web-1"
+            },
+            "package": {
+              "name": "sudo",
+              "version": "1.8.31-1ubuntu1.5"
+            },
+            "vulnerability": {
+              "id": "CVE-2099-1007",
+              "severity": "Low"
+            }
+          }
+        }
+      ],
+      "total": {
+        "relation": "eq",
+        "value": 7
+      }
+    }
+  }
+}

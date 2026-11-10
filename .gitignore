@@ -226,6 +226,9 @@ snapshots/
 # samples/ holds made-up data only, so its JSON may be committed
 !samples/*.json
 prowler-output/
+# Raw integration files (decision 0002): real data, never commit. samples/integrations/ is made up.
+/collector/integrations/
+/integrations/
 
 # Frontend
 node_modules/

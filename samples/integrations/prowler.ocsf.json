@@ -1,0 +1,357 @@
+[
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Ensure MFA is enabled for the root account",
+      "uid": "prowler-aws-iam_root_mfa_enabled-123456789012-us-east-1-root"
+    },
+    "metadata": {
+      "event_code": "iam_root_mfa_enabled"
+    },
+    "remediation": {
+      "desc": "Enable a hardware or virtual MFA device for the root user."
+    },
+    "resources": [
+      {
+        "name": "root",
+        "region": "us-east-1",
+        "uid": "arn:aws:iam::123456789012:root"
+      }
+    ],
+    "severity": "Critical",
+    "status_code": "FAIL",
+    "status_detail": "MFA is not enabled for root account.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC01-BP02"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Ensure no root account access key exists",
+      "uid": "prowler-aws-iam_no_root_access_key-123456789012-us-east-1-root"
+    },
+    "metadata": {
+      "event_code": "iam_no_root_access_key"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "root",
+        "region": "us-east-1",
+        "uid": "arn:aws:iam::123456789012:root"
+      }
+    ],
+    "severity": "High",
+    "status_code": "PASS",
+    "status_detail": "",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC01-BP02"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Ensure EC2 instances use IMDSv2",
+      "uid": "prowler-aws-ec2_instance_imdsv2_enabled-123456789012-eu-west-1-instance/i-06bcb7f777169cd41"
+    },
+    "metadata": {
+      "event_code": "ec2_instance_imdsv2_enabled"
+    },
+    "remediation": {
+      "desc": "Set HttpTokens to required."
+    },
+    "resources": [
+      {
+        "name": "i-06bcb7f777169cd41",
+        "region": "eu-west-1",
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-06bcb7f777169cd41"
+      }
+    ],
+    "severity": "High",
+    "status_code": "FAIL",
+    "status_detail": "IMDSv2 is not required.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC03-BP01",
+          "SEC06-BP01"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Ensure no security groups allow ingress from 0.0.0.0/0 to SSH port 22",
+      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22-123456789012-eu-west-1-instance/i-06bcb7f777169cd41"
+    },
+    "metadata": {
+      "event_code": "ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22"
+    },
+    "remediation": {
+      "desc": "Remove the rule; use Session Manager instead of SSH."
+    },
+    "resources": [
+      {
+        "name": "i-06bcb7f777169cd41",
+        "region": "eu-west-1",
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-06bcb7f777169cd41"
+      }
+    ],
+    "severity": "High",
+    "status_code": "FAIL",
+    "status_detail": "Security group prod-web allows SSH from the internet.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC05-BP03"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Check if EC2 instances are managed by Systems Manager",
+      "uid": "prowler-aws-ec2_instance_managed_by_ssm-123456789012-eu-west-1-instance/i-2e866114b400cf4e5"
+    },
+    "metadata": {
+      "event_code": "ec2_instance_managed_by_ssm"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "i-2e866114b400cf4e5",
+        "region": "eu-west-1",
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-2e866114b400cf4e5"
+      }
+    ],
+    "severity": "Medium",
+    "status_code": "FAIL",
+    "status_detail": "Instance is not managed by SSM.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC01-BP06",
+          "SEC06-BP04",
+          "SEC06-BP05"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Ensure CloudTrail is enabled in all regions",
+      "uid": "prowler-aws-cloudtrail_multi_region_enabled-123456789012-eu-west-1-trail/main"
+    },
+    "metadata": {
+      "event_code": "cloudtrail_multi_region_enabled"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "main",
+        "region": "eu-west-1",
+        "uid": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/main"
+      }
+    ],
+    "severity": "Medium",
+    "status_code": "PASS",
+    "status_detail": "",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC04-BP02",
+          "SEC04-BP03"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Check if GuardDuty is enabled",
+      "uid": "prowler-aws-guardduty_is_enabled-123456789012-us-east-1-detector/unknown"
+    },
+    "metadata": {
+      "event_code": "guardduty_is_enabled"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "unknown",
+        "region": "us-east-1",
+        "uid": "arn:aws:guardduty:us-east-1:123456789012:detector/unknown"
+      }
+    ],
+    "severity": "Medium",
+    "status_code": "FAIL",
+    "status_detail": "GuardDuty is not enabled in us-east-1.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC04-BP04",
+          "SEC05-BP04"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Ensure there are no EBS volumes unencrypted",
+      "uid": "prowler-aws-ec2_ebs_volume_encryption-123456789012-eu-west-1-volume/vol-made-up"
+    },
+    "metadata": {
+      "event_code": "ec2_ebs_volume_encryption"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "vol-made-up",
+        "region": "eu-west-1",
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:volume/vol-made-up"
+      }
+    ],
+    "severity": "Medium",
+    "status_code": "PASS",
+    "status_detail": "",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC08-BP02"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Check if S3 buckets have object versioning enabled",
+      "uid": "prowler-aws-s3_bucket_object_versioning-123456789012-eu-west-1-demo-site-public"
+    },
+    "metadata": {
+      "event_code": "s3_bucket_object_versioning"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "demo-site-public",
+        "region": "eu-west-1",
+        "uid": "arn:aws:s3:::demo-site-public"
+      }
+    ],
+    "severity": "Medium",
+    "status_code": "FAIL",
+    "status_detail": "Versioning is not enabled.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC08-BP04"
+        ]
+      }
+    }
+  },
+  {
+    "cloud": {
+      "account": {
+        "uid": "123456789012"
+      },
+      "provider": "aws"
+    },
+    "finding_info": {
+      "title": "Check if RDS instances have backups enabled",
+      "uid": "prowler-aws-rds_instance_backup_enabled-123456789012-eu-west-1-orders-db"
+    },
+    "metadata": {
+      "event_code": "rds_instance_backup_enabled"
+    },
+    "remediation": {
+      "desc": ""
+    },
+    "resources": [
+      {
+        "name": "orders-db",
+        "region": "eu-west-1",
+        "uid": "arn:aws:rds:eu-west-1:123456789012:db:orders-db"
+      }
+    ],
+    "severity": "Medium",
+    "status_code": "FAIL",
+    "status_detail": "RDS instance orders-db has a backup retention period of 0.",
+    "unmapped": {
+      "compliance": {
+        "AWS-Well-Architected-Framework-Reliability-Pillar": [
+          "REL09-BP03"
+        ]
+      }
+    }
+  }
+]

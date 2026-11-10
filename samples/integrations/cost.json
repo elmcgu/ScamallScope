@@ -1,0 +1,1396 @@
+{
+  "by_resource": [
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-22",
+        "Start": "2026-10-21"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-23",
+        "Start": "2026-10-22"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-24",
+        "Start": "2026-10-23"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-25",
+        "Start": "2026-10-24"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-26",
+        "Start": "2026-10-25"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-27",
+        "Start": "2026-10-26"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-28",
+        "Start": "2026-10-27"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-29",
+        "Start": "2026-10-28"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-30",
+        "Start": "2026-10-29"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-31",
+        "Start": "2026-10-30"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-01",
+        "Start": "2026-10-31"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-02",
+        "Start": "2026-11-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-03",
+        "Start": "2026-11-02"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "i-06bcb7f777169cd41"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.7500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-de5f7cb5498462b88"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-2e866114b400cf4e5"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6200",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-16f243ae04384aa3f"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2500",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "i-54f5924886e470545"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1800",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-04",
+        "Start": "2026-11-03"
+      },
+      "Total": {}
+    }
+  ],
+  "by_service": [
+    {
+      "Estimated": false,
+      "Groups": [
+        {
+          "Keys": [
+            "Amazon Elastic Compute Cloud - Compute"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "58.4000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "Amazon Simple Storage Service"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "3.9000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AWS Lambda"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AmazonCloudWatch"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "2.1000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "EC2 - Other"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "33.0000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-09-01",
+        "Start": "2026-08-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": false,
+      "Groups": [
+        {
+          "Keys": [
+            "Amazon Elastic Compute Cloud - Compute"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "61.5000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "Amazon Simple Storage Service"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "4.2000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AWS Lambda"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.8000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AmazonCloudWatch"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "2.2000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "EC2 - Other"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "33.4000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-01",
+        "Start": "2026-09-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": false,
+      "Groups": [
+        {
+          "Keys": [
+            "Amazon Elastic Compute Cloud - Compute"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "64.0000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "Amazon Simple Storage Service"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "4.5000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AWS Lambda"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "1.1000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AmazonCloudWatch"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "2.4000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "EC2 - Other"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "34.1000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-01",
+        "Start": "2026-10-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "Amazon Elastic Compute Cloud - Compute"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "6.3000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "Amazon Simple Storage Service"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.5000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AWS Lambda"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.1000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "AmazonCloudWatch"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.2000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "EC2 - Other"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "3.3000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-04",
+        "Start": "2026-11-01"
+      },
+      "Total": {}
+    }
+  ],
+  "by_tag": [
+    {
+      "Estimated": false,
+      "Groups": [
+        {
+          "Keys": [
+            "env$prod"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "70.0000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$staging"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "9.0000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$shared"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "6.0000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "13.0000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-09-01",
+        "Start": "2026-08-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": false,
+      "Groups": [
+        {
+          "Keys": [
+            "env$prod"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "72.0000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$staging"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "9.1000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$shared"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "6.0000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "15.0000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-10-01",
+        "Start": "2026-09-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": false,
+      "Groups": [
+        {
+          "Keys": [
+            "env$prod"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "74.5000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$staging"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "9.4000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$shared"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "6.2000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "16.0000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-01",
+        "Start": "2026-10-01"
+      },
+      "Total": {}
+    },
+    {
+      "Estimated": true,
+      "Groups": [
+        {
+          "Keys": [
+            "env$prod"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "7.6000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$staging"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.9000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$shared"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "0.6000",
+              "Unit": "USD"
+            }
+          }
+        },
+        {
+          "Keys": [
+            "env$"
+          ],
+          "Metrics": {
+            "UnblendedCost": {
+              "Amount": "1.3000",
+              "Unit": "USD"
+            }
+          }
+        }
+      ],
+      "TimePeriod": {
+        "End": "2026-11-04",
+        "Start": "2026-11-01"
+      },
+      "Total": {}
+    }
+  ],
+  "fetched_at": "2026-11-04",
+  "tag_key": "env"
+}

@@ -1,0 +1,1033 @@
+{
+ "source": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+ "retrieved": "2026-11-04",
+ "questions": {
+  "COST01": {
+   "title": "COST 1. How do you implement cloud financial management?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-01.html"
+  },
+  "COST02": {
+   "title": "COST 2. How do you govern usage?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-02.html"
+  },
+  "COST03": {
+   "title": "COST 3. How do you monitor your cost and usage?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-03.html"
+  },
+  "COST04": {
+   "title": "COST 4. How do you decommission resources?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-04.html"
+  },
+  "COST05": {
+   "title": "COST 5. How do you evaluate cost when you select services?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-05.html"
+  },
+  "COST06": {
+   "title": "COST 6. How do you meet cost targets when you select resource type, size and number?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-06.html"
+  },
+  "COST07": {
+   "title": "COST 7. How do you use pricing models to reduce cost?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-07.html"
+  },
+  "COST08": {
+   "title": "COST 8. How do you plan for data transfer charges?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-08.html"
+  },
+  "COST09": {
+   "title": "COST 9. How do you manage demand, and supply resources?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-09.html"
+  },
+  "COST10": {
+   "title": "COST 10. How do you evaluate new services?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-10.html"
+  },
+  "COST11": {
+   "title": "COST 11. How do you evaluate the cost of effort?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-11.html"
+  },
+  "REL01": {
+   "title": "REL 1. How do you manage Service Quotas and constraints?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-01.html"
+  },
+  "REL02": {
+   "title": "REL 2. How do you plan your network topology?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-02.html"
+  },
+  "REL03": {
+   "title": "REL 3. How do you design your workload service architecture?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-03.html"
+  },
+  "REL04": {
+   "title": "REL 4. How do you design interactions in a distributed system to prevent failures?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-04.html"
+  },
+  "REL05": {
+   "title": "REL 5. How do you design interactions in a distributed system to mitigate or withstand failures?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-05.html"
+  },
+  "REL06": {
+   "title": "REL 6. How do you monitor workload resources?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-06.html"
+  },
+  "REL07": {
+   "title": "REL 7. How do you design your workload to adapt to changes in demand?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-07.html"
+  },
+  "REL08": {
+   "title": "REL 8. How do you implement change?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-08.html"
+  },
+  "REL09": {
+   "title": "REL 9. How do you back up data?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-09.html"
+  },
+  "REL10": {
+   "title": "REL 10. How do you use fault isolation to protect your workload?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-10.html"
+  },
+  "REL11": {
+   "title": "REL 11. How do you design your workload to withstand component failures?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-11.html"
+  },
+  "REL12": {
+   "title": "REL 12. How do you test reliability?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-12.html"
+  },
+  "REL13": {
+   "title": "REL 13. How do you plan for disaster recovery (DR)?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-13.html"
+  },
+  "SEC01": {
+   "title": "SEC 1. How do you securely operate your workload?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-01.html"
+  },
+  "SEC02": {
+   "title": "SEC 2. How do you manage authentication for people and machines?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-02.html"
+  },
+  "SEC03": {
+   "title": "SEC 3. How do you manage permissions for people and machines?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-03.html"
+  },
+  "SEC04": {
+   "title": "SEC 4. How do you detect and investigate security events?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-04.html"
+  },
+  "SEC05": {
+   "title": "SEC 5. How do you protect your network resources?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-05.html"
+  },
+  "SEC06": {
+   "title": "SEC 6. How do you protect your compute resources?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-06.html"
+  },
+  "SEC07": {
+   "title": "SEC 7. How do you classify your data?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-07.html"
+  },
+  "SEC08": {
+   "title": "SEC 8. How do you protect your data at rest?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-08.html"
+  },
+  "SEC09": {
+   "title": "SEC 9. How do you protect your data in transit?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-09.html"
+  },
+  "SEC10": {
+   "title": "SEC 10. How do you anticipate, respond to, and recover from incidents?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-10.html"
+  },
+  "SEC11": {
+   "title": "SEC 11. How do you incorporate and validate the security properties of applications throughout the design, development, and deployment lifecycle?",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-11.html"
+  }
+ },
+ "best_practices": {
+  "COST01-BP01": {
+   "pillar": "cost",
+   "title": "Establish ownership of cost optimization",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_function.html"
+  },
+  "COST01-BP02": {
+   "pillar": "cost",
+   "title": "Establish a partnership between finance and technology",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_partnership.html"
+  },
+  "COST01-BP03": {
+   "pillar": "cost",
+   "title": "Establish cloud budgets and forecasts",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_budget_forecast.html"
+  },
+  "COST01-BP04": {
+   "pillar": "cost",
+   "title": "Implement cost awareness in your organizational processes",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_cost_awareness.html"
+  },
+  "COST01-BP05": {
+   "pillar": "cost",
+   "title": "Report and notify on cost optimization",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_usage_report.html"
+  },
+  "COST01-BP06": {
+   "pillar": "cost",
+   "title": "Monitor cost proactively",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_proactive_process.html"
+  },
+  "COST01-BP07": {
+   "pillar": "cost",
+   "title": "Keep up-to-date with new service releases",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_scheduled.html"
+  },
+  "COST01-BP08": {
+   "pillar": "cost",
+   "title": "Create a cost-aware culture",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_culture.html"
+  },
+  "COST01-BP09": {
+   "pillar": "cost",
+   "title": "Quantify business value from cost optimization",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_cloud_financial_management_quantify_value.html"
+  },
+  "COST02-BP01": {
+   "pillar": "cost",
+   "title": "Develop policies based on your organization requirements",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_govern_usage_policies.html"
+  },
+  "COST02-BP02": {
+   "pillar": "cost",
+   "title": "Implement goals and targets",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_govern_usage_goal_target.html"
+  },
+  "COST02-BP03": {
+   "pillar": "cost",
+   "title": "Implement an account structure",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_govern_usage_account_structure.html"
+  },
+  "COST02-BP04": {
+   "pillar": "cost",
+   "title": "Implement groups and roles",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_govern_usage_groups_roles.html"
+  },
+  "COST02-BP05": {
+   "pillar": "cost",
+   "title": "Implement cost controls",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_govern_usage_controls.html"
+  },
+  "COST02-BP06": {
+   "pillar": "cost",
+   "title": "Track project lifecycle",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_govern_usage_track_lifecycle.html"
+  },
+  "COST03-BP01": {
+   "pillar": "cost",
+   "title": "Configure detailed information sources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_monitor_usage_detailed_source.html"
+  },
+  "COST03-BP02": {
+   "pillar": "cost",
+   "title": "Add organization information to cost and usage",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_monitor_usage_org_information.html"
+  },
+  "COST03-BP03": {
+   "pillar": "cost",
+   "title": "Identify cost attribution categories",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_monitor_usage_define_attribution.html"
+  },
+  "COST03-BP04": {
+   "pillar": "cost",
+   "title": "Establish organization metrics",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_monitor_usage_define_kpi.html"
+  },
+  "COST03-BP05": {
+   "pillar": "cost",
+   "title": "Configure billing and cost management tools",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_monitor_usage_config_tools.html"
+  },
+  "COST03-BP06": {
+   "pillar": "cost",
+   "title": "Allocate costs based on workload metrics",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_monitor_usage_allocate_outcome.html"
+  },
+  "COST04-BP01": {
+   "pillar": "cost",
+   "title": "Track resources over their lifetime",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_decomissioning_resources_track.html"
+  },
+  "COST04-BP02": {
+   "pillar": "cost",
+   "title": "Implement a decommissioning process",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_decomissioning_resources_implement_process.html"
+  },
+  "COST04-BP03": {
+   "pillar": "cost",
+   "title": "Decommission resources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_decomissioning_resources_decommission.html"
+  },
+  "COST04-BP04": {
+   "pillar": "cost",
+   "title": "Decommission resources automatically",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_decomissioning_resources_decomm_automated.html"
+  },
+  "COST04-BP05": {
+   "pillar": "cost",
+   "title": "Enforce data retention policies",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_decomissioning_resources_data_retention.html"
+  },
+  "COST05-BP01": {
+   "pillar": "cost",
+   "title": "Identify organization requirements for cost",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_select_service_requirements.html"
+  },
+  "COST05-BP02": {
+   "pillar": "cost",
+   "title": "Analyze all components of the workload",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_select_service_analyze_all.html"
+  },
+  "COST05-BP03": {
+   "pillar": "cost",
+   "title": "Perform a thorough analysis of each component",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_select_service_thorough_analysis.html"
+  },
+  "COST05-BP04": {
+   "pillar": "cost",
+   "title": "Select software with cost-effective licensing",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_select_service_licensing.html"
+  },
+  "COST05-BP05": {
+   "pillar": "cost",
+   "title": "Select components of this workload to optimize cost in line with organization priorities",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_select_service_select_for_cost.html"
+  },
+  "COST05-BP06": {
+   "pillar": "cost",
+   "title": "Perform cost analysis for different usage over time",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_select_service_analyze_over_time.html"
+  },
+  "COST06-BP01": {
+   "pillar": "cost",
+   "title": "Perform cost modeling",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_type_size_number_resources_cost_modeling.html"
+  },
+  "COST06-BP02": {
+   "pillar": "cost",
+   "title": "Select resource type, size, and number based on data",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_type_size_number_resources_data.html"
+  },
+  "COST06-BP03": {
+   "pillar": "cost",
+   "title": "Select resource type, size, and number automatically based on metrics",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_type_size_number_resources_metrics.html"
+  },
+  "COST06-BP04": {
+   "pillar": "cost",
+   "title": "Consider using shared resources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_type_size_number_resources_shared.html"
+  },
+  "COST07-BP01": {
+   "pillar": "cost",
+   "title": "Perform pricing model analysis",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_pricing_model_analysis.html"
+  },
+  "COST07-BP02": {
+   "pillar": "cost",
+   "title": "Choose Regions based on cost",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_pricing_model_region_cost.html"
+  },
+  "COST07-BP03": {
+   "pillar": "cost",
+   "title": "Select third-party agreements with cost-efficient terms",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_pricing_model_third_party.html"
+  },
+  "COST07-BP04": {
+   "pillar": "cost",
+   "title": "Implement pricing models for all components of this workload",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_pricing_model_implement_models.html"
+  },
+  "COST07-BP05": {
+   "pillar": "cost",
+   "title": "Perform pricing model analysis at the management account level",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_pricing_model_master_analysis.html"
+  },
+  "COST08-BP01": {
+   "pillar": "cost",
+   "title": "Perform data transfer modeling",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_data_transfer_modeling.html"
+  },
+  "COST08-BP02": {
+   "pillar": "cost",
+   "title": "Select components to optimize data transfer cost",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_data_transfer_optimized_components.html"
+  },
+  "COST08-BP03": {
+   "pillar": "cost",
+   "title": "Implement services to reduce data transfer costs",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_data_transfer_implement_services.html"
+  },
+  "COST09-BP01": {
+   "pillar": "cost",
+   "title": "Perform an analysis on the workload demand",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_manage_demand_resources_cost_analysis.html"
+  },
+  "COST09-BP02": {
+   "pillar": "cost",
+   "title": "Implement a buffer or throttle to manage demand",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_manage_demand_resources_buffer_throttle.html"
+  },
+  "COST09-BP03": {
+   "pillar": "cost",
+   "title": "Supply resources dynamically",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_manage_demand_resources_dynamic.html"
+  },
+  "COST10-BP01": {
+   "pillar": "cost",
+   "title": "Develop a workload review process",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_evaluate_new_services_review_process.html"
+  },
+  "COST10-BP02": {
+   "pillar": "cost",
+   "title": "Review and analyze this workload regularly",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_evaluate_new_services_review_workload.html"
+  },
+  "COST11-BP01": {
+   "pillar": "cost",
+   "title": "Perform automation for operations",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost_evaluate_cost_effort_automations_operations.html"
+  },
+  "REL01-BP01": {
+   "pillar": "reliability",
+   "title": "Aware of service quotas and constraints",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_manage_service_limits_aware_quotas_and_constraints.html"
+  },
+  "REL01-BP02": {
+   "pillar": "reliability",
+   "title": "Manage service quotas across accounts and regions",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_manage_service_limits_limits_considered.html"
+  },
+  "REL01-BP03": {
+   "pillar": "reliability",
+   "title": "Accommodate fixed service quotas and constraints through architecture",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_manage_service_limits_aware_fixed_limits.html"
+  },
+  "REL01-BP04": {
+   "pillar": "reliability",
+   "title": "Monitor and manage quotas",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_manage_service_limits_monitor_manage_limits.html"
+  },
+  "REL01-BP05": {
+   "pillar": "reliability",
+   "title": "Automate quota management",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_manage_service_limits_automated_monitor_limits.html"
+  },
+  "REL01-BP06": {
+   "pillar": "reliability",
+   "title": "Ensure that a sufficient gap exists between the current quotas and the maximum usage to accommodate failover",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_manage_service_limits_suff_buffer_limits.html"
+  },
+  "REL02-BP01": {
+   "pillar": "reliability",
+   "title": "Use highly available network connectivity for your workload public endpoints",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_network_topology_ha_conn_users.html"
+  },
+  "REL02-BP02": {
+   "pillar": "reliability",
+   "title": "Provision redundant connectivity between private networks in the cloud and on-premises environments",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_network_topology_ha_conn_private_networks.html"
+  },
+  "REL02-BP03": {
+   "pillar": "reliability",
+   "title": "Ensure IP subnet allocation accounts for expansion and availability",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_network_topology_ip_subnet_allocation.html"
+  },
+  "REL02-BP04": {
+   "pillar": "reliability",
+   "title": "Prefer hub-and-spoke topologies over many-to-many mesh",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_network_topology_prefer_hub_and_spoke.html"
+  },
+  "REL02-BP05": {
+   "pillar": "reliability",
+   "title": "Enforce non-overlapping private IP address ranges in all private address spaces where they are connected",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_network_topology_non_overlap_ip.html"
+  },
+  "REL03-BP01": {
+   "pillar": "reliability",
+   "title": "Choose how to segment your workload",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_service_architecture_monolith_soa_microservice.html"
+  },
+  "REL03-BP02": {
+   "pillar": "reliability",
+   "title": "Build services focused on specific business domains and functionality",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_service_architecture_business_domains.html"
+  },
+  "REL03-BP03": {
+   "pillar": "reliability",
+   "title": "Provide service contracts per API",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_service_architecture_api_contracts.html"
+  },
+  "REL04-BP01": {
+   "pillar": "reliability",
+   "title": "Identify the kind of distributed systems you depend on",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_identify.html"
+  },
+  "REL04-BP02": {
+   "pillar": "reliability",
+   "title": "Implement loosely coupled dependencies",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_loosely_coupled_system.html"
+  },
+  "REL04-BP03": {
+   "pillar": "reliability",
+   "title": "Do constant work",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_constant_work.html"
+  },
+  "REL04-BP04": {
+   "pillar": "reliability",
+   "title": "Make mutating operations idempotent",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_idempotent.html"
+  },
+  "REL05-BP01": {
+   "pillar": "reliability",
+   "title": "Implement graceful degradation to transform applicable hard dependencies into soft dependencies",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_graceful_degradation.html"
+  },
+  "REL05-BP02": {
+   "pillar": "reliability",
+   "title": "Throttle requests",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_throttle_requests.html"
+  },
+  "REL05-BP03": {
+   "pillar": "reliability",
+   "title": "Control and limit retry calls",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_limit_retries.html"
+  },
+  "REL05-BP04": {
+   "pillar": "reliability",
+   "title": "Fail fast and limit queues",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_fail_fast.html"
+  },
+  "REL05-BP05": {
+   "pillar": "reliability",
+   "title": "Set client timeouts",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_client_timeouts.html"
+  },
+  "REL05-BP06": {
+   "pillar": "reliability",
+   "title": "Make systems stateless where possible",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_stateless.html"
+  },
+  "REL05-BP07": {
+   "pillar": "reliability",
+   "title": "Implement emergency levers",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_mitigate_interaction_failure_emergency_levers.html"
+  },
+  "REL06-BP01": {
+   "pillar": "reliability",
+   "title": "Monitor all components for the workload (Generation)",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_monitor_resources.html"
+  },
+  "REL06-BP02": {
+   "pillar": "reliability",
+   "title": "Define and calculate metrics (Aggregation)",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_notification_aggregation.html"
+  },
+  "REL06-BP03": {
+   "pillar": "reliability",
+   "title": "Send notifications (Real-time processing and alarming)",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_notification_monitor.html"
+  },
+  "REL06-BP04": {
+   "pillar": "reliability",
+   "title": "Automate responses (Real-time processing and alarming)",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_automate_response_monitor.html"
+  },
+  "REL06-BP05": {
+   "pillar": "reliability",
+   "title": "Analyze logs",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_storage_analytics.html"
+  },
+  "REL06-BP06": {
+   "pillar": "reliability",
+   "title": "Regularly review monitoring scope and metrics",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_review_monitoring.html"
+  },
+  "REL06-BP07": {
+   "pillar": "reliability",
+   "title": "Monitor end-to-end tracing of requests through your system",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_monitor_aws_resources_end_to_end.html"
+  },
+  "REL07-BP01": {
+   "pillar": "reliability",
+   "title": "Use automation when obtaining or scaling resources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_adapt_to_changes_autoscale_adapt.html"
+  },
+  "REL07-BP02": {
+   "pillar": "reliability",
+   "title": "Obtain resources upon detection of impairment to a workload",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_adapt_to_changes_reactive_adapt_auto.html"
+  },
+  "REL07-BP03": {
+   "pillar": "reliability",
+   "title": "Obtain resources upon detection that more resources are needed for a workload",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_adapt_to_changes_proactive_adapt_auto.html"
+  },
+  "REL07-BP04": {
+   "pillar": "reliability",
+   "title": "Load test your workload",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_adapt_to_changes_load_tested_adapt.html"
+  },
+  "REL08-BP01": {
+   "pillar": "reliability",
+   "title": "Use runbooks for standard activities such as deployment",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_tracking_change_management_planned_changemgmt.html"
+  },
+  "REL08-BP02": {
+   "pillar": "reliability",
+   "title": "Integrate functional testing as part of your deployment",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_tracking_change_management_functional_testing.html"
+  },
+  "REL08-BP03": {
+   "pillar": "reliability",
+   "title": "Integrate resiliency testing as part of your deployment",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_tracking_change_management_resiliency_testing.html"
+  },
+  "REL08-BP04": {
+   "pillar": "reliability",
+   "title": "Deploy using immutable infrastructure",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_tracking_change_management_immutable_infrastructure.html"
+  },
+  "REL08-BP05": {
+   "pillar": "reliability",
+   "title": "Deploy changes with automation",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_tracking_change_management_automated_changemgmt.html"
+  },
+  "REL09-BP01": {
+   "pillar": "reliability",
+   "title": "Identify and back up all data that needs to be backed up, or reproduce the data from sources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_backing_up_data_identified_backups_data.html"
+  },
+  "REL09-BP02": {
+   "pillar": "reliability",
+   "title": "Secure and encrypt backups",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_backing_up_data_secured_backups_data.html"
+  },
+  "REL09-BP03": {
+   "pillar": "reliability",
+   "title": "Perform data backup automatically",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_backing_up_data_automated_backups_data.html"
+  },
+  "REL09-BP04": {
+   "pillar": "reliability",
+   "title": "Perform periodic recovery of the data to verify backup integrity and processes",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_backing_up_data_periodic_recovery_testing_data.html"
+  },
+  "REL10-BP01": {
+   "pillar": "reliability",
+   "title": "Deploy the workload to multiple locations",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_fault_isolation_multiaz_region_system.html"
+  },
+  "REL10-BP02": {
+   "pillar": "reliability",
+   "title": "Automate recovery for components constrained to a single location",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_fault_isolation_single_az_system.html"
+  },
+  "REL10-BP03": {
+   "pillar": "reliability",
+   "title": "Use bulkhead architectures to limit scope of impact",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_fault_isolation_use_bulkhead.html"
+  },
+  "REL11-BP01": {
+   "pillar": "reliability",
+   "title": "Monitor all components of the workload to detect failures",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_monitoring_health.html"
+  },
+  "REL11-BP03": {
+   "pillar": "reliability",
+   "title": "Automate healing on all layers",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_auto_healing_system.html"
+  },
+  "REL11-BP04": {
+   "pillar": "reliability",
+   "title": "Rely on the data plane and not the control plane during recovery",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_avoid_control_plane.html"
+  },
+  "REL11-BP05": {
+   "pillar": "reliability",
+   "title": "Use static stability to prevent bimodal behavior",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_static_stability.html"
+  },
+  "REL11-BP06": {
+   "pillar": "reliability",
+   "title": "Send notifications when events impact availability",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_notifications_sent_system.html"
+  },
+  "REL11-BP07": {
+   "pillar": "reliability",
+   "title": "Architect your product to meet availability targets and uptime service level agreements (SLAs)",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_withstand_component_failures_service_level_agreements.html"
+  },
+  "REL12-BP01": {
+   "pillar": "reliability",
+   "title": "Use playbooks to investigate failures",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_testing_resiliency_playbook_resiliency.html"
+  },
+  "REL12-BP02": {
+   "pillar": "reliability",
+   "title": "Perform post-incident analysis",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_testing_resiliency_rca_resiliency.html"
+  },
+  "REL12-BP03": {
+   "pillar": "reliability",
+   "title": "Test scalability and performance requirements",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_testing_resiliency_test_non_functional.html"
+  },
+  "REL12-BP04": {
+   "pillar": "reliability",
+   "title": "Test resiliency using chaos engineering",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_testing_resiliency_failure_injection_resiliency.html"
+  },
+  "REL12-BP05": {
+   "pillar": "reliability",
+   "title": "Conduct game days regularly",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_testing_resiliency_game_days_resiliency.html"
+  },
+  "REL13-BP01": {
+   "pillar": "reliability",
+   "title": "Define recovery objectives for downtime and data loss",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_for_recovery_objective_defined_recovery.html"
+  },
+  "REL13-BP02": {
+   "pillar": "reliability",
+   "title": "Use defined recovery strategies to meet the recovery objectives",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_for_recovery_disaster_recovery.html"
+  },
+  "REL13-BP03": {
+   "pillar": "reliability",
+   "title": "Test disaster recovery implementation to validate the implementation",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_for_recovery_dr_tested.html"
+  },
+  "REL13-BP04": {
+   "pillar": "reliability",
+   "title": "Manage configuration drift at the DR site or Region",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_for_recovery_config_drift.html"
+  },
+  "REL13-BP05": {
+   "pillar": "reliability",
+   "title": "Automate recovery",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_planning_for_recovery_auto_recovery.html"
+  },
+  "SEC01-BP01": {
+   "pillar": "security",
+   "title": "Separate workloads using accounts",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_multi_accounts.html"
+  },
+  "SEC01-BP02": {
+   "pillar": "security",
+   "title": "Secure account root user and properties",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_aws_account.html"
+  },
+  "SEC01-BP03": {
+   "pillar": "security",
+   "title": "Identify and validate control objectives",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_control_objectives.html"
+  },
+  "SEC01-BP04": {
+   "pillar": "security",
+   "title": "Stay up to date with security threats and recommendations",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_updated_threats.html"
+  },
+  "SEC01-BP05": {
+   "pillar": "security",
+   "title": "Reduce security management scope",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_reduce_management_scope.html"
+  },
+  "SEC01-BP06": {
+   "pillar": "security",
+   "title": "Automate deployment of standard security controls",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_automate_security_controls.html"
+  },
+  "SEC01-BP07": {
+   "pillar": "security",
+   "title": "Identify threats and prioritize mitigations using a threat model",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_threat_model.html"
+  },
+  "SEC01-BP08": {
+   "pillar": "security",
+   "title": "Evaluate and implement new security services and features regularly",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_securely_operate_implement_services_features.html"
+  },
+  "SEC02-BP01": {
+   "pillar": "security",
+   "title": "Use strong sign-in mechanisms",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_enforce_mechanisms.html"
+  },
+  "SEC02-BP02": {
+   "pillar": "security",
+   "title": "Use temporary credentials",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_unique.html"
+  },
+  "SEC02-BP03": {
+   "pillar": "security",
+   "title": "Store and use secrets securely",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_secrets.html"
+  },
+  "SEC02-BP04": {
+   "pillar": "security",
+   "title": "Rely on a centralized identity provider",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_identity_provider.html"
+  },
+  "SEC02-BP05": {
+   "pillar": "security",
+   "title": "Audit and rotate credentials periodically",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_audit.html"
+  },
+  "SEC02-BP06": {
+   "pillar": "security",
+   "title": "Employ user groups and attributes",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_identities_groups_attributes.html"
+  },
+  "SEC03-BP01": {
+   "pillar": "security",
+   "title": "Define access requirements",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_define.html"
+  },
+  "SEC03-BP02": {
+   "pillar": "security",
+   "title": "Grant least privilege access",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_least_privileges.html"
+  },
+  "SEC03-BP03": {
+   "pillar": "security",
+   "title": "Establish emergency access process",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_emergency_process.html"
+  },
+  "SEC03-BP04": {
+   "pillar": "security",
+   "title": "Reduce permissions continuously",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_continuous_reduction.html"
+  },
+  "SEC03-BP05": {
+   "pillar": "security",
+   "title": "Define permission guardrails for your organization",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_define_guardrails.html"
+  },
+  "SEC03-BP06": {
+   "pillar": "security",
+   "title": "Manage access based on lifecycle",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_lifecycle.html"
+  },
+  "SEC03-BP07": {
+   "pillar": "security",
+   "title": "Analyze public and cross-account access",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_analyze_cross_account.html"
+  },
+  "SEC03-BP08": {
+   "pillar": "security",
+   "title": "Share resources securely within your organization",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_share_securely.html"
+  },
+  "SEC03-BP09": {
+   "pillar": "security",
+   "title": "Share resources securely with a third party",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_permissions_share_securely_third_party.html"
+  },
+  "SEC04-BP01": {
+   "pillar": "security",
+   "title": "Configure service and application logging",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_detect_investigate_events_app_service_logging.html"
+  },
+  "SEC04-BP02": {
+   "pillar": "security",
+   "title": "Capture logs, findings, and metrics in standardized locations",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_detect_investigate_events_logs.html"
+  },
+  "SEC04-BP03": {
+   "pillar": "security",
+   "title": "Correlate and enrich security alerts",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_detect_investigate_events_security_alerts.html"
+  },
+  "SEC04-BP04": {
+   "pillar": "security",
+   "title": "Initiate remediation for non-compliant resources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_detect_investigate_events_noncompliant_resources.html"
+  },
+  "SEC05-BP01": {
+   "pillar": "security",
+   "title": "Create network layers",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_network_protection_create_layers.html"
+  },
+  "SEC05-BP02": {
+   "pillar": "security",
+   "title": "Control traffic flow within your network layers",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_network_protection_layered.html"
+  },
+  "SEC05-BP03": {
+   "pillar": "security",
+   "title": "Implement inspection-based protection",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_network_protection_inspection.html"
+  },
+  "SEC05-BP04": {
+   "pillar": "security",
+   "title": "Automate network protection",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_network_auto_protect.html"
+  },
+  "SEC06-BP01": {
+   "pillar": "security",
+   "title": "Perform vulnerability management",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_compute_vulnerability_management.html"
+  },
+  "SEC06-BP02": {
+   "pillar": "security",
+   "title": "Provision compute from hardened images",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_compute_hardened_images.html"
+  },
+  "SEC06-BP03": {
+   "pillar": "security",
+   "title": "Reduce manual management and interactive access",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_compute_reduce_manual_management.html"
+  },
+  "SEC06-BP04": {
+   "pillar": "security",
+   "title": "Validate software integrity",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_compute_validate_software_integrity.html"
+  },
+  "SEC06-BP05": {
+   "pillar": "security",
+   "title": "Automate compute protection",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_compute_auto_protection.html"
+  },
+  "SEC07-BP01": {
+   "pillar": "security",
+   "title": "Understand your data classification scheme",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_data_classification_identify_data.html"
+  },
+  "SEC07-BP02": {
+   "pillar": "security",
+   "title": "Apply data protection controls based on data sensitivity",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_data_classification_define_protection.html"
+  },
+  "SEC07-BP03": {
+   "pillar": "security",
+   "title": "Automate identification and classification",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_data_classification_auto_classification.html"
+  },
+  "SEC07-BP04": {
+   "pillar": "security",
+   "title": "Define scalable data lifecycle management",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_data_classification_lifecycle_management.html"
+  },
+  "SEC08-BP01": {
+   "pillar": "security",
+   "title": "Implement secure key management",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_rest_key_mgmt.html"
+  },
+  "SEC08-BP02": {
+   "pillar": "security",
+   "title": "Enforce encryption at rest",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_rest_encrypt.html"
+  },
+  "SEC08-BP03": {
+   "pillar": "security",
+   "title": "Automate data at rest protection",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_rest_automate_protection.html"
+  },
+  "SEC08-BP04": {
+   "pillar": "security",
+   "title": "Enforce access control",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_rest_access_control.html"
+  },
+  "SEC09-BP01": {
+   "pillar": "security",
+   "title": "Implement secure key and certificate management",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_transit_key_cert_mgmt.html"
+  },
+  "SEC09-BP02": {
+   "pillar": "security",
+   "title": "Enforce encryption in transit",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_transit_encrypt.html"
+  },
+  "SEC09-BP03": {
+   "pillar": "security",
+   "title": "Authenticate network communications",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_protect_data_transit_authentication.html"
+  },
+  "SEC10-BP01": {
+   "pillar": "security",
+   "title": "Identify key personnel and external resources",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_identify_personnel.html"
+  },
+  "SEC10-BP02": {
+   "pillar": "security",
+   "title": "Develop incident management plans",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_develop_management_plans.html"
+  },
+  "SEC10-BP03": {
+   "pillar": "security",
+   "title": "Prepare forensic capabilities",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_prepare_forensic.html"
+  },
+  "SEC10-BP04": {
+   "pillar": "security",
+   "title": "Develop and test security incident response playbooks",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_playbooks.html"
+  },
+  "SEC10-BP05": {
+   "pillar": "security",
+   "title": "Pre-provision access",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_pre_provision_access.html"
+  },
+  "SEC10-BP06": {
+   "pillar": "security",
+   "title": "Pre-deploy tools",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_pre_deploy_tools.html"
+  },
+  "SEC10-BP07": {
+   "pillar": "security",
+   "title": "Run simulations",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_run_game_days.html"
+  },
+  "SEC10-BP08": {
+   "pillar": "security",
+   "title": "Establish a framework for learning from incidents",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_incident_response_establish_incident_framework.html"
+  },
+  "SEC11-BP01": {
+   "pillar": "security",
+   "title": "Train for application security",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_train_for_application_security.html"
+  },
+  "SEC11-BP02": {
+   "pillar": "security",
+   "title": "Automate testing throughout the development and release lifecycle",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_automate_testing_throughout_lifecycle.html"
+  },
+  "SEC11-BP03": {
+   "pillar": "security",
+   "title": "Perform regular penetration testing",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_perform_regular_penetration_testing.html"
+  },
+  "SEC11-BP04": {
+   "pillar": "security",
+   "title": "Conduct code reviews",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_manual_code_reviews.html"
+  },
+  "SEC11-BP05": {
+   "pillar": "security",
+   "title": "Centralize services for packages and dependencies",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_centralize_services_for_packages_and_dependencies.html"
+  },
+  "SEC11-BP06": {
+   "pillar": "security",
+   "title": "Deploy software programmatically",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_deploy_software_programmatically.html"
+  },
+  "SEC11-BP07": {
+   "pillar": "security",
+   "title": "Regularly assess security properties of the pipelines",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_regularly_assess_security_properties_of_pipelines.html"
+  },
+  "SEC11-BP08": {
+   "pillar": "security",
+   "title": "Build a program that embeds security ownership in workload teams",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/sec_appsec_build_program_that_embeds_security_ownership_in_teams.html"
+  }
+ }
+}

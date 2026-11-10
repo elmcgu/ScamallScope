@@ -12,9 +12,24 @@ uv run scamallscope graph snapshots/<file>.snapshot.json   # -> <file>.graph.jso
 uv run scamallscope inventory snapshots/<file>.snapshot.json --table scamallscope-inventory
 uv run scamallscope changes --table scamallscope-inventory --date 2026-11-04
 uv run scamallscope history --table scamallscope-inventory --arn <arn>
-uv run pytest
-uv run pyright                      # type check (TypedDict shapes)
+uv run scamallscope fetch cloudwatch --snapshot snapshots/<file>.snapshot.json --profile <read-only-profile>
+uv run scamallscope fetch cost --profile <read-only-profile> [--tag-key env]
+WAZUH_API_USER=... WAZUH_API_PASSWORD=... WAZUH_INDEXER_USER=... WAZUH_INDEXER_PASSWORD=... \
+  uv run scamallscope fetch wazuh --url https://<wazuh>:55000 --indexer-url https://<indexer>:9200 [--ca-file ca.pem]
+GITHUB_TOKEN=... uv run scamallscope fetch github --snapshot snapshots/<file>.snapshot.json
+uv run scamallscope fetch prometheus --url https://<prometheus>      # PROMETHEUS_BEARER_TOKEN optional
+cp <prowler-output>/prowler-output-*.ocsf.json integrations/prowler.ocsf.json
+ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible-playbook site.yml --check > integrations/ansible.json
+uv run scamallscope enrich snapshots/<file>.snapshot.json --integrations integrations/   # -> graph v2
+uv run python scripts/make_sample.py   # demo: made-up estate and integration data -> samples/
+uv run pytest                          # uv run pytest -k WAZ  runs one spec's tests (IDs in docs/specs/)
+uv run pyright                         # type check (TypedDict shapes)
 ```
+
+Try `enrich` on the made-up sample: `uv run scamallscope enrich ../samples/demo.snapshot.json --integrations ../samples/integrations --output /tmp/demo.graph.json`.
+
+Never put a password or token on the command line; `fetch` reads them from the environment
+only. Shell history keeps what you type: set them with `read -rs WAZUH_API_PASSWORD; export WAZUH_API_PASSWORD`.
 
 The snapshot goes to `snapshots/` (git-ignored) with mode `0600`. Exit code `0` = all units
 collected, `2` = partial snapshot (see the `units` list for errors).
@@ -31,6 +46,13 @@ Only these read-only actions:
 - `s3:ListAllMyBuckets`, `s3:GetBucketLocation`, `s3:GetBucketPolicyStatus`, `s3:GetBucketPublicAccessBlock`,
   `s3:GetBucketAcl`, `s3:GetEncryptionConfiguration`, `s3:GetBucketVersioning`, `s3:GetBucketTagging`,
   `s3:GetAccountPublicAccessBlock`
+
+For integrations (each only if you use it):
+
+- CloudWatch: `cloudwatch:GetMetricData`, `cloudwatch:DescribeAlarms`
+- Cost Explorer: `ce:GetCostAndUsage`, `ce:GetCostAndUsageWithResources` ($0.01 per request, 3 per run)
+- Wazuh: an API user with read-only access to agents; an indexer user with read on `wazuh-states-vulnerabilities-*`
+- GitHub: fine-grained token, repository permission "Deployments: read", only the repos in `scamallscope:repo` tags
 
 IAM and S3 are global: they are collected once per run under the region `global`
 (`snapshot.collect(..., include_global=False)` skips them). Lambda environment variable

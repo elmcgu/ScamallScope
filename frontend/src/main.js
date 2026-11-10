@@ -3,9 +3,13 @@ import fcose from "cytoscape-fcose";
 import { LAYOUT } from "./layout.js";
 import { ICON_FILES, iconStyles, installedIcons } from "./icons.js";
 import {
-  ALL_REGIONS, defaultRegion, detailRows, facets, parseGraph, portText, regionsFor, summary,
+  ALL_REGIONS, classesFor, defaultRegion, detailRows, facets, parseGraph, portText, regionsFor, summary,
   toCyElements, visibleIds, warnings,
 } from "./model.js";
+import {
+  PILLARS, costSummary, filterFindings, findingFacets, findingsFor, hasEnrichment, hostRows, integrationStatus,
+  money, postureRows, postureSummary, safeUrl, sortFindings, sortRows,
+} from "./views.js";
 
 cytoscape.use(fcose);
 
@@ -18,6 +22,9 @@ const $ = (id) => document.getElementById(id);
 let cy = null;
 let elements = [];
 let filters = null;
+let graph = null;
+let colourMode = "exposure";
+let hostSort = { key: "findings", descending: true };
 
 // Dark, high-contrast theme. Colours on #0d1117: text >= 4.5:1, shapes and lines >= 3:1.
 const C = {
@@ -62,6 +69,14 @@ const STYLE = [
   { selector: "node.exposure-unknown", style: {
     "background-color": C.unknown, "border-color": "#ffffff", "border-width": 4, "border-style": "dashed", color: C.unknown,
   } },
+  // Colour by worst finding or by cost (one scheme at a time; see classesFor).
+  { selector: "node.sev-critical", style: { "background-color": "#ff5c5c", "border-color": "#ffffff", "border-width": 4 } },
+  { selector: "node.sev-high", style: { "background-color": "#ffa657", "border-color": "#ffffff", "border-width": 3 } },
+  { selector: "node.sev-medium", style: { "background-color": "#ffd33d" } },
+  { selector: "node.sev-low, node.sev-info", style: { "background-color": "#d0d7de" } },
+  { selector: "node.cost-high", style: { "background-color": "#ff7b72", "border-color": "#ffffff", "border-width": 4 } },
+  { selector: "node.cost-medium", style: { "background-color": "#d29922" } },
+  { selector: "node.cost-low", style: { "background-color": "#3fb950" } },
   { selector: "edge", style: {
     width: 2, "line-color": C.line, "target-arrow-shape": "triangle", "target-arrow-color": C.line,
     "curve-style": "bezier", "arrow-scale": 1,
@@ -79,7 +94,6 @@ const STYLE = [
 const MIN_READABLE_ZOOM = 0.75;
 
 function load(json, source) {
-  let graph;
   try {
     graph = parseGraph(json);
   } catch (err) {
@@ -108,11 +122,187 @@ function load(json, source) {
 
   if (cy) cy.destroy();
   // Exposure rules come last so their red or amber border stays on top of the icon styles.
-  const style = [...STYLE, ...iconStyles(ICON_URLS), ...STYLE.filter((r) => /exposure-|:selected|hidden/.test(r.selector))];
+  const style = [...STYLE, ...iconStyles(ICON_URLS), ...STYLE.filter((r) => /exposure-|sev-|cost-|:selected|hidden/.test(r.selector))];
   cy = cytoscape({ container: $("cy"), elements, style, wheelSensitivity: 0.3, minZoom: 0.1, maxZoom: 4 });
   cy.on("tap", "node", (evt) => showDetails(evt.target.data()));
   cy.on("tap", (evt) => { if (evt.target === cy) clearDetails(); });
+  recolour();
   apply();
+  renderIntegrations();
+  const enriched = hasEnrichment(graph);
+  for (const b of document.querySelectorAll("#views button")) {
+    if (b.dataset.view !== "map") b.disabled = !enriched;
+  }
+  if (enriched) {
+    sourceOptions();
+    renderFindings();
+    renderHosts();
+    renderCost();
+    renderWa();
+  }
+  showView("map");
+}
+
+/** Re-apply node classes for the colour mode, keeping hidden nodes hidden. */
+function recolour() {
+  if (!cy) return;
+  const maxCost = Math.max(0, ...cy.nodes().map((n) => n.data("cost")?.monthly_usd ?? 0));
+  cy.batch(() => cy.nodes().forEach((n) => {
+    const hidden = n.hasClass("hidden");
+    n.classes(classesFor(n.data(), colourMode, { maxCost }));
+    if (hidden) n.addClass("hidden");
+  }));
+  for (const mode of ["exposure", "severity", "cost"]) $(`legend-${mode}`).hidden = mode !== colourMode;
+}
+
+function showView(name) {
+  for (const b of document.querySelectorAll("#views button")) b.setAttribute("aria-pressed", String(b.dataset.view === name));
+  $("view-map").hidden = name !== "map";
+  for (const v of ["findings", "hosts", "cost", "wa"]) $(`view-${v}`).hidden = name !== v;
+  if (name === "map" && cy) cy.resize();
+}
+
+/** Show one resource on the map: its region, selected, centred, details open. */
+function openOnMap(id) {
+  if (!cy) return;
+  const node = cy.getElementById(id);
+  if (node.empty()) return;
+  showView("map");
+  if (!filters.regions.has(node.data("region"))) {
+    $("region").value = node.data("region");
+    filters.regions = regionsFor(node.data("region"), graph);
+    apply();
+  }
+  cy.elements().unselect();
+  node.select();
+  cy.animate({ center: { eles: node }, zoom: Math.max(cy.zoom(), 1) }, { duration: 300 });
+  showDetails(node.data());
+}
+
+function el(tag, props = {}, children = []) {
+  const e = Object.assign(document.createElement(tag), props);
+  e.append(...children.filter((c) => c !== null && c !== undefined));
+  return e;
+}
+
+function link(url, text) {
+  const safe = safeUrl(url);
+  if (!safe) return document.createTextNode(text);
+  return el("a", { href: safe, target: "_blank", rel: "noopener noreferrer", textContent: text });
+}
+
+function table(headers, rows) {
+  const t = document.createElement("table");
+  t.className = "grid";
+  const head = t.createTHead().insertRow();
+  for (const h of headers) head.append(el("th", {}, [typeof h === "string" ? document.createTextNode(h) : h]));
+  const body = t.createTBody();
+  for (const cells of rows) {
+    const tr = body.insertRow();
+    for (const c of cells) {
+      const td = tr.insertCell();
+      if (c instanceof Node) td.append(c);
+      else if (c && typeof c === "object") { td.className = c.className ?? ""; td.append(c.node ?? document.createTextNode(c.text ?? "")); }
+      else td.textContent = c ?? "";
+    }
+  }
+  return t;
+}
+
+const sevBadge = (s) => el("span", { className: `sev ${s}`, textContent: s });
+
+function renderIntegrations() {
+  const box = $("integrations");
+  const list = integrationStatus(graph);
+  box.hidden = list.length === 0;
+  box.textContent = list.length ? "Sources: " + list.map((i) => `${i.name} ${i.loaded ? "✓" : i.error ? "✗ error" : "– not loaded"}${i.unmatched.length ? ` (${i.unmatched.length} unmatched)` : ""}`).join(" · ") : "";
+  const errors = list.filter((i) => i.error).map((i) => `${i.name}: ${i.error}`);
+  if (errors.length) showWarnings([...warnings(graph), ...errors.map((e) => `Integration not loaded. ${e}`)]);
+}
+
+function sourceOptions() {
+  const select = $("f-source");
+  select.replaceChildren(el("option", { value: "", textContent: "All" }),
+    ...findingFacets(graph.findings).sources.map((s) => el("option", { value: s, textContent: s })));
+}
+
+function renderFindings() {
+  const one = (id) => ($(id).value ? new Set([$(id).value]) : null);
+  const rows = sortFindings(filterFindings(graph.findings, {
+    pillars: one("f-pillar"), severities: one("f-severity"), sources: one("f-source"), search: $("f-search").value,
+  }));
+  const nodeIds = new Set(cy ? cy.nodes().map((n) => n.id()) : []);
+  $("f-count").textContent = `${rows.length} of ${graph.findings.length} findings`;
+  const t = table(["Severity", "Pillar", "Finding", "Resource", "Source", "Best practices", "Detail"], rows.map((f) => [
+    sevBadge(f.severity), f.pillar, f.title,
+    nodeIds.has(f.resource) ? el("button", { type: "button", className: "link-button", textContent: f.resource_name, onclick: () => openOnMap(f.resource) }) : f.resource_name,
+    f.source,
+    el("span", {}, f.best_practices.flatMap((bp, i) => [i ? document.createTextNode(", ") : null,
+      link(graph.posture?.[f.pillar]?.best_practices.find((r) => r.id === bp)?.url, bp)])),
+    [f.detail, f.remediation].filter(Boolean).join(" Fix: "),
+  ]));
+  t.id = "findings-table";
+  $("findings-table").replaceWith(t);
+}
+
+const HOST_COLUMNS = [
+  ["name", "Instance"], ["region", "Region"], ["state", "State"], ["exposure", "Exposure"], ["os", "OS (Wazuh)"],
+  ["agent", "Agent"], ["vuln_score", "Vulns C/H/M/L"], ["deploy", "Last deploy"], ["ansible", "Ansible"],
+  ["cpu_avg", "CPU avg %"], ["alarms", "Alarms"], ["prom_up", "Prometheus up"], ["cost", "Cost / month"], ["findings", "Findings"],
+];
+
+function renderHosts() {
+  const rows = sortRows(hostRows(graph), hostSort.key, hostSort.descending);
+  const headers = HOST_COLUMNS.map(([key, label]) => el("button", {
+    type: "button", textContent: label + (hostSort.key === key ? (hostSort.descending ? " ▼" : " ▲") : ""),
+    onclick: () => { hostSort = { key, descending: hostSort.key === key ? !hostSort.descending : false }; renderHosts(); },
+  }));
+  const t = table(headers, rows.map((r) => [
+    el("button", { type: "button", className: "link-button", textContent: r.name, onclick: () => openOnMap(r.id) }),
+    r.region, r.state, r.exposure.replace("_", " "), r.os, r.agent, r.vulns, r.deploy, r.ansible,
+    { text: r.cpu_avg ?? "", className: "num" }, { text: r.alarms ?? "", className: "num" },
+    { text: r.prom_up ?? "", className: "num" }, { text: money(r.cost), className: "num" }, { text: r.findings, className: "num" },
+  ]));
+  t.id = "hosts-table";
+  $("hosts-table").replaceWith(t);
+}
+
+function renderCost() {
+  const s = costSummary(graph);
+  const body = $("cost-body");
+  if (!s) {
+    body.replaceChildren(el("p", { className: "muted", textContent: "Cost Explorer data is not loaded (integrations/cost.json)." }));
+    return;
+  }
+  const section = (title, node) => el("section", {}, [el("h2", { textContent: title }), node]);
+  body.replaceChildren(
+    el("p", { textContent: `Last full month (${s.lastFullMonth?.start.slice(0, 7) ?? "none"}): ${money(s.lastFullMonth?.total)}. `
+      + `Idle instances (CPU under 5% average and 20% peak) cost about ${money(s.idle)} a month.`
+      + (s.estimated ? " Figures for the current month are estimated by AWS." : "") }),
+    el("div", { className: "cost-grid" }, [
+      section("By month", table(["Month", "Total"], s.months.map((m) => [m.start.slice(0, 7) + (m.estimated ? " (so far, estimated)" : ""), { text: money(m.total), className: "num" }]))),
+      section("Top services, last full month", table(["Service", "Cost"], s.topServices.map(([k, v]) => [k, { text: money(v), className: "num" }]))),
+      section(`By tag '${s.tagKey}', last full month`, table(["Value", "Cost"], s.byTag.map(([k, v]) => [k, { text: money(v), className: "num" }]))),
+      section("Top instances (last 14 days, scaled to 30)", table(["Instance", "Cost / month"], s.topResources.map((r) => [
+        el("button", { type: "button", className: "link-button", textContent: r.label, onclick: () => openOnMap(r.arn) }),
+        { text: money(r.monthly_usd), className: "num" }]))),
+    ]),
+  );
+}
+
+function renderWa() {
+  const statuses = new Set([...document.querySelectorAll(".wa-status")].filter((b) => b.checked).map((b) => b.value));
+  const parts = [];
+  for (const s of postureSummary(graph)) {
+    parts.push(el("section", { className: "wa-pillar" }, [
+      el("h2", { textContent: `${s.pillar}: ${s.issues} with issues, ${s.clear} clear, ${s.not_checked} not checked` }),
+      table(["Best practice", "Status", "Findings", "Checked by"], postureRows(graph, s.pillar, statuses).map((r) => [
+        link(r.url, `${r.id} ${r.title}`), el("span", { className: `status ${r.status}`, textContent: r.status.replace("_", " ") }),
+        { text: r.findings || "", className: "num" }, r.checked_by.join(", "),
+      ])),
+    ]));
+  }
+  $("wa-body").replaceChildren(...parts);
 }
 
 function apply() {
@@ -210,6 +400,32 @@ function showDetails(node) {
       parts.push(list(key, node[key].map((x) => JSON.stringify(x))));
     }
   }
+
+  const mine = graph ? findingsFor(graph, node.id) : [];
+  if (mine.length) parts.push(list(`Findings (${mine.length})`, mine.map((f) => `${f.severity.toUpperCase()} ${f.title} [${f.best_practices.join(", ") || f.check_id}]`)));
+  const w = node.wazuh;
+  if (w) {
+    parts.push(list("Wazuh", [`agent ${w.agent_id} ${w.status}, last keep-alive ${w.last_keepalive ?? "never"}`,
+      `OS ${w.os_name ?? "?"} ${w.os_version ?? ""}`,
+      `vulnerabilities: ${w.vulns.critical} critical, ${w.vulns.high} high, ${w.vulns.medium} medium, ${w.vulns.low} low`,
+      ...w.top_packages.map((p) => `${p.name} ${p.version}: ${p.count} CVE(s)`)]));
+  }
+  const d = node.deploy;
+  if (d) {
+    const section = list("Deployment (GitHub)", [`${d.state}: ${d.repo} ${d.sha} to ${d.environment} at ${d.created_at}`]);
+    section.append(link(d.url, "Open deployments on GitHub"));
+    parts.push(section);
+  }
+  const c = node.config_run;
+  if (c) parts.push(list(`Ansible (${c.mode} mode)`, [`ok ${c.ok}, changed ${c.changed}, failed ${c.failures}, unreachable ${c.unreachable}`, `run at ${c.ran_at ?? "?"}`]));
+  const m = node.metrics;
+  if (m) {
+    parts.push(list("Monitoring", [
+      m.cpu_avg !== undefined ? `CPU ${m.cpu_avg ?? "no data"}% average, ${m.cpu_max ?? "?"}% peak (${m.days} days)` : null,
+      m.alarms !== undefined ? `CloudWatch alarms: ${m.alarms}` : null,
+      m.prom_up !== undefined ? `Prometheus up: ${m.prom_up}` : null].filter(Boolean)));
+  }
+  if (node.cost) parts.push(list("Cost", [`${money(node.cost.monthly_usd)} a month (${node.cost.basis})`]));
   panel.replaceChildren(...parts);
 }
 
@@ -234,6 +450,11 @@ $("zoom-out").addEventListener("click", () => zoomBy(0.8));
 $("zoom-fit").addEventListener("click", () => cy && cy.fit(cy.elements().not(".hidden"), 30));
 $("search").addEventListener("input", (evt) => { if (filters) { filters.search = evt.target.value; apply(); } });
 $("only-exposed").addEventListener("change", (evt) => { if (filters) { filters.onlyExposed = evt.target.checked; apply(); } });
+$("colour-by").addEventListener("change", (evt) => { colourMode = evt.target.value; recolour(); });
+for (const b of document.querySelectorAll("#views button")) b.addEventListener("click", () => showView(b.dataset.view));
+for (const id of ["f-pillar", "f-severity", "f-source"]) $(id).addEventListener("change", () => graph && renderFindings());
+$("f-search").addEventListener("input", () => graph && renderFindings());
+for (const b of document.querySelectorAll(".wa-status")) b.addEventListener("change", () => graph && renderWa());
 
 function typeLegend() {
   const names = {

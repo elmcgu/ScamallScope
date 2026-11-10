@@ -1,17 +1,20 @@
-"""Command line: scamallscope collect | graph | inventory | changes | history."""
+"""Command line: scamallscope collect | graph | inventory | changes | history | fetch | enrich."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import boto3
+from botocore.exceptions import BotoCoreError, ClientError
 
-from . import graph, inventory, snapshot
+from . import enrich, graph, httpjson, inventory, snapshot
+from .integrations import cloudwatch, cost, github, prometheus, wazuh
 from .model import is_complete
 
 
@@ -47,9 +50,28 @@ def main(argv: list[str] | None = None) -> int:
     h.add_argument("--arn", required=True)
     table_args(h)
 
+    e = sub.add_parser("enrich", help="Build graph JSON v2 from a snapshot and integration files")
+    e.add_argument("snapshot", type=Path, help="Snapshot file from 'collect'")
+    e.add_argument("--integrations", type=Path, default=Path("integrations"),
+                   help="Folder with raw integration files (default: integrations/)")
+    e.add_argument("--required-tags", default="owner,env", help="Comma-separated tags every resource needs")
+    e.add_argument("--ansible-mode", choices=["check", "apply"], default="check",
+                   help="Was the Ansible run in check mode (default) or a real apply?")
+    e.add_argument("--output", type=Path, help="Output file (default: <snapshot>.graph.json)")
+
+    f = sub.add_parser("fetch", help="Fetch raw data from an integration into integrations/<source>.json")
+    f.add_argument("source", choices=["wazuh", "github", "cloudwatch", "prometheus", "cost"])
+    f.add_argument("--snapshot", type=Path, help="Snapshot (needed by github and cloudwatch)")
+    f.add_argument("--url", help="wazuh: server API URL (https://host:55000); prometheus: base URL")
+    f.add_argument("--indexer-url", help="wazuh: indexer URL (https://host:9200)")
+    f.add_argument("--ca-file", help="Extra CA certificate file for TLS (verification is always on)")
+    f.add_argument("--profile", help="AWS profile (cloudwatch, cost)")
+    f.add_argument("--tag-key", default="env", help="cost: cost allocation tag to group by (default env)")
+    f.add_argument("--output-dir", type=Path, default=Path("integrations"))
+
     args = parser.parse_args(argv)
     commands = {"collect": _collect, "graph": _graph, "inventory": _inventory,
-                "changes": _changes, "history": _history}
+                "changes": _changes, "history": _history, "enrich": _enrich, "fetch": _fetch}
     return commands[args.command](args)
 
 
@@ -128,6 +150,74 @@ def _collect(args: argparse.Namespace) -> int:
 
     # Exit 2 on a partial snapshot so a scheduler can tell it apart from success.
     return 0 if is_complete(snap) else 2
+
+
+def _enrich(args: argparse.Namespace) -> int:
+    try:
+        snap = json.loads(args.snapshot.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Cannot read snapshot: {exc}", file=sys.stderr)
+        return 1
+    tags = tuple(t.strip() for t in args.required_tags.split(",") if t.strip())
+    g = enrich.build(snap, enrich.load_raw(args.integrations), tags, args.ansible_mode)
+    name = args.snapshot.name.removesuffix(".json").removesuffix(".snapshot")
+    out = args.output or args.snapshot.with_name(f"{name}.graph.json")
+    snapshot.write_json(g, out)
+    for source, m in g["meta"]["integrations"].items():
+        if m.get("loaded"):
+            extra = f", unmatched: {', '.join(m['unmatched'])}" if m["unmatched"] else ""
+            print(f"{source:<11} loaded   {m['findings']} findings, {m['matched']} matched{extra}")
+        else:
+            print(f"{source:<11} {'ERROR ' + m['error'] if m.get('error') else 'not loaded'}")
+    sev = {s: sum(1 for x in g["findings"] if x["severity"] == s) for s in ("critical", "high", "medium", "low", "info")}
+    print(f"{len(g['findings'])} findings ({', '.join(f'{n} {s}' for s, n in sev.items())}) -> {out}")
+    for pillar, p in g["posture"].items():
+        s = p["summary"]
+        print(f"  {pillar:<12} {s['issues']} with issues, {s['clear']} clear, {s['not_checked']} not checked")
+    return 2 if enrich.failed_sources(g) or not g["meta"]["complete"] else 0
+
+
+def _env(name: str) -> str:
+    value = os.environ.get(name)
+    if not value:
+        raise SystemExit(f"Set {name} in the environment (credentials are never taken as arguments)")
+    return value
+
+
+def _fetch(args: argparse.Namespace) -> int:
+    snap = json.loads(args.snapshot.read_text(encoding="utf-8")) if args.snapshot else None
+    if args.source in ("github", "cloudwatch") and snap is None:
+        print(f"{args.source} needs --snapshot", file=sys.stderr)
+        return 1
+    try:
+        if args.source == "wazuh":
+            if not args.url or not args.indexer_url:
+                print("wazuh needs --url and --indexer-url", file=sys.stderr)
+                return 1
+            raw = wazuh.fetch(args.url, args.indexer_url, _env("WAZUH_API_USER"), _env("WAZUH_API_PASSWORD"),
+                              _env("WAZUH_INDEXER_USER"), _env("WAZUH_INDEXER_PASSWORD"), args.ca_file)
+        elif args.source == "github":
+            repos = github.repos_from_snapshot(snap)  # type: ignore[arg-type]
+            if not repos:
+                print(f"No resources tagged {github.REPO_TAG}; nothing to fetch", file=sys.stderr)
+                return 1
+            raw = github.fetch(repos, _env("GITHUB_TOKEN"))
+        elif args.source == "prometheus":
+            if not args.url:
+                print("prometheus needs --url", file=sys.stderr)
+                return 1
+            raw = prometheus.fetch(args.url, os.environ.get("PROMETHEUS_BEARER_TOKEN"), args.ca_file)
+        elif args.source == "cloudwatch":
+            raw = cloudwatch.fetch(boto3.Session(profile_name=args.profile), snap)  # type: ignore[arg-type]
+        else:
+            raw = cost.fetch(boto3.Session(profile_name=args.profile), args.tag_key)
+    except (httpjson.HttpError, ValueError, ClientError, BotoCoreError) as exc:
+        print(f"{args.source}: {exc}", file=sys.stderr)
+        return 1
+    out = args.output_dir / f"{args.source}.json"
+    snapshot.write_json(raw, out)
+    print(f"{args.source} -> {out}")
+    return 0
 
 
 if __name__ == "__main__":

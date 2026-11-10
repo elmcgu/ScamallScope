@@ -2,7 +2,7 @@
 
 import { iconKind } from "./icons.js";
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSIONS = [1, 2]; // 2 = built by "enrich" (findings, posture, cost)
 
 // "contains" edges that become nesting (child drawn inside parent) instead of lines.
 const NEST = {
@@ -15,8 +15,8 @@ export function parseGraph(json) {
   if (!g || typeof g !== "object" || !Array.isArray(g.elements)) {
     throw new Error("Not a ScamallScope graph: no elements list");
   }
-  if (g.schema_version !== SCHEMA_VERSION) {
-    throw new Error(`Unsupported graph schema_version ${g.schema_version} (expected ${SCHEMA_VERSION})`);
+  if (!SCHEMA_VERSIONS.includes(g.schema_version)) {
+    throw new Error(`Unsupported graph schema_version ${g.schema_version} (expected ${SCHEMA_VERSIONS.join(" or ")})`);
   }
   return g;
 }
@@ -55,11 +55,32 @@ export function displayLabel(node) {
   return `${MARKERS[node.exposure] ?? ""}${node.admin ? "★ " : ""}${node.label}`;
 }
 
-export function classesFor(node) {
+export const SEVERITIES = ["critical", "high", "medium", "low", "info"];
+
+/** Worst severity in a node's finding_counts, or null. */
+export function worstSeverity(node) {
+  const counts = node.finding_counts || {};
+  return SEVERITIES.find((s) => counts[s] > 0) ?? null;
+}
+
+/** Cost band for colouring: top third of the most expensive node is "high", and so on. */
+export function costBand(node, maxCost) {
+  const v = node.cost?.monthly_usd;
+  if (!v || !maxCost) return null;
+  return v >= maxCost * 0.66 ? "high" : v >= maxCost * 0.33 ? "medium" : "low";
+}
+
+/**
+ * Classes for a node. mode: "exposure" (default), "severity" or "cost".
+ * Only one colour scheme at a time, so the legend always matches the map.
+ */
+export function classesFor(node, mode = "exposure", ctx = {}) {
   const c = [`type-${node.type}`];
   const kind = iconKind(node);
   if (kind) c.push(`icon-${kind}`);
-  if (node.exposure) c.push(`exposure-${node.exposure}`);
+  if (mode === "exposure" && node.exposure) c.push(`exposure-${node.exposure}`);
+  if (mode === "severity" && worstSeverity(node)) c.push(`sev-${worstSeverity(node)}`);
+  if (mode === "cost" && costBand(node, ctx.maxCost)) c.push(`cost-${costBand(node, ctx.maxCost)}`);
   if (node.admin) c.push("admin");
   return c.join(" ");
 }
@@ -175,7 +196,8 @@ export function summary(graph) {
 
 /** Rows [label, value] for the details panel. Values are plain strings; the UI sets them as text. */
 export function detailRows(node) {
-  const skip = new Set(["id", "parent", "label", "display_label", "exposed_ports", "tags", "ingress", "egress", "routes", "entries"]);
+  const skip = new Set(["id", "parent", "label", "display_label", "exposed_ports", "tags", "ingress", "egress", "routes", "entries",
+    "wazuh", "deploy", "config_run", "metrics", "cost", "finding_counts"]);
   const rows = [["Name", node.label], ["ARN", node.id]];
   for (const [k, v] of Object.entries(node)) {
     if (skip.has(k) || v === null || v === undefined) continue;

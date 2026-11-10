@@ -1,0 +1,7 @@
+{"fetched_at": "2026-11-04T06:00:00+00:00", "query": "up", "response": {"status": "success", "data": {"resultType": "vector", "result": [
+  {"metric": {"__name__": "up", "job": "node", "instance": "10.10.1.5:9100", "instance_id": "i-0web1"}, "value": [1793772000, "1"]},
+  {"metric": {"__name__": "up", "job": "app", "instance": "10.10.1.5:8080", "instance_id": "i-0web1"}, "value": [1793772000, "1"]},
+  {"metric": {"__name__": "up", "job": "node", "instance": "prod-app-1:9100"}, "value": [1793772000, "1"]},
+  {"metric": {"__name__": "up", "job": "app", "instance": "prod-app-1:8080"}, "value": [1793772000, "0"]},
+  {"metric": {"__name__": "up", "job": "node", "instance": "gone-host:9100"}, "value": [1793772000, "0"]}
+]}}}

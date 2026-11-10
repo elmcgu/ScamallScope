@@ -1,0 +1,10 @@
+{"custom_stats": {}, "global_custom_stats": {},
+ "plays": [{"play": {"name": "base", "id": "0242ac11-0002-0001", "path": "site.yml:1", "duration": {"start": "2026-11-04T05:30:00.000000Z", "end": "2026-11-04T05:31:10.000000Z"}},
+            "tasks": [{"task": {"name": "packages", "id": "0242ac11-0002-0003", "duration": {"start": "2026-11-04T05:30:05.000000Z"}},
+                       "hosts": {"prod-web-1": {"changed": false}, "prod-app-1": {"changed": true}}}]}],
+ "stats": {
+   "prod-web-1": {"changed": 0, "failures": 0, "ignored": 0, "ok": 14, "rescued": 0, "skipped": 2, "unreachable": 0},
+   "prod-app-1": {"changed": 2, "failures": 0, "ignored": 0, "ok": 12, "rescued": 0, "skipped": 2, "unreachable": 0},
+   "prod-db-1": {"changed": 0, "failures": 0, "ignored": 0, "ok": 3, "rescued": 0, "skipped": 0, "unreachable": 1},
+   "retired-host": {"changed": 0, "failures": 0, "ignored": 0, "ok": 5, "rescued": 0, "skipped": 0, "unreachable": 0}
+ }}

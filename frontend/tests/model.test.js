@@ -106,8 +106,8 @@ describe("visibleIds", () => {
 
 describe("summary and warnings", () => {
   it("counts exposure across all checked types, and admin principals", () => {
-    // 5 instances, 3 buckets, 2 functions; exposed: 2 instances, 1 bucket, 1 function.
-    expect(summary(sample)).toMatchObject({ checked: 10, exposed: 4, unknown: 0, admins: 2 });
+    // 6 instances, 3 buckets, 3 functions; exposed: 2 instances, 1 bucket, 1 function
+    expect(summary(sample)).toMatchObject({ checked: 12, exposed: 4, unknown: 0, admins: 2 });
   });
 
   it("warns about a partial snapshot and dropped links", () => {

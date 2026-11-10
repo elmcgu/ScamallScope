@@ -8,12 +8,19 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws:; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
-    <title>ScamallScope: network view</title>
+    <title>ScamallScope</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <header>
       <h1>ScamallScope</h1>
+      <nav id="views" aria-label="Views">
+        <button type="button" data-view="map" aria-pressed="true">Map</button>
+        <button type="button" data-view="findings" aria-pressed="false">Findings</button>
+        <button type="button" data-view="hosts" aria-pressed="false">Hosts</button>
+        <button type="button" data-view="cost" aria-pressed="false">Cost</button>
+        <button type="button" data-view="wa" aria-pressed="false">Well-Architected</button>
+      </nav>
       <span id="source">No graph loaded</span>
       <label class="file">
         Open graph JSON
@@ -22,7 +29,8 @@
       <button id="sample" type="button">Load sample</button>
     </header>
     <div id="warnings" role="alert"></div>
-    <main>
+    <p id="integrations" class="muted" hidden></p>
+    <main id="view-map">
       <aside id="filters" aria-label="Filters">
         <section>
           <h2><label for="region">Region</label></h2>
@@ -36,17 +44,36 @@
           <label><input id="only-exposed" type="checkbox" /> Only exposed or unknown</label>
         </section>
         <section>
+          <h2><label for="colour-by">Colour by</label></h2>
+          <select id="colour-by">
+            <option value="exposure">Internet exposure</option>
+            <option value="severity">Worst finding</option>
+            <option value="cost">Monthly cost</option>
+          </select>
+        </section>
+        <section>
           <h2>Types</h2>
           <div id="types"></div>
         </section>
         <section>
           <h2>Legend</h2>
           <ul id="type-legend" class="legend" hidden></ul>
-          <ul class="legend">
+          <ul class="legend" id="legend-exposure">
             <li><span class="swatch exposed"></span> ⚠ Exposed to the internet</li>
             <li><span class="swatch unknown"></span> ? Unknown (collection failed)</li>
             <li><span class="swatch not-exposed"></span> Not exposed</li>
             <li><span class="swatch admin"></span> ★ Admin (IAM user, group or role)</li>
+          </ul>
+          <ul class="legend" id="legend-severity" hidden>
+            <li><span class="swatch sev-critical"></span> Critical finding</li>
+            <li><span class="swatch sev-high"></span> High</li>
+            <li><span class="swatch sev-medium"></span> Medium</li>
+            <li><span class="swatch sev-low"></span> Low or info</li>
+          </ul>
+          <ul class="legend" id="legend-cost" hidden>
+            <li><span class="swatch cost-high"></span> Top third of monthly cost</li>
+            <li><span class="swatch cost-medium"></span> Middle third</li>
+            <li><span class="swatch cost-low"></span> Bottom third (no cost data: grey)</li>
           </ul>
         </section>
         <p id="summary"></p>
@@ -64,6 +91,32 @@
         <p class="muted">Click a resource to see its details.</p>
       </aside>
     </main>
+    <section id="view-findings" class="view" hidden>
+      <div class="toolbar">
+        <label>Pillar <select id="f-pillar"><option value="">All</option><option>security</option><option>reliability</option><option>cost</option></select></label>
+        <label>Severity <select id="f-severity"><option value="">All</option><option>critical</option><option>high</option><option>medium</option><option>low</option><option>info</option></select></label>
+        <label>Source <select id="f-source"><option value="">All</option></select></label>
+        <label>Search <input id="f-search" type="search" placeholder="Title, resource, check or BP" /></label>
+        <span id="f-count" class="muted"></span>
+      </div>
+      <table class="grid" id="findings-table" aria-label="Findings"></table>
+    </section>
+    <section id="view-hosts" class="view" hidden>
+      <p class="muted">One row per EC2 instance. Empty cell: that source is not loaded or did not match the instance. Select a column heading to sort.</p>
+      <table class="grid" id="hosts-table" aria-label="Hosts"></table>
+    </section>
+    <section id="view-cost" class="view" hidden>
+      <div id="cost-body"></div>
+    </section>
+    <section id="view-wa" class="view" hidden>
+      <p class="muted">AWS Well-Architected best practices for security, reliability and cost. "Clear" means a loaded source checked it and found nothing. "Not checked" means nothing loaded covers it: it is not a pass.</p>
+      <div class="toolbar">
+        <label><input type="checkbox" class="wa-status" value="issues" checked /> Issues</label>
+        <label><input type="checkbox" class="wa-status" value="clear" checked /> Clear</label>
+        <label><input type="checkbox" class="wa-status" value="not_checked" /> Not checked</label>
+      </div>
+      <div id="wa-body"></div>
+    </section>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

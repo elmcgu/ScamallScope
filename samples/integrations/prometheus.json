@@ -1,0 +1,59 @@
+{
+  "fetched_at": "2026-11-04T06:00:00+00:00",
+  "query": "up",
+  "response": {
+    "data": {
+      "result": [
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "prod-web-1:9100",
+            "instance_id": "i-06bcb7f777169cd41",
+            "job": "node"
+          },
+          "value": [
+            1793772000,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "prod-app-1:9100",
+            "instance_id": "i-de5f7cb5498462b88",
+            "job": "node"
+          },
+          "value": [
+            1793772000,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "prod-app-1:8080",
+            "job": "orders"
+          },
+          "value": [
+            1793772000,
+            "0"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "up",
+            "instance": "prod-db-1:9100",
+            "instance_id": "i-2e866114b400cf4e5",
+            "job": "node"
+          },
+          "value": [
+            1793772000,
+            "1"
+          ]
+        }
+      ],
+      "resultType": "vector"
+    },
+    "status": "success"
+  }
+}

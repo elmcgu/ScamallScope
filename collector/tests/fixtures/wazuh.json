@@ -1,0 +1,19 @@
+{"fetched_at": "2026-11-04T06:00:00+00:00",
+ "agents": {"data": {"affected_items": [
+   {"id": "000", "name": "wazuh-manager", "status": "active", "os": {"name": "Amazon Linux", "version": "2023", "platform": "amzn"}},
+   {"id": "001", "name": "prod-web-1", "status": "active", "lastKeepAlive": "2026-11-04T05:59:00+00:00",
+    "os": {"name": "Ubuntu", "version": "22.04.4 LTS", "platform": "ubuntu"}},
+   {"id": "002", "name": "ip-10-10-2-7", "status": "disconnected", "lastKeepAlive": "2026-10-30T10:00:00+00:00",
+    "os": {"name": "Ubuntu", "version": "20.04.6 LTS", "platform": "ubuntu"}},
+   {"id": "003", "name": "i-0app1", "status": "active", "lastKeepAlive": "2026-11-04T05:58:00+00:00",
+    "os": {"name": "Amazon Linux", "version": "2023", "platform": "amzn"}},
+   {"id": "004", "name": "twin", "status": "active", "os": {"name": "Debian GNU/Linux", "version": "12", "platform": "debian"}}
+ ], "total_affected_items": 5}},
+ "vulnerabilities": {"hits": {"total": {"value": 6, "relation": "eq"}, "hits": [
+   {"_source": {"agent": {"id": "001", "name": "prod-web-1"}, "package": {"name": "openssl", "version": "3.0.2-0ubuntu1.15"}, "vulnerability": {"id": "CVE-2099-0001", "severity": "Critical"}}},
+   {"_source": {"agent": {"id": "001", "name": "prod-web-1"}, "package": {"name": "openssl", "version": "3.0.2-0ubuntu1.15"}, "vulnerability": {"id": "CVE-2099-0002", "severity": "High"}}},
+   {"_source": {"agent": {"id": "001", "name": "prod-web-1"}, "package": {"name": "curl", "version": "7.81.0-1ubuntu1.16"}, "vulnerability": {"id": "CVE-2099-0003", "severity": "High"}}},
+   {"_source": {"wazuh": {"agent": {"id": "003", "name": "i-0app1"}}, "package": {"name": "glibc", "version": "2.34-100"}, "vulnerability": {"id": "CVE-2099-0004", "severity": "Medium"}}},
+   {"_source": {"wazuh": {"agent": {"id": "003", "name": "i-0app1"}}, "package": {"name": "glibc", "version": "2.34-100"}, "vulnerability": {"id": "CVE-2099-0005", "severity": "Low"}}},
+   {"_source": {"agent": {"id": "004", "name": "twin"}, "package": {"name": "bash", "version": "5.2"}, "vulnerability": {"id": "CVE-2099-0006", "severity": "Low"}}}
+ ]}}}
