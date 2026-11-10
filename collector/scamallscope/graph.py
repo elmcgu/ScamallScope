@@ -56,7 +56,66 @@ def _instance(c: dict[str, Any]) -> dict[str, Any]:
         "state": c.get("State", {}).get("Name"),
         # Only whether it has one: the address itself is not needed to draw the map.
         "has_public_ip": bool(c.get("PublicIpAddress")),
+        "availability_zone": (c.get("Placement") or {}).get("AvailabilityZone"),
+        "imds_v2_required": (c.get("MetadataOptions") or {}).get("HttpTokens") == "required",
+        "auto_recovery": (c.get("MaintenanceOptions") or {}).get("AutoRecovery", "default"),
     }
+
+
+BACKUP_SNAPSHOT_DESCRIPTION = "This snapshot is created by the AWS Backup service"
+
+
+def snapshot_manager(c: dict[str, Any]) -> str | None:
+    """Who made a snapshot: AWS Backup, Data Lifecycle Manager, or (None) someone by hand."""
+    tags = {t["Key"]: t["Value"] for t in c.get("Tags") or []}
+    if "aws:backup:source-resource" in tags or str(c.get("Description", "")).startswith(BACKUP_SNAPSHOT_DESCRIPTION):
+        return "backup"
+    if "aws:dlm:lifecycle-policy-id" in tags:
+        return "dlm"
+    return None
+
+
+def _volume(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "size_gb": c.get("Size"),
+        "volume_type": c.get("VolumeType"),
+        "state": c.get("State"),
+        "encrypted": bool(c.get("Encrypted")),
+        "availability_zone": c.get("AvailabilityZone"),
+        "attached_to": [a.get("InstanceId") for a in c.get("Attachments", []) if a.get("InstanceId")],
+    }
+
+
+def _snapshot(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "size_gb": c.get("VolumeSize"),
+        "encrypted": bool(c.get("Encrypted")),
+        "start_time": c.get("StartTime"),
+        "volume_id": c.get("VolumeId"),
+        "managed_by": snapshot_manager(c),
+    }
+
+
+def _elastic_ip(c: dict[str, Any]) -> dict[str, Any]:
+    return {"associated": bool(c.get("AssociationId") or c.get("InstanceId") or c.get("NetworkInterfaceId"))}
+
+
+def _nat_gateway(c: dict[str, Any]) -> dict[str, Any]:
+    return {"state": c.get("State"), "connectivity": c.get("ConnectivityType", "public")}
+
+
+def _vpc_endpoint(c: dict[str, Any]) -> dict[str, Any]:
+    return {"service_name": c.get("ServiceName"), "endpoint_type": c.get("VpcEndpointType")}
+
+
+def _flow_log(c: dict[str, Any]) -> dict[str, Any]:
+    return {"resource_id": c.get("ResourceId"), "traffic_type": c.get("TrafficType"),
+            "status": c.get("FlowLogStatus")}
+
+
+def _setting(c: dict[str, Any]) -> dict[str, Any]:
+    # Settings feed rules; the graph only says whether a simple on/off setting is on.
+    return {"enabled": c["Enabled"]} if isinstance(c.get("Enabled"), bool) else {}
 
 
 def _internet_gateway(c: dict[str, Any]) -> dict[str, Any]:
@@ -157,6 +216,13 @@ FIELDS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "group": _group,
     "policy": _policy,
     "function": _function,
+    "volume": _volume,
+    "snapshot": _snapshot,
+    "elastic-ip": _elastic_ip,
+    "nat-gateway": _nat_gateway,
+    "vpc-endpoint": _vpc_endpoint,
+    "flow-log": _flow_log,
+    "setting": _setting,
 }
 
 

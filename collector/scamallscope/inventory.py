@@ -10,7 +10,7 @@ One table (infra/inventory-table.yaml):
 
 Rules:
 - Write a current item only when its hash changes. Unchanged resources cost no writes.
-- Mark "deleted" only when the unit (region + resource type) collected without errors.
+- Mark "deleted" only when the unit (region + service + resource type) collected without errors.
 - Hash a normalised config: volatile fields removed, lists sorted, so the same state
   always gives the same hash.
 - Writes are ordered events -> current -> run record, and keys are deterministic, so a
@@ -88,7 +88,8 @@ def plan(current: dict[str, dict[str, Any]], snapshot: Snapshot) -> tuple[list[R
 
     `current` holds the stored current items (by ARN) for the regions in this snapshot.
     """
-    ok_units = {(u["region"], u["resource_type"]) for u in snapshot["units"] if u["status"] == "ok"}
+    # Service is part of the key: several services share the type "setting" (spec 10).
+    ok_units = {(u["region"], u["service"], u["resource_type"]) for u in snapshot["units"] if u["status"] == "ok"}
     puts: list[Resource] = []
     changes: list[Change] = []
     seen: set[str] = set()
@@ -108,7 +109,7 @@ def plan(current: dict[str, dict[str, Any]], snapshot: Snapshot) -> tuple[list[R
 
     deletes = []
     for arn, old in current.items():
-        if arn not in seen and (old["region"], old["type"]) in ok_units:
+        if arn not in seen and (old["region"], old.get("service") or arn.split(":")[2], old["type"]) in ok_units:
             deletes.append(old)
             changes.append(_change(arn, "deleted", old["type"], old["region"], old.get("name"), old["hash"], None, []))
     return puts, deletes, changes

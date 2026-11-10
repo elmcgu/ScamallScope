@@ -87,6 +87,17 @@ def make_resource(arn: str, account_id: str, region: str, service: str, type: st
             "config": json_safe(config)}
 
 
+def setting_arn(partition: str, service: str, region: str, account_id: str, setting_id: str) -> str:
+    """Stable key for a Region-level setting. Not a real AWS ARN (spec 10)."""
+    return f"arn:{partition}:{service}:{region}:{account_id}:scamallscope-setting/{setting_id}"
+
+
+def make_setting(partition: str, service: str, region: str, account_id: str, setting_id: str,
+                 config: dict[str, Any]) -> Resource:
+    return make_resource(setting_arn(partition, service, region, account_id, setting_id), account_id, region,
+                         service, "setting", setting_id, {}, config, name=f"{setting_id} ({region})")
+
+
 def link(source: str, target: str, type: str) -> Link:
     return {"source": source, "target": target, "type": type}
 
