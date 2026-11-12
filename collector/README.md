@@ -11,7 +11,7 @@ uv run scamallscope run --profile <read-only-profile> --region eu-west-1  # all 
 uv run scamallscope collect --profile <read-only-profile> --region eu-west-1
 uv run scamallscope graph snapshots/<file>.snapshot.json   # -> <file>.graph.json
 uv run scamallscope inventory snapshots/<file>.snapshot.json --table scamallscope-inventory
-uv run scamallscope changes --table scamallscope-inventory --date 2026-11-04
+uv run scamallscope changes --table scamallscope-inventory --account <account-id> --date 2026-11-04
 uv run scamallscope history --table scamallscope-inventory --arn <arn>
 uv run scamallscope fetch cloudwatch --snapshot snapshots/<file>.snapshot.json --profile <read-only-profile>
 uv run scamallscope fetch cost --profile <read-only-profile> [--tag-key env]

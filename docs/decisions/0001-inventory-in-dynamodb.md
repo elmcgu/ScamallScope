@@ -2,7 +2,8 @@
 
 - Status: accepted (2026-11-04)
 - Date: 2026-11-03
-- Updated: 2026-11-04 (keys, storage format and write rules refined while building it)
+- Updated: 2026-11-04 (keys, storage format and write rules refined while building it);
+  2026-11-12 (account ID in the day and run keys, collection time in the change sort key)
 
 ## Context
 
@@ -30,12 +31,17 @@ Option 2, in one DynamoDB table (on-demand capacity), defined in `infra/inventor
 | Item | pk | sk | Holds |
 |---|---|---|---|
 | Current resource | `CUR#<account>#<region>` | `<arn>` | type, region, name, tags, `config_json`, `hash`, `first_seen`, `last_changed` |
-| Change event | `DAY#<YYYY-MM-DD>` | `<arn>#<created\|changed\|deleted>` | old and new `hash`, `changed_fields`, `gsi1pk`/`gsi1sk`, `expires_at` |
-| Run record | `RUN#<YYYY-MM-DD>` | `<collected_at>` | counts, units (which services and regions succeeded) |
+| Change event | `DAY#<account>#<YYYY-MM-DD>` | `<collected_at>#<arn>#<created\|changed\|deleted>` | old and new `hash`, `changed_fields`, `gsi1pk`/`gsi1sk`, `expires_at` |
+| Run record | `RUN#<account>#<YYYY-MM-DD>` | `<collected_at>` | counts, units (which services and regions succeeded) |
 
 - "Current state of a region": query `pk = CUR#<account>#<region>`. (First draft used
   `RES#<arn>` per resource, which can only be listed with a full Scan.)
-- "What changed today": query `pk = DAY#<date>`.
+- "What changed today": query `pk = DAY#<account>#<date>`. Results come back in time order.
+- The account ID is in every partition key, so several accounts can share one table.
+  (First draft used `DAY#<date>` and `RUN#<date>`, which mix accounts.)
+- `collected_at` is in the change sort key, so two runs on one day keep both events. (First
+  draft used `<arn>#<kind>`, so a second "changed" on the same day replaced the first.) The
+  key is still deterministic: the same snapshot run again writes the same keys.
 - "History of one resource": the sparse GSI `by-arn` (`gsi1pk = ARN#<arn>`). Only change
   events set `gsi1pk`, so the index holds history and nothing else.
 - The daily graph JSON for the frontend goes to S3, built from the current items.

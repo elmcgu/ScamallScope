@@ -62,7 +62,7 @@ def test_first_run_creates_everything(table):
 
     assert (run["created"], run["changed"], run["deleted"], run["unchanged"]) == (2, 0, 0, 0)
     assert set(current(table)) == {res("i-1")["arn"], res("i-2")["arn"]}
-    events = inventory.changes_on(table, "2026-11-01")
+    events = inventory.changes_on(table, ACCT, "2026-11-01")
     assert sorted(e["kind"] for e in events) == ["created", "created"]
 
 
@@ -73,7 +73,7 @@ def test_same_state_next_day_writes_no_changes(table):
     run = inventory.apply(table, snap(DAY2, [res("i-1")]))
 
     assert (run["created"], run["changed"], run["deleted"], run["unchanged"]) == (0, 0, 0, 1)
-    assert inventory.changes_on(table, "2026-11-02") == []
+    assert inventory.changes_on(table, ACCT, "2026-11-02") == []
     assert current(table) == before  # not even rewritten: last_changed is still day 1
 
 
@@ -85,7 +85,7 @@ def test_config_and_tag_changes_list_the_changed_fields(table):
     run = inventory.apply(table, snap(DAY2, [changed]))
 
     assert run["changed"] == 1
-    [event] = inventory.changes_on(table, "2026-11-02")
+    [event] = inventory.changes_on(table, ACCT, "2026-11-02")
     assert event["kind"] == "changed" and event["changed_fields"] == ["tags", "InstanceType"]
     item = current(table)[changed["arn"]]
     assert item["first_seen"] == DAY1 and item["last_changed"] == DAY2
@@ -106,7 +106,7 @@ def test_missing_resource_is_deleted_when_its_unit_succeeded(table):
 
     assert run["deleted"] == 1
     assert res("i-2")["arn"] not in current(table)
-    [event] = inventory.changes_on(table, "2026-11-02")
+    [event] = inventory.changes_on(table, ACCT, "2026-11-02")
     assert (event["kind"], event["arn"]) == ("deleted", res("i-2")["arn"])
 
 
@@ -149,7 +149,30 @@ def test_running_the_same_snapshot_twice_is_safe(table):
     again = inventory.apply(table, copy.deepcopy(s2))
 
     assert again["changed"] == 0
-    assert len(inventory.changes_on(table, "2026-11-02")) == 1
+    assert len(inventory.changes_on(table, ACCT, "2026-11-02")) == 1
+
+
+def test_two_changes_on_one_day_are_both_kept(table):
+    inventory.apply(table, snap(DAY1, [res("i-1")]))
+    inventory.apply(table, snap("2026-11-02T06:00:00+00:00", [res("i-1", InstanceType="t3.large")]))
+    inventory.apply(table, snap("2026-11-02T18:00:00+00:00", [res("i-1", InstanceType="t3.xlarge")]))
+
+    events = inventory.changes_on(table, ACCT, "2026-11-02")
+    assert [e["at"] for e in events] == ["2026-11-02T06:00:00+00:00", "2026-11-02T18:00:00+00:00"]
+    assert [e["kind"] for e in events] == ["changed", "changed"]
+
+
+def test_accounts_do_not_share_day_or_run_keys(table):
+    other = "210987654321"
+    inventory.apply(table, snap(DAY1, [res("i-1")]))
+    s = snap(DAY1, [{**res("i-2"), "arn": f"arn:aws:ec2:{REGION}:{other}:instance/i-2", "account_id": other}])
+    s["account_id"] = other
+    run = inventory.apply(table, s)
+
+    assert [e["arn"] for e in inventory.changes_on(table, ACCT, "2026-11-01")] == [res("i-1")["arn"]]
+    assert [e["arn"].split(":")[4] for e in inventory.changes_on(table, other, "2026-11-01")] == [other]
+    assert run["pk"] == f"RUN#{other}#2026-11-01"
+    assert table.get_item(Key={"pk": f"RUN#{ACCT}#2026-11-01", "sk": DAY1})["Item"]["account_id"] == ACCT
 
 
 def test_config_over_the_item_limit_is_flagged_and_still_tracked(table):
@@ -162,7 +185,7 @@ def test_config_over_the_item_limit_is_flagged_and_still_tracked(table):
     run = inventory.apply(table, snap(DAY2, [bigger]))
 
     assert run["changed"] == 1
-    assert inventory.changes_on(table, "2026-11-02")[0]["changed_fields"] == ["config"]
+    assert inventory.changes_on(table, ACCT, "2026-11-02")[0]["changed_fields"] == ["config"]
 
 
 def test_cli_inventory_changes_and_history(table, tmp_path, monkeypatch, capsys):
@@ -173,7 +196,7 @@ def test_cli_inventory_changes_and_history(table, tmp_path, monkeypatch, capsys)
     assert main(["inventory", str(f), "--table", "inv"]) == 0
     assert "1 created, 0 changed, 0 deleted" in capsys.readouterr().out
 
-    assert main(["changes", "--table", "inv", "--date", "2026-11-01"]) == 0
+    assert main(["changes", "--table", "inv", "--account", ACCT, "--date", "2026-11-01"]) == 0
     assert "created" in capsys.readouterr().out
 
     assert main(["history", "--table", "inv", "--arn", res("i-1")["arn"]]) == 0

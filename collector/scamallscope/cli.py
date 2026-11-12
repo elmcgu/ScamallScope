@@ -43,7 +43,8 @@ def main(argv: list[str] | None = None) -> int:
     i.add_argument("snapshot", type=Path, help="Snapshot file from 'collect'")
     table_args(i)
 
-    ch = sub.add_parser("changes", help="List the changes recorded on one day")
+    ch = sub.add_parser("changes", help="List the changes recorded on one day for one account")
+    ch.add_argument("--account", required=True, help="AWS account ID")
     ch.add_argument("--date", required=True, help="YYYY-MM-DD (UTC)")
     table_args(ch)
 
@@ -130,9 +131,9 @@ def _print_changes(items: list[dict]) -> None:
 
 
 def _changes(args: argparse.Namespace) -> int:
-    items = inventory.changes_on(_table(args), args.date)
+    items = inventory.changes_on(_table(args), args.account, args.date)
     _print_changes(items)
-    print(f"{len(items)} changes on {args.date}")
+    print(f"{len(items)} changes on {args.date} in account {args.account}")
     return 0
 
 

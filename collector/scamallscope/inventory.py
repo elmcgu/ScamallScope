@@ -4,9 +4,9 @@ One table (infra/inventory-table.yaml):
 
 | Item          | pk                          | sk                 | Notes                                  |
 |---------------|-----------------------------|--------------------|----------------------------------------|
-| Current       | CUR#<account>#<region>      | <arn>              | one per resource; Query per region     |
-| Change event  | DAY#<YYYY-MM-DD>            | <arn>#<kind>       | gsi1pk ARN#<arn>, gsi1sk <time>#<kind> |
-| Run record    | RUN#<YYYY-MM-DD>            | <collected_at>     | counts and units                       |
+| Current       | CUR#<account>#<region>      | <arn>                      | one per resource; Query per region     |
+| Change event  | DAY#<account>#<YYYY-MM-DD>  | <collected_at>#<arn>#<kind> | gsi1pk ARN#<arn>, gsi1sk <time>#<kind> |
+| Run record    | RUN#<account>#<YYYY-MM-DD>  | <collected_at>             | counts and units                       |
 
 Rules:
 - Write a current item only when its hash changes. Unchanged resources cost no writes.
@@ -151,10 +151,20 @@ def current_item(r: Resource, first_seen: str, collected_at: str) -> dict[str, A
     return item
 
 
-def change_item(c: Change, collected_at: str) -> dict[str, Any]:
+def day_pk(account_id: str, day: str) -> str:
+    return f"DAY#{account_id}#{day}"
+
+
+def run_pk(account_id: str, day: str) -> str:
+    return f"RUN#{account_id}#{day}"
+
+
+def change_item(c: Change, account_id: str, collected_at: str) -> dict[str, Any]:
+    # collected_at in the sort key: two runs on one day keep both events, and the same
+    # snapshot run twice writes the same keys.
     expires = datetime.fromisoformat(collected_at) + timedelta(days=CHANGE_TTL_DAYS)
     return {
-        "pk": f"DAY#{collected_at[:10]}", "sk": f"{c['arn']}#{c['kind']}",
+        "pk": day_pk(account_id, collected_at[:10]), "sk": f"{collected_at}#{c['arn']}#{c['kind']}",
         "gsi1pk": f"ARN#{c['arn']}", "gsi1sk": f"{collected_at}#{c['kind']}",
         "at": collected_at, "expires_at": int(expires.timestamp()), **c,
     }
@@ -163,7 +173,7 @@ def change_item(c: Change, collected_at: str) -> dict[str, Any]:
 def run_item(snapshot: Snapshot, changes: list[Change]) -> dict[str, Any]:
     counts = {k: sum(1 for c in changes if c["kind"] == k) for k in ("created", "changed", "deleted")}
     return {
-        "pk": f"RUN#{snapshot['collected_at'][:10]}", "sk": snapshot["collected_at"],
+        "pk": run_pk(snapshot["account_id"], snapshot["collected_at"][:10]), "sk": snapshot["collected_at"],
         "account_id": snapshot["account_id"], "regions": snapshot["regions"],
         "resources": len(snapshot["resources"]),
         "unchanged": len(snapshot["resources"]) - counts["created"] - counts["changed"],
@@ -211,7 +221,7 @@ def apply(table: Any, snapshot: Snapshot) -> dict[str, Any]:
 
     with table.batch_writer() as batch:
         for c in changes:
-            batch.put_item(Item=change_item(c, at))
+            batch.put_item(Item=change_item(c, snapshot["account_id"], at))
     with table.batch_writer() as batch:
         for r in puts:
             old = current.get(r["arn"])
@@ -224,8 +234,9 @@ def apply(table: Any, snapshot: Snapshot) -> dict[str, Any]:
     return run
 
 
-def changes_on(table: Any, day: str) -> list[dict[str, Any]]:
-    return [plain(i) for i in _query_all(table, KeyConditionExpression=Key("pk").eq(f"DAY#{day}"))]
+def changes_on(table: Any, account_id: str, day: str) -> list[dict[str, Any]]:
+    """Change events for one account on one UTC day, in time order."""
+    return [plain(i) for i in _query_all(table, KeyConditionExpression=Key("pk").eq(day_pk(account_id, day)))]
 
 
 def history(table: Any, arn: str) -> list[dict[str, Any]]:
