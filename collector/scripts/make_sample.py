@@ -526,7 +526,7 @@ def fake_integrations(snap: Snapshot) -> dict[str, object]:
                 "estimatedMonthlySavings": saving, "estimatedMonthlyCost": round(saving * 1.6, 2), "currencyCode": "USD",
                 "implementationEffort": "Low", "restartNeeded": action in ("Rightsize", "Stop"),
                 "rollbackPossible": action != "Delete", "recommendationLookbackPeriodInDays": 14, **extra}
-    costhub = {"fetched_at": at, "enabled": True, "reason": None, "compute_optimizer": "Active", "recommendations": [
+    costhub = {"fetched_at": at, "state": "enabled", "enabled": True, "reason": None, "compute_optimizer": "Active", "recommendations": [
         hub(web, i_arn(web), "Rightsize", 14.6, "Ec2Instance", currentResourceSummary="t3.large",
             recommendedResourceSummary="t3.medium"),
         hub(stg, i_arn(stg), "Stop", 7.3, "Ec2Instance"),

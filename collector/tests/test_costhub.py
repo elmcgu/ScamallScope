@@ -28,11 +28,17 @@ def rec(rid, arn, action, saving, rtype="EbsVolume", **extra):
             "recommendationLookbackPeriodInDays": 14, **extra}
 
 
-def stubbed(pages=None, hub_error=None, co_status="Active"):
+def stubbed(pages=None, hub_error=None, co_status="Active", enrolment="Active", enrolment_error=None):
     hub = boto3.client("cost-optimization-hub", region_name="us-east-1")
     co = boto3.client("compute-optimizer", region_name="us-east-1")
     hs, cs = Stubber(hub), Stubber(co)
-    if hub_error:
+    if enrolment_error:
+        hs.add_client_error("list_enrollment_statuses", service_error_code=enrolment_error, service_message="no")
+    else:
+        hs.add_response("list_enrollment_statuses", {"items": [{"accountId": ACCOUNT, "status": enrolment}]})
+    if enrolment_error or enrolment != "Active":
+        pass
+    elif hub_error:
         hs.add_client_error("list_recommendations", service_error_code=hub_error, service_message="not enrolled")
     else:
         for n, items in enumerate(pages or [[]]):
@@ -56,13 +62,24 @@ def test_COH_1_all_pages():
 
 
 def test_COH_2_not_enabled_is_not_an_error():
-    raw = costhub.fetch(stubbed(hub_error="AccessDeniedException"))
-    assert raw["enabled"] is False and raw["recommendations"] == [] and "AccessDeniedException" in raw["reason"]
+    raw = costhub.fetch(stubbed(enrolment="Inactive"))
+    assert raw["state"] == "not_enabled" and raw["enabled"] is False and raw["recommendations"] == []
+    assert "Inactive" in raw["reason"]
 
 
 def test_COH_3_other_errors_raise():
     with pytest.raises(ClientError):
         costhub.fetch(stubbed(hub_error="ThrottlingException"))
+    with pytest.raises(ClientError):
+        costhub.fetch(stubbed(hub_error="ValidationException"))
+
+
+def test_COH_8_access_denied_is_its_own_state():
+    for raw in (costhub.fetch(stubbed(enrolment_error="AccessDeniedException")),
+                costhub.fetch(stubbed(hub_error="AccessDeniedException"))):
+        assert raw["state"] == "access_denied" and raw["enabled"] is False and "AccessDeniedException" in raw["reason"]
+    out = costhub.parse({**costhub.fetch(stubbed(hub_error="AccessDeniedException"))}, {VOL})
+    assert out["notes"][0].startswith("access_denied:") and not out["findings"]
 
 
 def parsed(*recs, enabled=True, co="Active"):

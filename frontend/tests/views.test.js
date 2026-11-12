@@ -127,6 +127,10 @@ describe("overview", () => {
     expect(notes).toEqual(["wazuh not loaded: Wazuh vulnerabilities and agents did not run."]);
     const hubOff = columnNotes(g([], { cost: { loaded: true }, costhub: { loaded: true, enabled: false } }), "cost");
     expect(hubOff[0]).toMatch(/not enabled/);
+    const hubDenied = columnNotes(g([], { cost: { loaded: true }, costhub: { loaded: true, enabled: false, state: "access_denied" } }), "cost");
+    expect(hubDenied[0]).toMatch(/access denied/);
+    const ceDenied = columnNotes(g([], { cost: { loaded: true, notes: ["access_denied: sp_coverage (ce:GetSavingsPlansCoverage)"] }, costhub: { loaded: true, enabled: true, compute_optimizer: "Active" } }), "cost");
+    expect(ceDenied).toEqual(["cost: access denied for sp_coverage (ce:GetSavingsPlansCoverage). Check the IAM policy."]);
     const coOff = columnNotes(g([], { cost: { loaded: true }, costhub: { loaded: true, enabled: true, compute_optimizer: "Inactive" } }), "cost");
     expect(coOff[0]).toMatch(/Compute Optimizer is Inactive/);
   });

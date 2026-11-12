@@ -55,7 +55,8 @@ def _parse(source: str, value: Any, snap: Snapshot, index: hosts.Index, known: s
     if source == "cost":
         return cost.parse(data, index, today)
     if source == "costhub":
-        return costhub.parse(data, known), {"enabled": bool(data.get("enabled")),
+        state = data.get("state") or ("enabled" if data.get("enabled") else "not_enabled")
+        return costhub.parse(data, known), {"enabled": state == "enabled", "state": state,
                                             "compute_optimizer": data.get("compute_optimizer")}
     raise ValueError(source)
 

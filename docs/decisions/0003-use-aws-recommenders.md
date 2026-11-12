@@ -39,6 +39,6 @@ Option 2.
 - Savings shown match the console when the hub is enabled. With it off, they are rough.
 - Compute Optimizer needs an opt-in and 14 days of metrics before it recommends anything [R43].
   The UI shows "not enabled" so an empty list is never read as "nothing to save".
-- One more read-only identity permission set: `cost-optimization-hub:ListRecommendations`,
+- One more read-only identity permission set: `cost-optimization-hub:ListEnrollmentStatuses`, `cost-optimization-hub:ListRecommendations`,
   `compute-optimizer:GetEnrollmentStatus`.
 - The price table must be updated by hand. Phase E replaces it with the Price List API.

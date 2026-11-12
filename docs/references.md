@@ -175,3 +175,9 @@ Checked on 2026-11-10. API shapes also checked against the botocore 1.43.123 ser
   `key` (array), `key_as_string` and `doc_count`, ordered by count descending; response has
   `sum_other_doc_count`. Checked 2026-11-12; not yet run against a real Wazuh indexer.
   https://docs.opensearch.org/latest/aggregations/bucket/multi-terms/
+- **R62** Cost Optimization Hub `ListEnrollmentStatuses` (botocore model, boto3 in uv.lock):
+  input `includeOrganizationInfo`, `accountId`, `nextToken`, `maxResults`; output `items`
+  (`accountId`, `status` `Active` | `Inactive`), `includeMemberAccounts`, `nextToken`; errors
+  `ValidationException`, `InternalServerException`, `AccessDeniedException`, `ThrottlingException`.
+  Cost Explorer `GetCostAndUsageWithResources` errors include `DataUnavailableException`; it is
+  opt-in. https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetCostAndUsageWithResources.html

@@ -164,9 +164,13 @@ export function columnNotes(graph, pillar) {
   for (const [source, what] of Object.entries(COLUMN_SOURCES[pillar])) {
     const m = meta[source];
     if (!m?.loaded) notes.push(`${source} not loaded: ${what} did not run.`);
+    else if (source === "costhub" && m.state === "access_denied") notes.push("Cost Optimization Hub could not be read: access denied. Check the IAM policy; savings are estimates from our own rules.");
     else if (source === "costhub" && m.enabled === false) notes.push("Cost Optimization Hub is not enabled: savings are estimates from our own rules.");
     else if (source === "costhub" && m.compute_optimizer && m.compute_optimizer !== "Active") {
       notes.push(`Compute Optimizer is ${m.compute_optimizer}: no rightsizing or idle recommendations yet.`);
+    }
+    for (const n of m?.notes ?? []) {
+      if (String(n).startsWith("access_denied:") && source !== "costhub") notes.push(`${source}: access denied for ${String(n).slice(15)}. Check the IAM policy.`);
     }
   }
   return notes;

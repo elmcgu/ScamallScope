@@ -72,5 +72,6 @@
       "restartNeeded": false,
       "rollbackPossible": true
     }
-  ]
+  ],
+  "state": "enabled"
 }

@@ -1,6 +1,8 @@
 from datetime import date
 
 import boto3
+import pytest
+from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 
 from scamallscope import hosts
@@ -69,6 +71,27 @@ def test_CST_6_fetch_when_resource_data_not_enabled():
         raw = cost.fetch(S(), "env", TODAY)
     assert len(raw["by_service"]) == 2 and len(raw["by_tag"]) == 1
     assert raw["by_resource"] is None
+    assert raw["unavailable"] == {"by_resource": "not_enabled", "sp_coverage": "access_denied", "ri_coverage": "access_denied"}
+    raw.update(by_service=[])
+    notes, _ = cost.parse(raw, hosts.build({"resources": [], "links": [], "units": []}), TODAY)  # type: ignore[arg-type]
+    assert "access_denied: sp_coverage (ce:GetSavingsPlansCoverage)" in notes["notes"]
+
+
+def test_CST_10_validation_error_raises():
+    session = boto3.Session(region_name="us-east-1", aws_access_key_id="testing", aws_secret_access_key="testing")
+    ce = session.client("ce", region_name="us-east-1")
+    page = {"ResultsByTime": []}
+    with Stubber(ce) as stub:
+        stub.add_response("get_cost_and_usage", page)
+        stub.add_response("get_cost_and_usage", page)
+        stub.add_client_error("get_cost_and_usage_with_resources", "ValidationException", "bad filter")
+
+        class S:
+            def client(self, *a, **k):
+                return ce
+
+        with pytest.raises(ClientError):
+            cost.fetch(S(), "env", TODAY)
 
 
 def test_CST_7_periods():

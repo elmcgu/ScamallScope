@@ -16,7 +16,10 @@ EC2_COMPUTE = "Amazon Elastic Compute Cloud - Compute"
 RESOURCE_DAYS = 14
 COVERAGE_DAYS = 30
 UNTAGGED_SHARE = 0.10
-OPTIONAL_ERRORS = {"DataUnavailableException", "AccessDeniedException", "ValidationException"}
+# Not enabled (opt-in data or no data yet) versus not allowed (a missing IAM permission). Anything else raises.
+NOT_ENABLED, DENIED = {"DataUnavailableException"}, {"AccessDeniedException"}
+ACTIONS = {"by_resource": "ce:GetCostAndUsageWithResources", "sp_coverage": "ce:GetSavingsPlansCoverage",
+           "ri_coverage": "ce:GetReservationCoverage"}
 
 
 def periods(today: date) -> tuple[dict[str, str], dict[str, str]]:
@@ -41,23 +44,20 @@ def fetch(session: Any, tag_key: str = "env", today: date | None = None) -> dict
                             GroupBy=[{"Type": "DIMENSION", "Key": "SERVICE"}])
     by_tag = _all_pages(ce.get_cost_and_usage, TimePeriod=months, Granularity="MONTHLY", Metrics=[METRIC],
                         GroupBy=[{"Type": "TAG", "Key": tag_key}])
-    try:
-        by_resource: list[dict[str, Any]] | None = _all_pages(
-            ce.get_cost_and_usage_with_resources, TimePeriod=recent, Granularity="DAILY", Metrics=[METRIC],
-            Filter={"Dimensions": {"Key": "SERVICE", "Values": [EC2_COMPUTE]}},
-            GroupBy=[{"Type": "DIMENSION", "Key": "RESOURCE_ID"}])
-    except ClientError as exc:
-        if exc.response.get("Error", {}).get("Code") not in OPTIONAL_ERRORS:
-            raise
-        by_resource = None  # resource-level data is opt-in (R35)
+    unavailable: dict[str, str] = {}
+    # resource-level data is opt-in (R35)
+    by_resource = _optional(unavailable, "by_resource", lambda: _all_pages(
+        ce.get_cost_and_usage_with_resources, TimePeriod=recent, Granularity="DAILY", Metrics=[METRIC],
+        Filter={"Dimensions": {"Key": "SERVICE", "Values": [EC2_COMPUTE]}},
+        GroupBy=[{"Type": "DIMENSION", "Key": "RESOURCE_ID"}]))
     window = {"Start": (today - timedelta(days=COVERAGE_DAYS)).isoformat(), "End": today.isoformat()}
-    sp = _optional(lambda: _pages(ce.get_savings_plans_coverage, "SavingsPlansCoverages", "NextToken",
-                                  TimePeriod=window, Granularity="MONTHLY"))
-    ri = _optional(lambda: _pages(ce.get_reservation_coverage, "CoveragesByTime", "NextPageToken",
-                                  TimePeriod=window, Granularity="MONTHLY"))
+    sp = _optional(unavailable, "sp_coverage", lambda: _pages(ce.get_savings_plans_coverage, "SavingsPlansCoverages",
+                                                              "NextToken", TimePeriod=window, Granularity="MONTHLY"))
+    ri = _optional(unavailable, "ri_coverage", lambda: _pages(ce.get_reservation_coverage, "CoveragesByTime",
+                                                              "NextPageToken", TimePeriod=window, Granularity="MONTHLY"))
     return {"fetched_at": today.isoformat(), "tag_key": tag_key,
             "by_service": by_service, "by_tag": by_tag, "by_resource": by_resource,
-            "coverage_window": window, "sp_coverage": sp, "ri_coverage": ri}
+            "coverage_window": window, "sp_coverage": sp, "ri_coverage": ri, "unavailable": unavailable}
 
 
 def _pages(call: Any, key: str, token_name: str, **kwargs: Any) -> list[dict[str, Any]]:
@@ -71,11 +71,17 @@ def _pages(call: Any, key: str, token_name: str, **kwargs: Any) -> list[dict[str
             return items
 
 
-def _optional(run: Any) -> Any:
+def _optional(unavailable: dict[str, str], part: str, run: Any) -> Any:
+    """Run an optional call. Not enabled or access denied: None, and why goes in unavailable[part]."""
     try:
         return run()
     except ClientError as exc:
-        if exc.response.get("Error", {}).get("Code") not in OPTIONAL_ERRORS:
+        code = exc.response.get("Error", {}).get("Code")
+        if code in NOT_ENABLED:
+            unavailable[part] = "not_enabled"
+        elif code in DENIED:
+            unavailable[part] = "access_denied"
+        else:
             raise
         return None
 
@@ -160,4 +166,6 @@ def parse(raw: dict[str, Any], index: hosts.Index, today: date | None = None) ->
                 f"${untagged:,.2f} untagged of ${sum(month['values'].values()):,.2f}",
                 "Tag resources and activate the tag as a cost allocation tag."))
         cover(out["coverage"], ["COST03-BP02"], failed=failed)
+    for part, why in sorted((raw.get("unavailable") or {}).items()):
+        out["notes"].append(f"{why}: {part} ({ACTIONS.get(part, part)})")
     return out, summ

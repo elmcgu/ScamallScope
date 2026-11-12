@@ -6,12 +6,20 @@ boto3 client `cost-optimization-hub`, Region `us-east-1`. `ListRecommendations` 
 `includeAllRecommendations` false (one recommendation per resource, the hub's best), paged with
 `nextToken`. Also Compute Optimizer `GetEnrollmentStatus` (any Region) [R43].
 
-If the hub is not enabled the call fails with `AccessDeniedException` or a validation error
-that says so: store `"enabled": false` and no recommendations, and exit 0. Other errors fail the
-fetch (exit 1, no file written).
+First `ListEnrollmentStatuses` (paged) [R62]: the hub is enabled when the account's `status` is
+`Active`. Three states, kept apart so a missing permission is never read as "switched off":
+
+| `state` | When | Recommendations |
+|---|---|---|
+| `enabled` | Enrollment `Active` | Read |
+| `not_enabled` | No `Active` enrollment | Not read; `reason` lists the statuses |
+| `access_denied` | `AccessDeniedException` from either call | Not read; `reason` has the error |
+
+Any other error, `ValidationException` included, fails the fetch (exit 1, no file written).
+`enabled` is true only in state `enabled`.
 
 Raw `integrations/costhub.json`:
-`{"fetched_at", "enabled": bool, "compute_optimizer": "Active" | "Inactive" | ..., "recommendations": [items]}`.
+`{"fetched_at", "state", "enabled": bool, "reason", "compute_optimizer": "Active" | "Inactive" | ..., "recommendations": [items]}`.
 
 ## Findings
 
@@ -34,7 +42,8 @@ One per recommendation, source `costhub`, check `COST-HUB-<actionType>`.
   `https://console.aws.amazon.com/costmanagement/home#/cost-optimization-hub`.
 
 Coverage: COST04-BP03, COST06-BP02, COST07-BP04 checked whenever the hub is enabled.
-`meta.integrations.costhub` adds `enabled` and `compute_optimizer`.
+`meta.integrations.costhub` adds `enabled`, `state` and `compute_optimizer`. The Overview cost
+column says "not enabled" or "access denied" (check the IAM policy) to match `state`.
 
 ## Commitment coverage (part of `fetch cost`)
 
@@ -55,11 +64,13 @@ Stubber for every call (moto 5.2.5 has neither service).
 | ID | Given | Then |
 |---|---|---|
 | COH-1 | Two pages of recommendations | Both pages in the raw file |
-| COH-2 | Hub not enabled (AccessDeniedException) | `enabled` false, no error |
-| COH-3 | Other ClientError | Fetch raises |
+| COH-2 | Enrollment status `Inactive` | `state` not_enabled, `enabled` false, no error |
+| COH-3 | `ThrottlingException` or `ValidationException` | Fetch raises |
 | COH-4 | Delete EBS volume, saving 12.5 | Finding COST-HUB-Delete, COST04-BP03, `savings_usd` 12.5, severity low |
 | COH-5 | Rightsize instance, saving 150 | COST06-BP02, high, detail has effort |
 | COH-6 | PurchaseSavingsPlans | COST07-BP04, `resource` null |
 | COH-7 | `enabled` false | No findings, no coverage; meta says not enabled |
+| COH-8 | `AccessDeniedException` from `ListEnrollmentStatuses` or `ListRecommendations` | `state` access_denied; note starts `access_denied:`; no findings |
 | CST-8 | Coverage responses | `cost.coverage` with both percentages |
 | CST-9 | Coverage call fails with DataUnavailableException | `sp_coverage` null; rest of cost loaded |
+| CST-10 | `WithResources` fails with `ValidationException` | Fetch raises |

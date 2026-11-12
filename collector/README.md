@@ -69,7 +69,7 @@ For integrations (each only if you use it):
 - CloudWatch: `cloudwatch:GetMetricData`, `cloudwatch:DescribeAlarms`
 - Cost Explorer: `ce:GetCostAndUsage`, `ce:GetCostAndUsageWithResources`, `ce:GetSavingsPlansCoverage`,
   `ce:GetReservationCoverage` ($0.01 per request, 5 per run)
-- Cost Optimization Hub: `cost-optimization-hub:ListRecommendations`, `compute-optimizer:GetEnrollmentStatus` (no charge)
+- Cost Optimization Hub: `cost-optimization-hub:ListEnrollmentStatuses`, `cost-optimization-hub:ListRecommendations`, `compute-optimizer:GetEnrollmentStatus` (no charge)
 - Wazuh: an API user with read-only access to agents; an indexer user with read on `wazuh-states-vulnerabilities-*`
 - GitHub: fine-grained token, repository permission "Deployments: read", only the repos in `scamallscope:repo` tags
 
