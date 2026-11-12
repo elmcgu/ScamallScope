@@ -13,8 +13,8 @@ from typing import Any
 from botocore.exceptions import BotoCoreError, ClientError
 
 from ..model import Link, Resource, link, make_resource
-
-Result = tuple[list[Resource], list[Link]]
+from .base import Context, Result
+from .ec2 import arn as ec2_arn
 
 
 def _redact(fn: dict[str, Any]) -> dict[str, Any]:
@@ -37,7 +37,7 @@ def _detail(errors: dict[str, str], name: str, call: Any) -> Any:
     return None
 
 
-def collect_functions(client: Any, partition: str, account_id: str, region: str) -> Result:
+def collect_functions(client: Any, ctx: Context) -> Result:
     resources: list[Resource] = []
     links: list[Link] = []
     for page in client.get_paginator("list_functions").paginate():
@@ -50,14 +50,14 @@ def collect_functions(client: Any, partition: str, account_id: str, region: str)
                 lambda: client.list_function_url_configs(FunctionName=fn["FunctionName"]).get("FunctionUrlConfigs", []))
             tags = _detail(errors, "Tags", lambda: client.list_tags(Resource=fn_arn).get("Tags", {})) or {}
             config["DetailErrors"] = errors
-            r = make_resource(fn_arn, account_id, region, "lambda", "function", fn["FunctionName"], tags, config,
+            r = make_resource(fn_arn, ctx["account_id"], ctx["region"], "lambda", "function", fn["FunctionName"], tags, config,
                               name=fn["FunctionName"])
             resources.append(r)
             if fn.get("Role"):
                 links.append(link(r["arn"], fn["Role"], "assumes"))
             vpc = fn.get("VpcConfig") or {}
             for subnet in vpc.get("SubnetIds", []):
-                links.append(link(r["arn"], f"arn:{partition}:ec2:{region}:{account_id}:subnet/{subnet}", "attached"))
+                links.append(link(r["arn"], ec2_arn(ctx, "subnet", subnet), "attached"))
             for sg in vpc.get("SecurityGroupIds", []):
-                links.append(link(r["arn"], f"arn:{partition}:ec2:{region}:{account_id}:security-group/{sg}", "uses"))
+                links.append(link(r["arn"], ec2_arn(ctx, "security-group", sg), "uses"))
     return resources, links

@@ -9,10 +9,12 @@ from __future__ import annotations
 from typing import Any
 
 from ..model import Link, Resource, link, make_resource, tags_to_dict
-from .ec2 import Context, Result, arn as ec2_arn
+from .base import Context, Result
+from .base import items as _pages
+from .ec2 import arn as ec2_arn
 
-TAG_BATCH = 20
-TLS_PROTOCOLS = {"HTTPS", "TLS"}  # only these listeners use an SSL policy  # DescribeTags takes up to 20 ARNs
+TAG_BATCH = 20  # DescribeTags takes up to 20 ARNs
+TLS_PROTOCOLS = {"HTTPS", "TLS"}  # only these listeners use an SSL policy
 
 
 def _tags(client: Any, arns: list[str]) -> dict[str, dict[str, str]]:
@@ -21,10 +23,6 @@ def _tags(client: Any, arns: list[str]) -> dict[str, dict[str, str]]:
         for d in client.describe_tags(ResourceArns=arns[i:i + TAG_BATCH]).get("TagDescriptions", []):
             out[d["ResourceArn"]] = tags_to_dict(d.get("Tags"))
     return out
-
-
-def _pages(client: Any, operation: str, key: str, **kwargs: Any) -> list[dict[str, Any]]:
-    return [x for page in client.get_paginator(operation).paginate(**kwargs) for x in page.get(key, [])]
 
 
 def _tls(listener: dict[str, Any]) -> bool:

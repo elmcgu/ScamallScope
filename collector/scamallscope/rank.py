@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from .findings import Finding
-from .hygiene import prod_tags
+from .hygiene import DEFAULT_ENV_TAG, prod_tags
 
 WEIGHT = {"critical": 100, "high": 70, "medium": 40, "low": 15, "info": 5}
 OWN_RULES = ("inventory", "hygiene")
@@ -22,8 +22,13 @@ def _preference(f: Finding) -> tuple[int, int, str]:
     return rank, -WEIGHT[f["severity"]], f["id"]
 
 
+def _family(f: Finding) -> str:
+    """Our own rules count as one source: two of them on one resource are two issues."""
+    return "own" if f["source"] in OWN_RULES else f["source"]
+
+
 def mark_duplicates(findings: list[Finding]) -> None:
-    """Same resource, same pillar, at least one shared best practice: one issue (spec 13)."""
+    """Same resource, same pillar, a shared best practice, reported by another source: one issue (spec 13)."""
     groups: dict[tuple[str, str], list[Finding]] = {}
     for f in findings:
         f["duplicate_of"], f["also_reported_by"] = None, []
@@ -32,7 +37,8 @@ def mark_duplicates(findings: list[Finding]) -> None:
     for group in groups.values():
         primaries: list[Finding] = []
         for f in sorted(group, key=_preference):
-            primary = next((p for p in primaries if set(p["best_practices"]) & set(f["best_practices"])), None)
+            primary = next((p for p in primaries if _family(p) != _family(f)
+                            and set(p["best_practices"]) & set(f["best_practices"])), None)
             if primary is None:
                 primaries.append(f)
                 continue
@@ -43,9 +49,9 @@ def mark_duplicates(findings: list[Finding]) -> None:
         f["also_reported_by"].sort()
 
 
-def priority(f: Finding, node: dict[str, Any] | None) -> float:
+def priority(f: Finding, node: dict[str, Any] | None, env_tag: str = DEFAULT_ENV_TAG) -> float:
     w = WEIGHT[f["severity"]]
-    prod = prod_tags((node or {}).get("tags") or {}) if node else True  # account-level findings count as prod
+    prod = prod_tags((node or {}).get("tags") or {}, env_tag) if node else True  # account-level findings count as prod
     if f["pillar"] == "security":
         return w + (20 if (node or {}).get("exposure") == "exposed" else 0) + (10 if prod else 0)
     if f["pillar"] == "cost":
@@ -64,8 +70,8 @@ def summary(findings: list[Finding]) -> dict[str, Any]:
     }
 
 
-def apply(findings: list[Finding], nodes: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def apply(findings: list[Finding], nodes: dict[str, dict[str, Any]], env_tag: str = DEFAULT_ENV_TAG) -> dict[str, Any]:
     mark_duplicates(findings)
     for f in findings:
-        f["priority"] = round(priority(f, nodes.get(f["resource"] or "")), 2)
+        f["priority"] = round(priority(f, nodes.get(f["resource"] or ""), env_tag), 2)
     return summary(findings)

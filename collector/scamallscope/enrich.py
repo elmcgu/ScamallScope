@@ -61,7 +61,8 @@ def _parse(source: str, value: Any, snap: Snapshot, index: hosts.Index, known: s
 
 
 def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = hygiene.DEFAULT_REQUIRED_TAGS,
-          ansible_mode: ansible.Mode = "check", today: date | None = None) -> dict[str, Any]:
+          ansible_mode: ansible.Mode = "check", today: date | None = None,
+          env_tag: str = hygiene.DEFAULT_ENV_TAG, app_tag: str = hygiene.DEFAULT_APP_TAG) -> dict[str, Any]:
     g = graph.to_graph(snap)
     nodes = {e["data"]["id"]: e["data"] for e in g["elements"] if e["group"] == "nodes"}
     index = hosts.build(snap)
@@ -98,7 +99,7 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
     if "cost" in per_source:
         rule_sources["cost"] = {}
     extras = {"cost_coverage": (cost_summary or {}).get("coverage")}
-    rules = hygiene.run(snap, nodes, rule_sources, required_tags, extras, today)
+    rules = hygiene.run(snap, nodes, rule_sources, required_tags, extras, today, env_tag, app_tag)
     findings.extend(rules["findings"])
     coverage["hygiene"] = rules["coverage"]
 
@@ -118,7 +119,7 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
         for arn, data in resources.items():
             if arn in nodes:
                 nodes[arn].setdefault(key, {}).update(data)
-    summary = rank.apply(findings, nodes)
+    summary = rank.apply(findings, nodes, env_tag)
     by_resource: dict[str, list[Finding]] = {}
     for f in findings:
         if f["resource"] and not f["duplicate_of"]:  # the map counts each issue once, like the Overview
@@ -141,7 +142,7 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
     g["meta"]["integrations"] = meta
     g["findings"] = findings
     g["summary"] = summary
-    g["workloads"] = availability.workloads(snap, nodes, rule_sources, findings, today)
+    g["workloads"] = availability.workloads(snap, nodes, rule_sources, findings, today, env_tag, app_tag)
     g["posture"] = posture.scorecard(findings, coverage)
     g["cost"] = cost_summary
     return g

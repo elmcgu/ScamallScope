@@ -30,18 +30,13 @@ def periods(today: date) -> tuple[dict[str, str], dict[str, str]]:
 
 
 def _all_pages(call: Any, **kwargs: Any) -> list[dict[str, Any]]:
-    results, token = [], None
-    while True:
-        resp = call(**kwargs, **({"NextPageToken": token} if token else {}))
-        results.extend(resp.get("ResultsByTime", []))
-        token = resp.get("NextPageToken")  # pragma: allowlist secret
-        if not token:
-            return results
+    return _pages(call, "ResultsByTime", "NextPageToken", **kwargs)
 
 
 def fetch(session: Any, tag_key: str = "env", today: date | None = None) -> dict[str, Any]:
     ce = session.client("ce", region_name="us-east-1")
-    months, recent = periods(today or date.today())
+    today = today or date.today()
+    months, recent = periods(today)
     by_service = _all_pages(ce.get_cost_and_usage, TimePeriod=months, Granularity="MONTHLY", Metrics=[METRIC],
                             GroupBy=[{"Type": "DIMENSION", "Key": "SERVICE"}])
     by_tag = _all_pages(ce.get_cost_and_usage, TimePeriod=months, Granularity="MONTHLY", Metrics=[METRIC],
@@ -55,13 +50,12 @@ def fetch(session: Any, tag_key: str = "env", today: date | None = None) -> dict
         if exc.response.get("Error", {}).get("Code") not in OPTIONAL_ERRORS:
             raise
         by_resource = None  # resource-level data is opt-in (R35)
-    window = {"Start": ((today or date.today()) - timedelta(days=COVERAGE_DAYS)).isoformat(),
-              "End": (today or date.today()).isoformat()}
+    window = {"Start": (today - timedelta(days=COVERAGE_DAYS)).isoformat(), "End": today.isoformat()}
     sp = _optional(lambda: _pages(ce.get_savings_plans_coverage, "SavingsPlansCoverages", "NextToken",
                                   TimePeriod=window, Granularity="MONTHLY"))
     ri = _optional(lambda: _pages(ce.get_reservation_coverage, "CoveragesByTime", "NextPageToken",
                                   TimePeriod=window, Granularity="MONTHLY"))
-    return {"fetched_at": (today or date.today()).isoformat(), "tag_key": tag_key,
+    return {"fetched_at": today.isoformat(), "tag_key": tag_key,
             "by_service": by_service, "by_tag": by_tag, "by_resource": by_resource,
             "coverage_window": window, "sp_coverage": sp, "ri_coverage": ri}
 

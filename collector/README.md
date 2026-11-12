@@ -22,9 +22,11 @@ uv run scamallscope fetch prometheus --url https://<prometheus>      # PROMETHEU
 cp <prowler-output>/prowler-output-*.ocsf.json integrations/prowler.ocsf.json
 ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible-playbook site.yml --check > integrations/ansible.json
 uv run scamallscope enrich snapshots/<file>.snapshot.json --integrations integrations/   # -> graph v2
+#   your own tag keys: --required-tags owner,environment --env-tag environment --app-tag service
 uv run python scripts/make_sample.py   # demo: made-up estate and integration data -> samples/
 uv run pytest                          # uv run pytest -k WAZ  runs one spec's tests (IDs in docs/specs/)
 uv run pyright                         # type check (TypedDict shapes)
+uv run ruff check                      # lint
 ```
 
 Try `enrich` on the made-up sample: `uv run scamallscope enrich ../samples/demo.snapshot.json --integrations ../samples/integrations --output /tmp/demo.graph.json`.
@@ -96,7 +98,7 @@ snapshot is partial: resources in failed units are kept, never marked deleted.
 ## Graph JSON
 
 `scamallscope graph` converts a snapshot into Cytoscape.js `elements` for the frontend.
-Nodes keep only the fields the views need (no raw config, no IP addresses). Edges to a
+Nodes keep only the fields the views need (no raw config, no host IP addresses; CIDR ranges of VPCs, subnets and rules are kept). Edges to a
 resource that is not in the snapshot are dropped and counted in `meta.dropped_edges`.
 `meta.complete` is false, and the exit code is `2`, when the snapshot is partial.
 

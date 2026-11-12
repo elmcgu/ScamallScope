@@ -13,7 +13,7 @@ from typing import Any
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
-from . import enrich, graph, httpjson, inventory, snapshot
+from . import enrich, graph, httpjson, hygiene, inventory, snapshot
 from .integrations import cloudwatch, cost, costhub, github, prometheus, wazuh
 from .model import is_complete
 
@@ -55,6 +55,10 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--integrations", type=Path, default=Path("integrations"),
                    help="Folder with raw integration files (default: integrations/)")
     e.add_argument("--required-tags", default="owner,env", help="Comma-separated tags every resource needs")
+    e.add_argument("--env-tag", default=hygiene.DEFAULT_ENV_TAG,
+                   help="Tag key that holds the environment; prod, production or prd (or no tag) is prod (default env)")
+    e.add_argument("--app-tag", default=hygiene.DEFAULT_APP_TAG,
+                   help="Tag key that groups instances into one workload (default app)")
     e.add_argument("--ansible-mode", choices=["check", "apply"], default="check",
                    help="Was the Ansible run in check mode (default) or a real apply?")
     e.add_argument("--output", type=Path, help="Output file (default: <snapshot>.graph.json)")
@@ -138,7 +142,11 @@ def _collect(args: argparse.Namespace) -> int:
         print("No region. Use --region or set one in your AWS profile.", file=sys.stderr)
         return 1
 
-    snap = snapshot.collect(session, regions)
+    try:
+        snap = snapshot.collect(session, regions)
+    except (ClientError, BotoCoreError) as exc:  # no or expired credentials: sts:GetCallerIdentity fails first
+        print(f"Cannot identify the AWS account: {exc}", file=sys.stderr)
+        return 1
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out = args.output or Path("snapshots") / f"{snap['account_id']}-{stamp}.snapshot.json"
     snapshot.write_json(snap, out)
@@ -159,7 +167,8 @@ def _enrich(args: argparse.Namespace) -> int:
         print(f"Cannot read snapshot: {exc}", file=sys.stderr)
         return 1
     tags = tuple(t.strip() for t in args.required_tags.split(",") if t.strip())
-    g = enrich.build(snap, enrich.load_raw(args.integrations), tags, args.ansible_mode)
+    g = enrich.build(snap, enrich.load_raw(args.integrations), tags, args.ansible_mode,
+                     env_tag=args.env_tag, app_tag=args.app_tag)
     name = args.snapshot.name.removesuffix(".json").removesuffix(".snapshot")
     out = args.output or args.snapshot.with_name(f"{name}.graph.json")
     snapshot.write_json(g, out)

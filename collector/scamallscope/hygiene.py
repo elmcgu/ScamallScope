@@ -12,10 +12,11 @@ from datetime import date, datetime, timezone
 from typing import Any, Callable, TypedDict
 
 from .findings import Finding, Parsed, Severity, cover, empty_parsed, make, severity_for_saving
-from .graph import snapshot_manager
+from .graph import redirects_to_https, snapshot_manager
 from .model import GLOBAL, Resource, Snapshot
 
 DEFAULT_REQUIRED_TAGS = ("owner", "env")
+DEFAULT_ENV_TAG, DEFAULT_APP_TAG = "env", "app"  # tag keys; set per estate with --env-tag and --app-tag
 TAGGED_TYPES = {"instance", "bucket", "function", "vpc", "volume", "db-instance", "load-balancer", "autoscaling-group"}
 IDLE_AVG, IDLE_MAX = 5.0, 20.0
 PROD_VALUES = {"prod", "production", "prd"}
@@ -67,8 +68,10 @@ class Ctx:
     """Indexes over one snapshot, built once per run, so rules can follow links and settings."""
 
     def __init__(self, snapshot: Snapshot, nodes: dict[str, dict[str, Any]], src: Sources,
-                 loaded: set[str], extras: dict[str, Any], today: date):
+                 loaded: set[str], extras: dict[str, Any], today: date,
+                 env_tag: str = DEFAULT_ENV_TAG, app_tag: str = DEFAULT_APP_TAG):
         self.snapshot, self.nodes, self.src, self.loaded, self.extras, self.today = snapshot, nodes, src, loaded, extras, today
+        self.env_tag, self.app_tag = env_tag, app_tag
         self.res = {r["arn"]: r for r in snapshot["resources"]}
         self.out_links: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
         self.in_links: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
@@ -106,6 +109,12 @@ class Ctx:
                 return self.vpc_of(p)
         return None
 
+    def is_prod(self, r: Resource) -> bool:
+        return prod_tags(r["tags"], self.env_tag)
+
+    def app_of(self, r: Resource) -> str | None:
+        return r["tags"].get(self.app_tag) or None
+
     def in_asg(self, instance_arn: str) -> bool:
         return bool(self.linking("manages", instance_arn))
 
@@ -128,14 +137,10 @@ class Ctx:
         return (now - when).total_seconds() / 86400
 
 
-def prod_tags(tags: dict[str, str]) -> bool:
-    """Prod when env says so, or when there is no env tag (decision by Ellis, 2026-11-10)."""
-    env = (tags.get("env") or "").strip().lower()
+def prod_tags(tags: dict[str, str], env_tag: str = DEFAULT_ENV_TAG) -> bool:
+    """Prod when the environment tag says so, or when there is none (decision by Ellis, 2026-11-10)."""
+    env = (tags.get(env_tag) or "").strip().lower()
     return not env or env in PROD_VALUES
-
-
-def is_prod(r: Resource) -> bool:
-    return prod_tags(r["tags"])
 
 
 def _state(r: Resource) -> str | None:
@@ -156,7 +161,7 @@ def _az(r: Resource) -> str | None:
 
 # ---------------------------------------------------------------- rule types
 
-Check = Callable[[Resource, dict[str, Any], Sources, Ctx], Any]  # returns Hit, (severity, title, detail) or None
+Check = Callable[[Resource, dict[str, Any], Sources, Ctx], Hit | None]
 
 
 class Rule:
@@ -187,14 +192,14 @@ def _tags(required: tuple[str, ...]) -> Check:
     def check(r, node, src, ctx):
         missing = [t for t in required if not r["tags"].get(t)]
         if missing:
-            return "low", f"{r['type']} {_name(r)} is missing tags", f"missing: {', '.join(missing)}"
+            return _hit("low", f"{r['type']} {_name(r)} is missing tags", f"missing: {', '.join(missing)}")
         return None
     return check
 
 
 def _stopped(r, node, src, ctx):
     if _state(r) == "stopped":
-        return "low", f"Instance {_name(r)} is stopped", "EBS volumes and Elastic IPs are still charged"
+        return _hit("low", f"Instance {_name(r)} is stopped", "EBS volumes and Elastic IPs are still charged")
     return None
 
 
@@ -203,7 +208,7 @@ def _idle(r, node, src, ctx):
     if _state(r) != "running" or not m or m.get("cpu_avg") is None or m.get("cpu_max") is None:
         return None
     if m["cpu_avg"] < IDLE_AVG and m["cpu_max"] < IDLE_MAX:
-        return ("medium", f"Instance {_name(r)} looks idle",
+        return _hit("medium", f"Instance {_name(r)} looks idle",
                 f"CPU average {m['cpu_avg']}%, peak {m['cpu_max']}% over {m.get('days')} days")
     return None
 
@@ -215,29 +220,29 @@ def _unknown(r: Resource, detail: str) -> bool:
 def _versioning(r, node, src, ctx):
     if _unknown(r, "Versioning") or r["config"].get("Versioning") == "Enabled":
         return None
-    return "low", f"Bucket {_name(r)} has no versioning", f"versioning: {r['config'].get('Versioning') or 'never enabled'}"
+    return _hit("low", f"Bucket {_name(r)} has no versioning", f"versioning: {r['config'].get('Versioning') or 'never enabled'}")
 
 
 def _encryption(r, node, src, ctx):
     if _unknown(r, "Encryption") or r["config"].get("Encryption"):
         return None
-    return "medium", f"Bucket {_name(r)} has no default encryption", "no ServerSideEncryptionConfiguration"
+    return _hit("medium", f"Bucket {_name(r)} has no default encryption", "no ServerSideEncryptionConfiguration")
 
 
 def _runtime(r, node, src, ctx):
     rt = r["config"].get("Runtime")
     if rt in DEPRECATED_RUNTIMES:
-        return "medium", f"Function {_name(r)} uses deprecated runtime {rt}", f"deprecated as of {DEPRECATED_RUNTIMES_AS_OF} list"
+        return _hit("medium", f"Function {_name(r)} uses deprecated runtime {rt}", f"deprecated as of {DEPRECATED_RUNTIMES_AS_OF} list")
     return None
 
 
 def _iam_user(r, node, src, ctx):
-    return "low", f"IAM user {_name(r)} has long-term credentials", "prefer federation and roles with temporary credentials"
+    return _hit("low", f"IAM user {_name(r)} has long-term credentials", "prefer federation and roles with temporary credentials")
 
 
 def _no_agent(r, node, src, ctx):
     if _state(r) == "running" and r["arn"] not in src["wazuh"]:
-        return "medium", f"Instance {_name(r)} has no Wazuh agent", "no matched agent: no vulnerability or OS data"
+        return _hit("medium", f"Instance {_name(r)} has no Wazuh agent", "no matched agent: no vulnerability or OS data")
     return None
 
 
@@ -246,22 +251,22 @@ def _not_scraped(r, node, src, ctx):
         return None
     p = src["prometheus"].get(r["arn"])
     if p is None:
-        return "medium", f"Instance {_name(r)} is not monitored by Prometheus", "no up series for this instance"
+        return _hit("medium", f"Instance {_name(r)} is not monitored by Prometheus", "no up series for this instance")
     if p.get("prom_up") == 0:
-        return "high", f"Prometheus target down on {_name(r)}", "up = 0"
+        return _hit("high", f"Prometheus target down on {_name(r)}", "up = 0")
     return None
 
 
 def _no_alarm(r, node, src, ctx):
     m = src["cloudwatch"].get(r["arn"])
     if _state(r) == "running" and m is not None and not m.get("alarms"):
-        return "low", f"Instance {_name(r)} has no CloudWatch alarm", "no metric alarm with its InstanceId"
+        return _hit("low", f"Instance {_name(r)} has no CloudWatch alarm", "no metric alarm with its InstanceId")
     return None
 
 
 def _not_managed(r, node, src, ctx):
     if _state(r) == "running" and r["arn"] not in src["ansible"]:
-        return "low", f"Instance {_name(r)} was not in the Ansible run", "not configured by the playbook"
+        return _hit("low", f"Instance {_name(r)} was not in the Ansible run", "not configured by the playbook")
     return None
 
 
@@ -269,13 +274,14 @@ def _exposed(r, node, src, ctx):
     if node.get("exposure") == "exposed":
         ports = ", ".join(f"{p['protocol']}/{p['from_port'] if p.get('from_port') is not None else 'all'}"
                           for p in node.get("exposed_ports") or [])
-        return "high", f"{r['type']} {_name(r)} is reachable from the internet", node.get("exposure_reason", "") + (f" ({ports})" if ports else "")
+        return _hit("high", f"{r['type']} {_name(r)} is reachable from the internet",
+                    node.get("exposure_reason", "") + (f" ({ports})" if ports else ""))
     return None
 
 
 def _admin(r, node, src, ctx):
     if node.get("admin") and not str(r["config"].get("Path", "")).startswith("/aws-service-role/"):
-        return "medium", f"{r['type']} {_name(r)} has admin rights", node.get("admin_reason") or ""
+        return _hit("medium", f"{r['type']} {_name(r)} has admin rights", node.get("admin_reason") or "")
     return None
 
 
@@ -351,15 +357,10 @@ def _rds_public(r, node, src, ctx):
                 "PubliclyAccessible true" + (", in a subnet with an internet route" if public else ""))
 
 
-def _redirects(listener: dict[str, Any]) -> bool:
-    return any(a.get("Type") == "redirect" and (a.get("RedirectConfig") or {}).get("Protocol") == "HTTPS"
-               for a in listener.get("DefaultActions") or [])
-
-
 def _http_no_redirect(r, node, src, ctx):
     if r["config"].get("Scheme") != "internet-facing":
         return None
-    plain = [x for x in r["config"].get("Listeners") or [] if x.get("Protocol") == "HTTP" and not _redirects(x)]
+    plain = [x for x in r["config"].get("Listeners") or [] if x.get("Protocol") == "HTTP" and not redirects_to_https(x)]
     if plain:
         return _hit("medium", f"Load balancer {_name(r)} serves plain HTTP",
                     f"HTTP listener on port {', '.join(str(x.get('Port')) for x in plain)} does not redirect to HTTPS")
@@ -552,18 +553,18 @@ def _single_az(ctx: Ctx) -> tuple[int, list[Hit]]:
     for i in ctx.by_type["instance"]:
         if not _running(i):
             continue
-        if i["tags"].get("app"):
-            groups[(i["region"], ctx.vpc_of(i) or "no VPC", i["tags"]["app"])].append(i)
+        if app := ctx.app_of(i):
+            groups[(i["region"], ctx.vpc_of(i) or "no VPC", app)].append(i)
         elif not ctx.in_asg(i["arn"]) and not ctx.is_target(i["arn"]):
             checked += 1
-            hits.append(_hit("medium" if is_prod(i) else "low", f"Instance {_name(i)} runs alone",
+            hits.append(_hit("medium" if ctx.is_prod(i) else "low", f"Instance {_name(i)} runs alone",
                              f"one instance in {_az(i)}, not in an Auto Scaling group or behind a load balancer",
                              resource=i["arn"], resource_name=_name(i), region=i["region"]))
     for (region, vpc, app), members in sorted(groups.items()):
         checked += 1
         azs = sorted({_az(m) or "?" for m in members})
         if len(azs) == 1:
-            prod = any(is_prod(m) for m in members)
+            prod = any(ctx.is_prod(m) for m in members)
             vpc_name = _name(ctx.res[vpc]) if vpc in ctx.res else vpc
             hits.append(_hit("high" if prod else "medium", f"App {app} runs in one Availability Zone",
                              f"{len(members)} instance(s), all in {azs[0]}", resource=None,
@@ -574,7 +575,7 @@ def _single_az(ctx: Ctx) -> tuple[int, list[Hit]]:
             continue
         checked += 1
         if len(azs) == 1:
-            hits.append(_hit("high" if is_prod(tg) else "medium", f"Target group {_name(tg)} has targets in one AZ",
+            hits.append(_hit("high" if ctx.is_prod(tg) else "medium", f"Target group {_name(tg)} has targets in one AZ",
                              f"all targets in {next(iter(azs))}", resource=tg["arn"], resource_name=_name(tg),
                              region=tg["region"]))
     return checked, hits
@@ -583,7 +584,7 @@ def _single_az(ctx: Ctx) -> tuple[int, list[Hit]]:
 def _rds_single_az(r, node, src, ctx):
     if r["config"].get("MultiAZ") or r["config"].get("DBClusterIdentifier"):
         return None  # Aurora is judged by its cluster, not collected yet (Phase E)
-    return _hit("high" if is_prod(r) else "low", f"Database {_name(r)} is not Multi-AZ",
+    return _hit("high" if ctx.is_prod(r) else "low", f"Database {_name(r)} is not Multi-AZ",
                 f"single instance in {r['config'].get('AvailabilityZone')}")
 
 
@@ -672,7 +673,7 @@ def _no_backup(r, node, src, ctx):
     if backed_up(r, ctx):
         return None
     what = "Volume" if r["type"] == "volume" else "Database"
-    return _hit("high" if is_prod(r) else "medium", f"{what} {_name(r)} has no recent backup",
+    return _hit("high" if ctx.is_prod(r) else "medium", f"{what} {_name(r)} has no recent backup",
                 f"no AWS Backup recovery point or snapshot in {BACKUP_RECENT_DAYS} days")
 
 
@@ -722,7 +723,8 @@ def rules(required_tags: tuple[str, ...]) -> list[Rule | GroupRule]:
         Rule("IAM-ADMIN-001", "SEC03-BP02", inv, {"user", "group", "role"}, _admin, "Replace admin rights with a policy for the tasks needed."),
         # spec 12: security
         Rule("SEC-NET-001", "SEC06-BP03", inv, {"instance"}, _ssh_rdp_open,
-             "Remove the 0.0.0.0/0 rule for SSH/RDP; use Systems Manager Session Manager instead."),
+             "Remove the 0.0.0.0/0 rule for SSH/RDP; use Systems Manager Session Manager instead.",
+             units=(("ec2", "security-group"),)),
         Rule("SEC-EC2-001", "SEC06-BP02", inv, {"instance"}, _imdsv1,
              "aws ec2 modify-instance-metadata-options --instance-id <id> --http-tokens required (test the app first)."),
         Rule("SEC-EC2-002", "SEC06-BP03", inv, {"instance"}, _not_ssm,
@@ -764,7 +766,8 @@ def rules(required_tags: tuple[str, ...]) -> list[Rule | GroupRule]:
         Rule("REL-AZ-002", "REL10-BP01", inv, {"db-instance"}, _rds_single_az, "Modify the instance to Multi-AZ (short failover during the change)."),
         Rule("REL-AZ-003", "REL10-BP01", inv, {"load-balancer", "autoscaling-group"}, _one_az, "Add subnets in a second AZ."),
         Rule("REL-AZ-004", "REL10-BP01", inv, {"nat-gateway"}, _shared_nat,
-             "Create one NAT gateway per AZ and route each AZ's private subnets to its own."),
+             "Create one NAT gateway per AZ and route each AZ's private subnets to its own.",
+             units=(("ec2", "route-table"), ("ec2", "subnet"))),
         Rule("REL-HEAL-001", "REL11-BP03", inv, {"instance"}, _no_healing,
              "Set AutoRecovery to default, add a CloudWatch recover alarm, or put it in an Auto Scaling group."),
         Rule("REL-HEAL-002", "REL11-BP01", inv, {"autoscaling-group"}, _ec2_health_check,
@@ -782,24 +785,15 @@ def rules(required_tags: tuple[str, ...]) -> list[Rule | GroupRule]:
 # ---------------------------------------------------------------- engine
 
 
-def _as_hit(value: Any) -> Hit | None:
-    if value is None:
-        return None
-    if isinstance(value, tuple):
-        sev, title, detail = value
-        return _hit(sev, title, detail)
-    return value
-
-
 def run(snapshot: Snapshot, nodes: dict[str, dict[str, Any]], sources: Sources,
         required_tags: tuple[str, ...] = DEFAULT_REQUIRED_TAGS, extras: dict[str, Any] | None = None,
-        today: date | None = None) -> Parsed:
+        today: date | None = None, env_tag: str = DEFAULT_ENV_TAG, app_tag: str = DEFAULT_APP_TAG) -> Parsed:
     """sources: data per loaded source (ARN -> data). 'inventory' is always loaded.
     extras: cost_coverage (from the cost summary). today: defaults to the snapshot's date."""
     loaded = {"inventory", *sources}
     src: Sources = {k: sources.get(k, {}) for k in ("wazuh", "prometheus", "cloudwatch", "ansible")}
     day = today or date.fromisoformat(snapshot["collected_at"][:10])
-    ctx = Ctx(snapshot, nodes, src, loaded, extras or {}, day)
+    ctx = Ctx(snapshot, nodes, src, loaded, extras or {}, day, env_tag, app_tag)
     out = empty_parsed()
     for rule in rules(required_tags):
         if not set(rule.needs) <= loaded:
@@ -817,7 +811,7 @@ def run(snapshot: Snapshot, nodes: dict[str, dict[str, Any]], sources: Sources,
                     continue
                 if any(not ctx.unit_ok(svc, t, r["region"]) for svc, t in rule.units):
                     continue
-                hit = _as_hit(rule.check(r, nodes.get(r["arn"], {}), src, ctx))
+                hit = rule.check(r, nodes.get(r["arn"], {}), src, ctx)
                 checked += 1
                 if hit is not None:
                     found.append({**hit, "resource": r["arn"], "resource_name": _name(r), "region": r["region"]})  # type: ignore[typeddict-item]

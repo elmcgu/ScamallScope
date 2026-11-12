@@ -8,6 +8,7 @@ How ScamallScope is built. What it does and why: [PROJECT.md](PROJECT.md). Behav
 ```
 collector/scamallscope/
   collectors/        AWS read-only collectors (EC2, Lambda, IAM, S3)          existing
+    base.py          Context, Result and the shared list helper
     rds.py elbv2.py autoscaling.py account.py                                 Phase B (spec 10)
   snapshot.py        run collectors -> snapshot dict                          existing
   exposure.py        internet exposure                                        existing
@@ -111,11 +112,12 @@ def fetch(...) -> dict: ...                                    # network; return
 - **Credentials** from environment variables only: `WAZUH_API_USER`, `WAZUH_API_PASSWORD`,
   `WAZUH_INDEXER_USER`, `WAZUH_INDEXER_PASSWORD`, `GITHUB_TOKEN`, `PROMETHEUS_BEARER_TOKEN`
   (optional). Never accepted as command-line arguments (they would show in shell history and `ps`).
-- **TLS:** `httpjson.py` uses the default SSL context. `--ca-file` adds a private CA. There is no
+- **TLS:** `httpjson.py` uses the default SSL context and follows no redirects (urllib would re-send the
+  credential header to the new address). `--ca-file` adds a private CA. There is no
   option to skip verification.
 - **Least data:** Wazuh vulnerability query asks only for the fields it uses (`_source` list).
   GitHub reads only repos named in resource tags. Cost Explorer reads only aggregate cost.
-- **Output:** raw files and graphs `0600`, git-ignored. No IPs, environment values, package
+- **Output:** raw files and graphs `0600`, git-ignored. No host IPs (CIDR ranges stay), environment values, package
   paths or full CVE descriptions in the graph.
 - **UI:** unchanged rules: `textContent` only, CSP `script-src 'self'`. Links to external pages
   (AWS docs, GitHub) are built only from `https://` URLs and opened with `rel="noopener noreferrer"`.
@@ -130,3 +132,4 @@ def fetch(...) -> dict: ...                                    # network; return
 | End to end | `scripts/make_sample.py` | moto estate + fake raw files -> `samples/demo.graph.json` |
 | Frontend logic | vitest on `views.js` | Filtering, sorting, totals, scorecard grouping |
 | Types | pyright | TypedDict shapes |
+| Lint | ruff | Unused names, import order, common bug patterns (`uv run ruff check`) |

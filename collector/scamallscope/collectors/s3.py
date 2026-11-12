@@ -14,15 +14,14 @@ from typing import Any, Callable
 
 from botocore.exceptions import BotoCoreError, ClientError
 
-from ..model import GLOBAL, Link, Resource, make_resource, tags_to_dict
+from ..model import GLOBAL, Resource, make_resource, tags_to_dict
+from .base import Result
 
 # Error codes that mean "not configured", not "failed".
 NOT_CONFIGURED = {
     "NoSuchBucketPolicy", "NoSuchPublicAccessBlockConfiguration", "NoSuchTagSet",
     "ServerSideEncryptionConfigurationNotFoundError",
 }
-
-Result = tuple[list[Resource], list[Link]]
 
 
 def _detail(errors: dict[str, str], name: str, call: Callable[[], Any]) -> Any:

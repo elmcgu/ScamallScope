@@ -175,3 +175,15 @@ def test_every_rule_in_spec_has_a_case():
     ids = {r.id for r in hygiene.rules(hygiene.DEFAULT_REQUIRED_TAGS)}
     new = {i for i in ids if i.split("-")[0] in ("SEC", "COST", "REL")}
     assert new == {c[0] for c in CASES}
+
+
+def test_env_and_app_tag_keys_can_be_set():
+    snap = E.snapshot()
+    for r in snap["resources"]:  # same estate, tagged with other keys
+        r["tags"] = {{"env": "environment", "app": "service"}.get(k, k): v for k, v in r["tags"].items()}
+    default = hygiene.run(E.snapshot(), E.NODES, {}, today=E.TODAY)["findings"]
+    renamed = hygiene.run(snap, E.NODES, {}, today=E.TODAY, env_tag="environment", app_tag="service")["findings"]
+
+    def rel(found):
+        return sorted((f["check_id"], f["severity"], f["title"]) for f in found if f["pillar"] == "reliability")
+    assert rel(renamed) == rel(default) and any(c == "REL-AZ-001" and "App " in t for c, _, t in rel(renamed))

@@ -12,7 +12,10 @@ import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
 from .collectors import account, autoscaling, ec2, elbv2, iam, lambda_, rds, s3
-from .model import GLOBAL, Link, Resource, Snapshot, error_unit, link, new_snapshot, ok_unit
+from .collectors.base import Context, Result
+from .model import GLOBAL, Link, Snapshot, error_unit, link, new_snapshot, ok_unit
+
+RegionalCollector = Callable[[Any, Context], Result]
 
 
 def _error_text(exc: Exception) -> str:
@@ -37,26 +40,11 @@ def collect(session: boto3.Session, regions: list[str], include_global: bool = T
 
     for region in regions:
         ctx = ec2.context(partition, account_id, region)
-        client = session.client("ec2", region_name=region)
-        for resource_type, fn in ec2.COLLECTORS:
-            _unit(snap, "ec2", [resource_type], region, lambda: {resource_type: fn(client, ctx)})
-        lam = session.client("lambda", region_name=region)
-        _unit(snap, "lambda", ["function"], region,
-              lambda: {"function": lambda_.collect_functions(lam, partition, account_id, region)})
-        rds_client = session.client("rds", region_name=region)
-        _unit(snap, "rds", ["db-instance"], region,
-              lambda: {"db-instance": rds.collect_db_instances(rds_client, ctx)})
-        elb = session.client("elbv2", region_name=region)
-        _unit(snap, "elasticloadbalancing", ["load-balancer"], region,
-              lambda: {"load-balancer": elbv2.collect_load_balancers(elb, ctx)})
-        _unit(snap, "elasticloadbalancing", ["target-group"], region,
-              lambda: {"target-group": elbv2.collect_target_groups(elb, ctx)})
-        asg = session.client("autoscaling", region_name=region)
-        _unit(snap, "autoscaling", ["autoscaling-group"], region,
-              lambda: {"autoscaling-group": autoscaling.collect_groups(asg, ctx)})
-        for service, resource_type, client_name, fn in account.REGIONAL:
-            client = session.client(client_name, region_name=region)  # type: ignore[call-overload]
-            _unit(snap, service, [resource_type], region, lambda: {resource_type: fn(client, ctx)})
+        clients: dict[str, Any] = {}
+        for service, resource_type, client_name, fn in regional_collectors():
+            if client_name not in clients:
+                clients[client_name] = session.client(client_name, region_name=region)  # type: ignore[call-overload]
+            _unit(snap, service, [resource_type], region, _one(resource_type, fn, clients[client_name], ctx))
 
     if include_global:
         iam_client = session.client("iam")
@@ -74,8 +62,28 @@ def collect(session: boto3.Session, regions: list[str], include_global: bool = T
     return snap
 
 
+def regional_collectors() -> list[tuple[str, str, str, RegionalCollector]]:
+    """(service, resource type, boto3 client name, collector), run once per region in this order.
+
+    A new regional collector is one line here (or in ec2.COLLECTORS or account.REGIONAL).
+    """
+    return [
+        *[("ec2", resource_type, "ec2", fn) for resource_type, fn in ec2.COLLECTORS],
+        ("lambda", "function", "lambda", lambda_.collect_functions),
+        ("rds", "db-instance", "rds", rds.collect_db_instances),
+        ("elasticloadbalancing", "load-balancer", "elbv2", elbv2.collect_load_balancers),
+        ("elasticloadbalancing", "target-group", "elbv2", elbv2.collect_target_groups),
+        ("autoscaling", "autoscaling-group", "autoscaling", autoscaling.collect_groups),
+        *account.REGIONAL,
+    ]
+
+
+def _one(resource_type: str, fn: RegionalCollector, client: Any, ctx: Context) -> Callable[[], dict[str, Result]]:
+    return lambda: {resource_type: fn(client, ctx)}
+
+
 def _unit(snap: Snapshot, service: str, types: list[str], region: str,
-          run: Callable[[], dict[str, tuple[list[Resource], list[Link]]]]) -> None:
+          run: Callable[[], dict[str, Result]]) -> None:
     """Run one collection unit (one API listing that may return several resource types).
 
     On failure every type it covers is recorded as an error. Never treat it as "no resources".

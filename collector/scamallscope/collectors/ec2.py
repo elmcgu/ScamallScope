@@ -9,48 +9,22 @@ ec2:DescribeVpcEndpoints, ec2:DescribeFlowLogs, ec2:GetEbsEncryptionByDefault.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Iterator, TypedDict
+from typing import Any, Callable
 
-from ..model import Link, Resource, json_safe, link, make_setting, tags_to_dict
+from ..model import Link, Resource, link, make_resource, make_setting, tags_to_dict
+from .base import Context, Result, context
+from .base import items as _pages
 
-
-class Context(TypedDict):
-    """Where a collector runs: partition, account and region."""
-
-    partition: str
-    account_id: str
-    region: str
-
-
-def context(partition: str, account_id: str, region: str) -> Context:
-    return {"partition": partition, "account_id": account_id, "region": region}
+__all__ = ["COLLECTORS", "Context", "Result", "arn", "context"]
 
 
 def arn(ctx: Context, kind: str, resource_id: str) -> str:
     return f"arn:{ctx['partition']}:ec2:{ctx['region']}:{ctx['account_id']}:{kind}/{resource_id}"
 
 
-Result = tuple[list[Resource], list[Link]]
-
-
-def _pages(client: Any, operation: str, key: str, **kwargs: Any) -> Iterator[dict[str, Any]]:
-    for page in client.get_paginator(operation).paginate(**kwargs):
-        yield from page.get(key, [])
-
-
 def _resource(ctx: Context, kind: str, resource_id: str, item: dict[str, Any]) -> Resource:
-    tags = tags_to_dict(item.get("Tags"))
-    return {
-        "arn": arn(ctx, kind, resource_id),
-        "account_id": ctx["account_id"],
-        "region": ctx["region"],
-        "service": "ec2",
-        "type": kind,
-        "id": resource_id,
-        "name": tags.get("Name"),
-        "tags": tags,
-        "config": json_safe(item),
-    }
+    return make_resource(arn(ctx, kind, resource_id), ctx["account_id"], ctx["region"], "ec2", kind, resource_id,
+                         tags_to_dict(item.get("Tags")), item)
 
 
 def collect_vpcs(client: Any, ctx: Context) -> Result:

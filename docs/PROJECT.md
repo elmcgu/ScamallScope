@@ -209,7 +209,7 @@ ScamallScope's output is a map of the estate and its weak points, so:
 - Credentials come from environment variables only. They are never written to a file, a log or
   the graph.
 - Raw integration files and graphs are written with mode `0600` and are git-ignored.
-- The graph keeps no IP addresses, no Lambda environment values and no package file paths.
+- The graph keeps no host IP addresses (CIDR ranges of VPCs, subnets and rules are kept), no Lambda environment values and no package file paths.
 - TLS is verified on every connection. A private CA file can be given; verification cannot be
   turned off.
 - The UI treats every value as untrusted text (`textContent` only, strict Content Security Policy).

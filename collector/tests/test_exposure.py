@@ -1,12 +1,10 @@
-import json
 
 import pytest
 from botocore.exceptions import ClientError
+from test_snapshot import REGION, arn
 
 from scamallscope import exposure, graph, snapshot
 from scamallscope.model import Resource, Snapshot
-
-from test_snapshot import REGION, arn
 
 
 def make_estate(session, *, public_ip=True, igw_route=True, explicit_table=True, open_cidr="0.0.0.0/0"):

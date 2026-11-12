@@ -1,11 +1,11 @@
 import json
 import stat
 
-from scamallscope import graph, snapshot
-from scamallscope.model import Snapshot
-from scamallscope.cli import main
-
 from test_snapshot import REGION, arn, build_estate
+
+from scamallscope import graph, snapshot
+from scamallscope.cli import main
+from scamallscope.model import Snapshot
 
 
 def collected(session):

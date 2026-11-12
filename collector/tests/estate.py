@@ -31,7 +31,7 @@ def snapshot() -> Snapshot:
         instance("i-0old1", "old-batch", state="stopped", owner="data", env="prod"),
         instance("i-0dup1", "twin", owner="x", env="dev"),
         instance("i-0dup2", "twin", owner="x", env="dev"),                    # same Name: ambiguous
-        make_resource(f"arn:aws:s3:::demo-backups", ACCOUNT, "global", "s3", "bucket", "demo-backups",
+        make_resource("arn:aws:s3:::demo-backups", ACCOUNT, "global", "s3", "bucket", "demo-backups",
                       {"owner": "data", "env": "prod"},
                       {"Name": "demo-backups", "Versioning": "Suspended",
                        "Encryption": {"Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]},

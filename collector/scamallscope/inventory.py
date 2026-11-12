@@ -34,7 +34,13 @@ CHANGE_TTL_DAYS = 365
 # DynamoDB items are limited to 400 KB. Keep room for the other attributes.
 MAX_CONFIG_BYTES = 350_000
 # Fields that change without a real change to the resource.
-VOLATILE_KEYS = frozenset({"LaunchTime", "AttachTime", "UsageOperationUpdateTime"})
+VOLATILE_KEYS = frozenset({
+    "LaunchTime", "AttachTime", "UsageOperationUpdateTime",
+    "LatestRestorableTime",  # RDS: moves every few minutes
+    "RoleLastUsed",  # IAM roles: moves whenever the role is used
+    "LastBackupTime",  # AWS Backup protected resources: moves with every backup
+    "access_key_1_last_used_date", "access_key_2_last_used_date",  # credential report
+})
 
 Kind = Literal["created", "changed", "deleted"]
 

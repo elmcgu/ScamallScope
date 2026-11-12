@@ -388,7 +388,7 @@ def fake_integrations(snap: Snapshot) -> dict[str, object]:
         ocsf("PASS", "Medium", "ec2_ebs_volume_encryption", "Ensure there are no EBS volumes unencrypted",
              f"arn:aws:ec2:eu-west-1:{acct}:volume/vol-made-up", "eu-west-1", ["SEC08-BP02"]),
         ocsf("FAIL", "Medium", "s3_bucket_object_versioning", "Check if S3 buckets have object versioning enabled",
-             f"arn:aws:s3:::demo-site-public", "eu-west-1", ["SEC08-BP04"], detail="Versioning is not enabled."),
+             "arn:aws:s3:::demo-site-public", "eu-west-1", ["SEC08-BP04"], detail="Versioning is not enabled."),
         ocsf("FAIL", "Medium", "rds_instance_backup_enabled", "Check if RDS instances have backups enabled",
              f"arn:aws:rds:eu-west-1:{acct}:db:orders-db", "eu-west-1", ["REL09-BP03"], "Reliability",
              detail="RDS instance orders-db has a backup retention period of 0."),

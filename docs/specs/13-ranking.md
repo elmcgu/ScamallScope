@@ -4,8 +4,10 @@
 
 ## Duplicates
 
-Two findings are the same issue when they have the same `resource` (not null), the same pillar,
-and share at least one best practice. Keep one as primary:
+Two findings are the same issue when they come from different sources, have the same `resource`
+(not null), the same pillar, and share at least one best practice. `inventory` and `hygiene` count
+as one source: two of our own rules on one resource are two issues, even under one best practice
+(open SSH and "not in Systems Manager" are both SEC06-BP03). Keep one as primary:
 
 1. `costhub` (cost pillar: its saving is the better number),
 2. `inventory` and `hygiene` (they have a remediation line),
@@ -43,5 +45,6 @@ table, not the hub); `single_points_of_failure` (REL-AZ-* count).
 | RNK-2 | COST-HUB-Delete and COST-EBS-001 on one volume | COST-EBS-001 duplicate of the hub finding |
 | RNK-3 | Same resource, different pillars | Not duplicates |
 | RNK-4 | Exposed high vs private high | Exposed first |
+| RNK-7 | SEC-NET-001, SEC-EC2-002 and a Prowler finding on one instance, all SEC06-BP03 | Both own rules stay primary; Prowler `duplicate_of` the first |
 | RNK-5 | Savings 50 low vs 10 high | 50 first |
 | RNK-6 | Summary | Duplicates not counted; savings summed once |

@@ -37,7 +37,8 @@ def fetch(session: Any, now: datetime | None = None) -> dict[str, Any]:
             raise
         raw.update(enabled=False, reason=f"{err.get('Code')}: {err.get('Message', '')}"[:200], recommendations=[])
     try:
-        raw["compute_optimizer"] = session.client("compute-optimizer", region_name="us-east-1").get_enrollment_status().get("status")
+        optimizer = session.client("compute-optimizer", region_name="us-east-1")
+        raw["compute_optimizer"] = optimizer.get_enrollment_status().get("status")
     except ClientError as exc:
         raw["compute_optimizer"] = f"unknown ({exc.response.get('Error', {}).get('Code')})"
     return json_safe(raw)
@@ -50,7 +51,8 @@ def _title(action: str, rec: dict[str, Any]) -> str:
     if action == "Stop":
         return f"Stop idle {rtype} {rid}"
     if action in ("Rightsize", "Upgrade", "MigrateToGraviton"):
-        return f"{action} {rid}: {rec.get('currentResourceSummary') or rtype} to {rec.get('recommendedResourceSummary') or rec.get('recommendedResourceType') or '?'}"
+        target = rec.get("recommendedResourceSummary") or rec.get("recommendedResourceType") or "?"
+        return f"{action} {rid}: {rec.get('currentResourceSummary') or rtype} to {target}"
     if action.startswith("Purchase"):
         return f"Buy {rec.get('recommendedResourceType') or 'commitment'}: {rec.get('recommendedResourceSummary') or ''}".strip()
     return f"{action} {rtype} {rid}"

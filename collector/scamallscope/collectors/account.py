@@ -16,7 +16,8 @@ from typing import Any, Callable
 from botocore.exceptions import ClientError
 
 from ..model import GLOBAL, Resource, make_resource, make_setting, setting_arn, tags_to_dict
-from .ec2 import Context, Result
+from .base import Context, Result
+from .base import items as _items
 
 REPORT_COLUMNS = (
     "user", "arn", "password_enabled", "mfa_active",
@@ -24,12 +25,6 @@ REPORT_COLUMNS = (
     "access_key_2_active", "access_key_2_last_rotated", "access_key_2_last_used_date",
 )
 REPORT_TRIES, REPORT_WAIT_S = 10, 2.0
-
-
-def _items(client: Any, operation: str, key: str, **kwargs: Any) -> list[dict[str, Any]]:
-    if client.can_paginate(operation):
-        return [x for page in client.get_paginator(operation).paginate(**kwargs) for x in page.get(key, [])]
-    return list(getattr(client, operation)(**kwargs).get(key, []))
 
 
 def collect_trails(client_for: Callable[[str], Any], home: str, partition: str, account_id: str) -> Result:

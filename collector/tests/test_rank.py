@@ -65,3 +65,14 @@ def test_RNK_6_summary_counts_primaries_once():
     assert s["savings_usd"] == 16.15 and s["savings_estimated"] is True
     assert s["open"]["low"] == 2 and s["open"]["high"] == 1 and s["single_points_of_failure"] == 1
     assert s["by_pillar"] == {"security": 0, "cost": 2, "reliability": 1}
+
+
+def test_RNK_7_two_own_rules_on_one_resource_are_two_issues():
+    ssh = f("inventory", "SEC-NET-001", "high", ["SEC06-BP03"], WEB)
+    ssm = f("inventory", "SEC-EC2-002", "low", ["SEC06-BP03"], WEB)
+    agent = f("hygiene", "HYG-AGT-001", "medium", ["SEC06-BP03"], WEB)
+    prowler = f("prowler", "ec2_instance_port_ssh_exposed_to_internet", "high", ["SEC06-BP03"], WEB)
+    s = rank.apply([ssh, ssm, agent, prowler], {})
+    assert ssh["duplicate_of"] is None and ssm["duplicate_of"] is None and agent["duplicate_of"] is None
+    assert prowler["duplicate_of"] == ssh["id"] and ssh["also_reported_by"] == ["prowler"]
+    assert s["by_pillar"]["security"] == 3

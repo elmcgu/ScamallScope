@@ -8,10 +8,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..model import GLOBAL, Link, Resource, link, make_resource, tags_to_dict
+from ..model import GLOBAL, Resource, link, make_resource, tags_to_dict
+from .base import Result
 
 TYPES = ("user", "group", "role", "policy")
-Result = tuple[list[Resource], list[Link]]
 
 
 def fetch(client: Any) -> dict[str, list[dict[str, Any]]]:

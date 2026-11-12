@@ -6,20 +6,8 @@ from datetime import date
 from typing import Any
 
 from .findings import Finding
-from .hygiene import Ctx, backed_up, is_prod, needs_backup
+from .hygiene import DEFAULT_APP_TAG, DEFAULT_ENV_TAG, Ctx, _az, _name, _running, backed_up, needs_backup
 from .model import Resource, Snapshot
-
-
-def _az(r: Resource) -> str | None:
-    return (r["config"].get("Placement") or {}).get("AvailabilityZone") or r["config"].get("AvailabilityZone")
-
-
-def _running(r: Resource) -> bool:
-    return r["type"] == "instance" and (r["config"].get("State") or {}).get("Name") == "running"
-
-
-def _name(r: Resource) -> str:
-    return r.get("name") or r["id"]
 
 
 def _groups(ctx: Ctx) -> list[dict[str, Any]]:
@@ -30,8 +18,8 @@ def _groups(ctx: Ctx) -> list[dict[str, Any]]:
 
     apps: dict[tuple[str, str, str], list[Resource]] = {}
     for i in running:
-        if i["tags"].get("app"):
-            apps.setdefault((i["region"], ctx.vpc_of(i) or "", i["tags"]["app"]), []).append(i)
+        if app := ctx.app_of(i):
+            apps.setdefault((i["region"], ctx.vpc_of(i) or "", app), []).append(i)
     for (region, vpc, app), members in sorted(apps.items()):
         out.append({"kind": "app", "name": f"app {app}", "region": region, "vpc": vpc, "members": members, "anchor": None})
         taken |= {m["arn"] for m in members}
@@ -95,9 +83,11 @@ def _monitoring(ctx: Ctx, w: dict[str, Any]) -> str:
 
 
 def workloads(snapshot: Snapshot, nodes: dict[str, dict[str, Any]], sources: dict[str, dict[str, dict[str, Any]]],
-              findings: list[Finding], today: date | None = None) -> list[dict[str, Any]]:
+              findings: list[Finding], today: date | None = None,
+              env_tag: str = DEFAULT_ENV_TAG, app_tag: str = DEFAULT_APP_TAG) -> list[dict[str, Any]]:
     src = {k: sources.get(k, {}) for k in ("wazuh", "prometheus", "cloudwatch", "ansible")}
-    ctx = Ctx(snapshot, nodes, src, {"inventory", *sources}, {}, today or date.fromisoformat(snapshot["collected_at"][:10]))
+    ctx = Ctx(snapshot, nodes, src, {"inventory", *sources}, {}, today or date.fromisoformat(snapshot["collected_at"][:10]),
+              env_tag, app_tag)
     rel = [f for f in findings if f["pillar"] == "reliability" and not f["duplicate_of"]]
     rows = []
     for w in _groups(ctx):
@@ -110,7 +100,7 @@ def workloads(snapshot: Snapshot, nodes: dict[str, dict[str, Any]], sources: dic
             "id": w["anchor"]["arn"] if w["anchor"] else f"{w['region']}|{w['vpc']}|{w['name']}",
             "name": w["name"], "kind": w["kind"], "region": w["region"], "vpc": vpc_name,
             "azs": sorted({a for m in w["members"] if (a := _az(m))}),
-            "members": [m["arn"] for m in w["members"]], "prod": any(is_prod(m) for m in w["members"]),
+            "members": [m["arn"] for m in w["members"]], "prod": any(ctx.is_prod(m) for m in w["members"]),
             "healing": _healing(ctx, w), "backup": _backup(ctx, w), "monitoring": _monitoring(ctx, w), "findings": count,
         })
     rows.sort(key=lambda r: (-r["findings"], not r["prod"], r["name"]))

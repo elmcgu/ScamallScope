@@ -2,6 +2,7 @@
 
 - https only, TLS always verified (an extra CA file can be given, verification cannot be off).
 - Credentials go in headers and never appear in error messages.
+- Redirects are not followed, so a credential header never leaves the host it was meant for.
 """
 
 from __future__ import annotations
@@ -17,8 +18,18 @@ from urllib.parse import urlencode, urlsplit
 TIMEOUT_S = 30
 MAX_ERROR_BODY = 200
 
-# Tests replace this with a fake; real runs use urllib.
-urlopen = urllib.request.urlopen
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """urllib re-sends every header, Authorization included, to wherever a redirect points
+    (another host, or plain http). Refuse instead: a 3xx becomes an HttpError."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def urlopen(req: urllib.request.Request, timeout: float, context: ssl.SSLContext) -> Any:
+    """Tests replace this with a fake; real runs use urllib without redirects."""
+    opener = urllib.request.build_opener(urllib.request.HTTPSHandler(context=context), _NoRedirect())
+    return opener.open(req, timeout=timeout)
 
 
 class HttpError(RuntimeError):

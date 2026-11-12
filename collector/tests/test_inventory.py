@@ -181,3 +181,16 @@ def test_cli_inventory_changes_and_history(table, tmp_path, monkeypatch, capsys)
 
     f.write_text(json.dumps(snap(DAY2, [], [unit(status="error")])))
     assert main(["inventory", str(f), "--table", "inv"]) == 2  # partial snapshot
+
+
+def test_hash_ignores_fields_that_move_without_a_change():
+    def db(restorable, last_used, backup):
+        return {"name": "db", "tags": {}, "config": {
+            "MultiAZ": True, "LatestRestorableTime": restorable, "RoleLastUsed": {"LastUsedDate": last_used},
+            "Resources": [{"ResourceArn": "arn:x", "LastBackupTime": backup}],
+            "Rows": [{"user": "a", "access_key_1_last_used_date": last_used, "access_key_2_last_used_date": "N/A"}]}}
+    one = db("2026-11-10T10:00:00+00:00", "2026-11-10T09:00:00+00:00", "2026-11-10T01:00:00+00:00")
+    two = db("2026-11-11T10:05:00+00:00", "2026-11-11T08:00:00+00:00", "2026-11-11T01:00:00+00:00")
+    assert inventory.resource_hash(one) == inventory.resource_hash(two)  # type: ignore[arg-type]
+    two["config"]["MultiAZ"] = False
+    assert inventory.resource_hash(one) != inventory.resource_hash(two)  # type: ignore[arg-type]

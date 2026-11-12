@@ -1,7 +1,7 @@
 from datetime import date
 
-from botocore.stub import Stubber
 import boto3
+from botocore.stub import Stubber
 
 from scamallscope import hosts
 from scamallscope.integrations import cost

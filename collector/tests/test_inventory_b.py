@@ -7,12 +7,12 @@ import boto3
 import pytest
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
+from test_snapshot import REGION, arn, build_estate
 
 from scamallscope import graph, snapshot
-from scamallscope.collectors import account as account_collector, ec2 as ec2_collector
+from scamallscope.collectors import account as account_collector
+from scamallscope.collectors import ec2 as ec2_collector
 from scamallscope.model import is_complete
-
-from test_snapshot import REGION, arn, build_estate
 
 ACCOUNT = "123456789012"
 

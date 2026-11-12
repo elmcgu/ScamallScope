@@ -4,8 +4,8 @@ import stat
 from botocore.exceptions import ClientError
 
 from scamallscope import snapshot
-from scamallscope.model import is_complete
 from scamallscope.cli import main
+from scamallscope.model import is_complete
 
 REGION = "eu-west-1"
 

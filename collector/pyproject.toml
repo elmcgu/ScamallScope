@@ -16,6 +16,7 @@ dev = [
     "moto[dynamodb,ec2,sts]>=5",
     "pyright>=1.1.414",
     "pyyaml>=6.0.3",
+    "ruff>=0.8",
 ]
 
 [build-system]
@@ -29,3 +30,19 @@ testpaths = ["tests"]
 include = ["scamallscope", "tests", "scripts"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
+
+[tool.ruff]
+line-length = 150
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["E741"]  # `l` for a link in comprehensions
+
+[tool.ruff.lint.per-file-ignores]
+# _detail(errors, name, lambda: ...) runs the lambda at once, inside the same loop turn.
+"scamallscope/collectors/s3.py" = ["B023"]
+"scamallscope/collectors/lambda_.py" = ["B023"]
+
+[tool.ruff.lint.isort]
+known-local-folder = ["estate", "estate_b", "fakehttp", "helpers"]

@@ -1,15 +1,13 @@
 import re
 from datetime import datetime, timezone
 
-import boto3
-from moto import mock_aws
+from test_snapshot import REGION, build_estate
 
 from scamallscope import hosts, snapshot
 from scamallscope.integrations import cloudwatch
 
 import estate
 from helpers import fixture
-from test_snapshot import REGION, build_estate
 
 WEB, APP, DUP = estate.iarn("i-0web1"), estate.iarn("i-0app1"), estate.iarn("i-0dup1")
 
@@ -57,8 +55,9 @@ def test_CWM_5_query_ids_valid_and_unique():
 
 
 def test_recover_alarm_is_seen():
-    import estate
     from scamallscope import hosts
+
+    import estate
     raw = {"days": 14, "regions": {"eu-west-1": {
         "queries": {"q0_avg": "i-0web1|avg", "q0_max": "i-0web1|max"}, "results": [],
         "alarms": [{"AlarmName": "recover", "Dimensions": [{"Name": "InstanceId", "Value": "i-0web1"}], "RecoverAction": True}]}}}

@@ -38,12 +38,21 @@ WORLD = {"ipv4": "0.0.0.0/0", "ipv6": "::/0"}
 NEEDED = ("instance", "subnet", "security-group", "route-table", "internet-gateway", "network-acl")
 
 
-def analyse(snapshot: Snapshot) -> dict[str, dict[str, Any]]:
-    """Return {instance ARN: {"exposure", "reason", "ports"}} for every EC2 instance."""
+Index = dict[tuple[str, str], dict[str, dict[str, Any]]]
+
+
+def _lookup(snapshot: Snapshot) -> tuple[set[tuple[str, str]], Index]:
+    """(failed units as (region, type), configs by (region, type) then id)."""
     failed = {(u["region"], u["resource_type"]) for u in snapshot["units"] if u["status"] != "ok"}
-    index: dict[tuple[str, str], dict[str, dict[str, Any]]] = defaultdict(dict)
+    index: Index = defaultdict(dict)
     for r in snapshot["resources"]:
         index[(r["region"], r["type"])][r["id"]] = r["config"]
+    return failed, index
+
+
+def analyse(snapshot: Snapshot) -> dict[str, dict[str, Any]]:
+    """Return {instance ARN: {"exposure", "reason", "ports"}} for every EC2 instance."""
+    failed, index = _lookup(snapshot)
 
     out: dict[str, dict[str, Any]] = {}
     for r in snapshot["resources"]:
@@ -103,10 +112,7 @@ def subnet_internet_routes(snapshot: Snapshot) -> dict[str, bool | None]:
 
     None means unknown: a unit the answer needs failed, or no route table was found.
     """
-    failed = {(u["region"], u["resource_type"]) for u in snapshot["units"] if u["status"] != "ok"}
-    index: dict[tuple[str, str], dict[str, dict[str, Any]]] = defaultdict(dict)
-    for r in snapshot["resources"]:
-        index[(r["region"], r["type"])][r["id"]] = r["config"]
+    failed, index = _lookup(snapshot)
 
     out: dict[str, bool | None] = {}
     for r in snapshot["resources"]:

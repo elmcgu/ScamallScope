@@ -5,7 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 from ..model import Link, Resource, link, make_resource, tags_to_dict
-from .ec2 import Context, Result, arn as ec2_arn
+from .base import Context, Result
+from .ec2 import arn as ec2_arn
 
 
 def collect_groups(client: Any, ctx: Context) -> Result:
