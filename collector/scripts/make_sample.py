@@ -398,6 +398,27 @@ def fake_integrations(snap: Snapshot) -> dict[str, object]:
         return {"id": f"{n:03d}", "name": name, "status": status, "lastKeepAlive": at if status == "active" else "2026-10-29T08:00:00+00:00",
                 "os": {"name": os_name, "version": ver, "platform": platform}}
 
+    def vuln_aggregation(rows):
+        """The indexer's answer to wazuh.vulnerability_query for these made-up rows (spec 03)."""
+        by_agent: dict[str, list] = {}
+        for r in rows:
+            by_agent.setdefault(r["_source"]["agent"]["id"], []).append(r["_source"])
+        buckets = []
+        for aid, docs in sorted(by_agent.items()):
+            sev: dict[str, int] = {}
+            pkg: dict[tuple[str, str], int] = {}
+            for d in docs:
+                sev[d["vulnerability"]["severity"]] = sev.get(d["vulnerability"]["severity"], 0) + 1
+                k = (d["package"]["name"], d["package"]["version"])
+                pkg[k] = pkg.get(k, 0) + 1
+            buckets.append({"key": aid, "doc_count": len(docs),
+                            "severity": {"buckets": [{"key": k, "doc_count": v} for k, v in sorted(sev.items())]},
+                            "packages": {"buckets": [{"key": [n, v], "doc_count": c}
+                                                     for (n, v), c in sorted(pkg.items(), key=lambda kv: (-kv[1], kv[0]))[:5]]}})
+        return {"hits": {"total": {"value": len(rows), "relation": "eq"}, "hits": []},
+                "aggregations": {"by_agent.id": {"sum_other_doc_count": 0, "buckets": buckets},
+                                 "by_wazuh.agent.id": {"sum_other_doc_count": 0, "buckets": []}}}
+
     def vuln(agent_id, name, pkg, ver, cve, sev):
         return {"_source": {"agent": {"id": agent_id, "name": name}, "package": {"name": pkg, "version": ver},
                             "vulnerability": {"id": cve, "severity": sev}}}
@@ -418,7 +439,7 @@ def fake_integrations(snap: Snapshot) -> dict[str, object]:
                  agent(4, "staging-web-1", "disconnected", "Ubuntu", "20.04.6 LTS", "ubuntu"),
                  agent(5, bastion, "active", "Amazon Linux", "2023", "amzn"),
                  agent(6, "old-laptop", "never_connected", "", "", "")]}},
-             "vulnerabilities": {"hits": {"total": {"value": len(vulns), "relation": "eq"}, "hits": vulns}}}
+             "vulnerabilities": vuln_aggregation(vulns)}
 
     def dep(n, sha, env, when):
         return {"id": n, "sha": sha * 5, "ref": "main", "environment": env, "created_at": when}

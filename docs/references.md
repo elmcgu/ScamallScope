@@ -171,3 +171,7 @@ Checked on 2026-11-10. API shapes also checked against the botocore 1.43.123 ser
 - **R59** EBS pricing worked examples: gp3 $0.08, gp2 $0.10, io1 and io2 $0.125, st1 $0.045,
   sc1 $0.015 per GB-month; snapshots $0.05 per GB-month. The examples do not name a Region.
   https://aws.amazon.com/ebs/pricing/
+- **R61** OpenSearch multi-terms aggregation: `terms` array, `size`, `shard_size`; buckets with
+  `key` (array), `key_as_string` and `doc_count`, ordered by count descending; response has
+  `sum_other_doc_count`. Checked 2026-11-12; not yet run against a real Wazuh indexer.
+  https://docs.opensearch.org/latest/aggregations/bucket/multi-terms/

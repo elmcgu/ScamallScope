@@ -78,7 +78,7 @@
     },
     "finding_info": {
       "title": "Ensure EC2 instances use IMDSv2",
-      "uid": "prowler-aws-ec2_instance_imdsv2_enabled-123456789012-eu-west-1-instance/i-0aacc998b2e7ab9c9"
+      "uid": "prowler-aws-ec2_instance_imdsv2_enabled-123456789012-eu-west-1-instance/i-c9c2a76f0671ff3a0"
     },
     "metadata": {
       "event_code": "ec2_instance_imdsv2_enabled"
@@ -88,9 +88,9 @@
     },
     "resources": [
       {
-        "name": "i-0aacc998b2e7ab9c9",
+        "name": "i-c9c2a76f0671ff3a0",
         "region": "eu-west-1",
-        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-0aacc998b2e7ab9c9"
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-c9c2a76f0671ff3a0"
       }
     ],
     "severity": "High",
@@ -114,7 +114,7 @@
     },
     "finding_info": {
       "title": "Ensure no security groups allow ingress from 0.0.0.0/0 to SSH port 22",
-      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22-123456789012-eu-west-1-instance/i-0aacc998b2e7ab9c9"
+      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22-123456789012-eu-west-1-instance/i-c9c2a76f0671ff3a0"
     },
     "metadata": {
       "event_code": "ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22"
@@ -124,9 +124,9 @@
     },
     "resources": [
       {
-        "name": "i-0aacc998b2e7ab9c9",
+        "name": "i-c9c2a76f0671ff3a0",
         "region": "eu-west-1",
-        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-0aacc998b2e7ab9c9"
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-c9c2a76f0671ff3a0"
       }
     ],
     "severity": "High",
@@ -149,7 +149,7 @@
     },
     "finding_info": {
       "title": "Check if EC2 instances are managed by Systems Manager",
-      "uid": "prowler-aws-ec2_instance_managed_by_ssm-123456789012-eu-west-1-instance/i-6299711aa16c206c4"
+      "uid": "prowler-aws-ec2_instance_managed_by_ssm-123456789012-eu-west-1-instance/i-023584a260f4a538f"
     },
     "metadata": {
       "event_code": "ec2_instance_managed_by_ssm"
@@ -159,9 +159,9 @@
     },
     "resources": [
       {
-        "name": "i-6299711aa16c206c4",
+        "name": "i-023584a260f4a538f",
         "region": "eu-west-1",
-        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-6299711aa16c206c4"
+        "uid": "arn:aws:ec2:eu-west-1:123456789012:instance/i-023584a260f4a538f"
       }
     ],
     "severity": "Medium",
