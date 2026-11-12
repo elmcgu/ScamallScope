@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from datetime import date, datetime, timezone
-from typing import Any, Callable, TypedDict
+from typing import Any, Callable, Final, Literal, TypedDict
 
 from .findings import Finding, Parsed, Severity, cover, empty_parsed, make, severity_for_saving
 from .graph import redirects_to_https, snapshot_manager
@@ -161,7 +161,9 @@ def _az(r: Resource) -> str | None:
 
 # ---------------------------------------------------------------- rule types
 
-Check = Callable[[Resource, dict[str, Any], Sources, Ctx], Hit | None]
+NA: Final = "n/a"  # the rule does not apply to this resource, or cannot judge it: neither passed nor failed
+Result = Hit | None | Literal["n/a"]  # Hit: failed. None: passed. NA: not judged.
+Check = Callable[[Resource, dict[str, Any], Sources, Ctx], Result]
 
 
 class Rule:
@@ -206,7 +208,7 @@ def _stopped(r, node, src, ctx):
 def _idle(r, node, src, ctx):
     m = src["cloudwatch"].get(r["arn"])
     if _state(r) != "running" or not m or m.get("cpu_avg") is None or m.get("cpu_max") is None:
-        return None
+        return NA
     if m["cpu_avg"] < IDLE_AVG and m["cpu_max"] < IDLE_MAX:
         return _hit("medium", f"Instance {_name(r)} looks idle",
                 f"CPU average {m['cpu_avg']}%, peak {m['cpu_max']}% over {m.get('days')} days")
@@ -218,19 +220,25 @@ def _unknown(r: Resource, detail: str) -> bool:
 
 
 def _versioning(r, node, src, ctx):
-    if _unknown(r, "Versioning") or r["config"].get("Versioning") == "Enabled":
+    if _unknown(r, "Versioning"):
+        return NA
+    if r["config"].get("Versioning") == "Enabled":
         return None
     return _hit("low", f"Bucket {_name(r)} has no versioning", f"versioning: {r['config'].get('Versioning') or 'never enabled'}")
 
 
 def _encryption(r, node, src, ctx):
-    if _unknown(r, "Encryption") or r["config"].get("Encryption"):
+    if _unknown(r, "Encryption"):
+        return NA
+    if r["config"].get("Encryption"):
         return None
     return _hit("medium", f"Bucket {_name(r)} has no default encryption", "no ServerSideEncryptionConfiguration")
 
 
 def _runtime(r, node, src, ctx):
     rt = r["config"].get("Runtime")
+    if not rt:
+        return NA  # container image: no managed runtime
     if rt in DEPRECATED_RUNTIMES:
         return _hit("medium", f"Function {_name(r)} uses deprecated runtime {rt}", f"deprecated as of {DEPRECATED_RUNTIMES_AS_OF} list")
     return None
@@ -241,14 +249,16 @@ def _iam_user(r, node, src, ctx):
 
 
 def _no_agent(r, node, src, ctx):
-    if _state(r) == "running" and r["arn"] not in src["wazuh"]:
+    if _state(r) != "running":
+        return NA
+    if r["arn"] not in src["wazuh"]:
         return _hit("medium", f"Instance {_name(r)} has no Wazuh agent", "no matched agent: no vulnerability or OS data")
     return None
 
 
 def _not_scraped(r, node, src, ctx):
     if _state(r) != "running":
-        return None
+        return NA
     p = src["prometheus"].get(r["arn"])
     if p is None:
         return _hit("medium", f"Instance {_name(r)} is not monitored by Prometheus", "no up series for this instance")
@@ -259,18 +269,24 @@ def _not_scraped(r, node, src, ctx):
 
 def _no_alarm(r, node, src, ctx):
     m = src["cloudwatch"].get(r["arn"])
-    if _state(r) == "running" and m is not None and not m.get("alarms"):
+    if _state(r) != "running" or m is None:
+        return NA
+    if not m.get("alarms"):
         return _hit("low", f"Instance {_name(r)} has no CloudWatch alarm", "no metric alarm with its InstanceId")
     return None
 
 
 def _not_managed(r, node, src, ctx):
-    if _state(r) == "running" and r["arn"] not in src["ansible"]:
+    if _state(r) != "running":
+        return NA
+    if r["arn"] not in src["ansible"]:
         return _hit("low", f"Instance {_name(r)} was not in the Ansible run", "not configured by the playbook")
     return None
 
 
 def _exposed(r, node, src, ctx):
+    if node.get("exposure") in (None, "unknown"):
+        return NA
     if node.get("exposure") == "exposed":
         ports = ", ".join(f"{p['protocol']}/{p['from_port'] if p.get('from_port') is not None else 'all'}"
                           for p in node.get("exposed_ports") or [])
@@ -303,7 +319,7 @@ def _open_admin_ports(group: Resource) -> list[int]:
 
 def _ssh_rdp_open(r, node, src, ctx):
     if not _running(r):
-        return None
+        return NA
     ports = sorted({p for g in ctx.linked("uses", r["arn"]) if g in ctx.res for p in _open_admin_ports(ctx.res[g])})
     if not ports:
         return None
@@ -313,14 +329,16 @@ def _ssh_rdp_open(r, node, src, ctx):
 
 
 def _imdsv1(r, node, src, ctx):
-    if _running(r) and (r["config"].get("MetadataOptions") or {}).get("HttpTokens") != "required":
+    if not _running(r):
+        return NA
+    if (r["config"].get("MetadataOptions") or {}).get("HttpTokens") != "required":
         return _hit("medium", f"Instance {_name(r)} allows IMDSv1", "MetadataOptions.HttpTokens is not required")
     return None
 
 
 def _not_ssm(r, node, src, ctx):
     if not _running(r):
-        return None
+        return NA
     managed = {i.get("InstanceId") for i in (ctx.setting("ssm", "ssm-managed", r["region"]) or {}).get("Instances", [])}
     if r["id"] not in managed:
         return _hit("low", f"Instance {_name(r)} is not managed by Systems Manager", "not in DescribeInstanceInformation")
@@ -334,11 +352,11 @@ def _volume_unencrypted(r, node, src, ctx):
 
 
 def _ebs_default_off(r, node, src, ctx):
-    if r["service"] != "ec2" or r["id"] != "ebs-encryption-by-default" or r["config"].get("Enabled"):
+    if r["service"] != "ec2" or r["id"] != "ebs-encryption-by-default" or not ctx.region_has(r["region"], {"instance", "volume"}):
+        return NA
+    if r["config"].get("Enabled"):
         return None
-    if ctx.region_has(r["region"], {"instance", "volume"}):
-        return _hit("medium", f"EBS encryption by default is off in {r['region']}", "new volumes are not encrypted unless asked")
-    return None
+    return _hit("medium", f"EBS encryption by default is off in {r['region']}", "new volumes are not encrypted unless asked")
 
 
 def _rds_unencrypted(r, node, src, ctx):
@@ -359,7 +377,7 @@ def _rds_public(r, node, src, ctx):
 
 def _http_no_redirect(r, node, src, ctx):
     if r["config"].get("Scheme") != "internet-facing":
-        return None
+        return NA
     plain = [x for x in r["config"].get("Listeners") or [] if x.get("Protocol") == "HTTP" and not redirects_to_https(x)]
     if plain:
         return _hit("medium", f"Load balancer {_name(r)} serves plain HTTP",
@@ -368,6 +386,8 @@ def _http_no_redirect(r, node, src, ctx):
 
 
 def _old_tls(r, node, src, ctx):
+    if not any(x.get("Protocol") in ("HTTPS", "TLS") for x in r["config"].get("Listeners") or []):
+        return NA
     old = [x for x in r["config"].get("Listeners") or [] if {"TLSv1", "TLSv1.1"} & set(x.get("SslProtocols") or [])]
     if old:
         return _hit("medium", f"Load balancer {_name(r)} allows TLS 1.0 or 1.1",
@@ -377,10 +397,10 @@ def _old_tls(r, node, src, ctx):
 
 def _cert_expiry(r, node, src, ctx):
     if not r["config"].get("InUseBy"):
-        return None
+        return NA
     since = ctx.days_since(r["config"].get("NotAfter"))
     if since is None:
-        return None
+        return NA
     days = -since
     if days <= CERT_WARN_DAYS:
         sev = "high" if days <= CERT_URGENT_DAYS else "medium"
@@ -459,7 +479,7 @@ def _no_trail(ctx: Ctx) -> tuple[int, list[Hit]]:
 
 def _no_flow_logs(r, node, src, ctx):
     if not any(_running(i) for i in ctx.by_type["instance"] if ctx.vpc_of(i) == r["arn"]):
-        return None
+        return NA
     logged = {t for f in ctx.by_type["flow-log"] for t in ctx.linked("logs", f["arn"])}
     subnets = [s for s in ctx.linked("contains", r["arn"]) if ctx.res.get(s, {}).get("type") == "subnet"]
     if r["arn"] in logged or (subnets and all(s in logged for s in subnets)):
@@ -468,13 +488,12 @@ def _no_flow_logs(r, node, src, ctx):
 
 
 def _guardduty_off(r, node, src, ctx):
-    if r["service"] != "guardduty" or r["id"] != "guardduty":
-        return None
+    if r["service"] != "guardduty" or r["id"] != "guardduty" or \
+            not ctx.region_has(r["region"], {"instance", "function", "db-instance"}):
+        return NA
     if any(d.get("Status") == "ENABLED" for d in r["config"].get("Detectors", [])):
         return None
-    if ctx.region_has(r["region"], {"instance", "function", "db-instance"}):
-        return _hit("medium", f"GuardDuty is not enabled in {r['region']}", "no detector with status ENABLED")
-    return None
+    return _hit("medium", f"GuardDuty is not enabled in {r['region']}", "no detector with status ENABLED")
 
 
 # ---------------------------------------------------------------- spec 12: cost
@@ -495,8 +514,10 @@ def _unattached_volume(r, node, src, ctx):
 
 
 def _gp2(r, node, src, ctx):
-    if r["config"].get("VolumeType") != "gp2" or r["config"].get("State") == "available":
-        return None  # an unattached gp2 volume is COST-EBS-001: deleting it saves more
+    if r["config"].get("State") == "available":
+        return NA  # an unattached volume is COST-EBS-001: deleting it saves more
+    if r["config"].get("VolumeType") != "gp2":
+        return None
     size = r["config"].get("Size") or 0
     return _cost_hit(f"Volume {_name(r)} is gp2", f"{size} GB; gp3 is cheaper per GB",
                      size * (EBS_GB_MONTH["gp2"] - EBS_GB_MONTH["gp3"]))
@@ -504,7 +525,9 @@ def _gp2(r, node, src, ctx):
 
 def _old_snapshot(r, node, src, ctx):
     age = ctx.days_since(r["config"].get("StartTime"))
-    if age is None or age <= SNAPSHOT_OLD_DAYS or snapshot_manager(r["config"]):
+    if age is None or snapshot_manager(r["config"]):
+        return NA  # no date, or AWS Backup / DLM manage its life
+    if age <= SNAPSHOT_OLD_DAYS:
         return None
     size = r["config"].get("VolumeSize") or 0
     return _cost_hit(f"Snapshot {_name(r)} is {int(age)} days old", f"{size} GB, not made by AWS Backup or DLM; "
@@ -521,7 +544,7 @@ def _idle_eip(r, node, src, ctx):
 
 def _nat_without_endpoints(r, node, src, ctx):
     if r["config"].get("State") != "available":
-        return None
+        return NA
     vpc = ctx.vpc_of(r)
     endpoints = [e for e in ctx.by_type["vpc-endpoint"] if vpc and vpc in ctx.linking("contains", e["arn"])]
     if any(e["config"].get("VpcEndpointType") == "Gateway" and str(e["config"].get("ServiceName", "")).endswith((".s3", ".dynamodb"))
@@ -582,8 +605,10 @@ def _single_az(ctx: Ctx) -> tuple[int, list[Hit]]:
 
 
 def _rds_single_az(r, node, src, ctx):
-    if r["config"].get("MultiAZ") or r["config"].get("DBClusterIdentifier"):
-        return None  # Aurora is judged by its cluster, not collected yet (Phase E)
+    if r["config"].get("DBClusterIdentifier"):
+        return NA  # Aurora is judged by its cluster, not collected yet (Phase E)
+    if r["config"].get("MultiAZ"):
+        return None
     return _hit("high" if ctx.is_prod(r) else "low", f"Database {_name(r)} is not Multi-AZ",
                 f"single instance in {r['config'].get('AvailabilityZone')}")
 
@@ -591,6 +616,8 @@ def _rds_single_az(r, node, src, ctx):
 def _one_az(r, node, src, ctx):
     zones = r["config"].get("AvailabilityZones") or []
     names = sorted(n for z in zones if (n := z.get("ZoneName") if isinstance(z, dict) else z))
+    if not names:
+        return NA
     if len(names) == 1:
         kind = "Load balancer" if r["type"] == "load-balancer" else "Auto Scaling group"
         return _hit("high", f"{kind} {_name(r)} uses one Availability Zone", f"only {names[0]}")
@@ -618,7 +645,7 @@ def _shared_nat(r, node, src, ctx):
 
 def _no_healing(r, node, src, ctx):
     if not _running(r) or ctx.in_asg(r["arn"]):
-        return None
+        return NA  # an ASG replaces its instances
     if (r["config"].get("MaintenanceOptions") or {}).get("AutoRecovery") != "disabled":
         return None
     if (src["cloudwatch"].get(r["arn"]) or {}).get("recover_alarm"):
@@ -628,13 +655,17 @@ def _no_healing(r, node, src, ctx):
 
 
 def _ec2_health_check(r, node, src, ctx):
-    if r["config"].get("TargetGroupARNs") and r["config"].get("HealthCheckType") == "EC2":
+    if not r["config"].get("TargetGroupARNs"):
+        return NA
+    if r["config"].get("HealthCheckType") == "EC2":
         return _hit("low", f"Auto Scaling group {_name(r)} ignores load balancer health",
                     "HealthCheckType EC2: instances failing the target group check are not replaced")
     return None
 
 
 def _unhealthy_targets(r, node, src, ctx):
+    if not r["config"].get("TargetHealth"):
+        return NA
     bad = [t for t in r["config"].get("TargetHealth") or [] if t.get("State") == "unhealthy"]
     if bad:
         return _hit("high", f"Target group {_name(r)} has {len(bad)} unhealthy target(s)",
@@ -667,9 +698,9 @@ def needs_backup(r: Resource, ctx: Ctx) -> bool:
 
 def _no_backup(r, node, src, ctx):
     if not needs_backup(r, ctx):
-        return None
+        return NA
     if r["type"] == "volume" and not ctx.unit_ok("ec2", "snapshot", r["region"]):
-        return None
+        return NA
     if backed_up(r, ctx):
         return None
     what = "Volume" if r["type"] == "volume" else "Database"
@@ -812,6 +843,8 @@ def run(snapshot: Snapshot, nodes: dict[str, dict[str, Any]], sources: Sources,
                 if any(not ctx.unit_ok(svc, t, r["region"]) for svc, t in rule.units):
                     continue
                 hit = rule.check(r, nodes.get(r["arn"], {}), src, ctx)
+                if hit == NA:
+                    continue
                 checked += 1
                 if hit is not None:
                     found.append({**hit, "resource": r["arn"], "resource_name": _name(r), "region": r["region"]})  # type: ignore[typeddict-item]

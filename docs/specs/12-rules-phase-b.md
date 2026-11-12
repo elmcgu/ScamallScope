@@ -7,6 +7,12 @@ failed or is missing, the rule checks nothing there. Account-wide rules (credent
 coverage, app groups) are group rules: they return how many things they checked and the hits. Every finding now has
 `remediation` (one line) and `savings_usd` (cost rules; null otherwise).
 
+**Judged, passed or not applicable:** a check returns a hit (failed), nothing (passed) or `NA`
+(not applicable). `NA` means the rule does not apply to that resource or cannot judge it, for
+example a stopped instance for the instance rules, an unused certificate, a setting that belongs
+to another rule, a Region with no workloads, or a detail call that failed. An `NA` resource is
+neither passed nor failed, so the scorecard never shows "clear" for something no rule judged.
+
 **Prod:** a resource is prod when its `env` tag is `prod`, `production` or `prd`, or when it
 has no `env` tag (decision by Ellis, 2026-11-10: unknown is treated as prod). Rules that say
 "high if prod" use this.
@@ -74,5 +80,6 @@ One test per rule ID (hit and no hit), named `test_<RULE>_...`, plus:
 | RUL-2 | No `env` tag | Treated as prod |
 | RUL-3 | costhub loaded and enabled | HYG-EC2-002 does not run |
 | RUL-4 | Every finding | Has `remediation`; cost rule findings have `savings_usd` |
+| RUL-5 | A stopped instance with IMDSv1; a Region with settings but no instances or volumes | No finding and no coverage for SEC-EC2-001 on it; SEC08-BP02 not covered |
 
 Tests: `collector/tests/test_rules_b.py` with the hand-built estate in `tests/estate_b.py`.

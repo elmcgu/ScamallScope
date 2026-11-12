@@ -187,3 +187,24 @@ def test_env_and_app_tag_keys_can_be_set():
     def rel(found):
         return sorted((f["check_id"], f["severity"], f["title"]) for f in found if f["pillar"] == "reliability")
     assert rel(renamed) == rel(default) and any(c == "REL-AZ-001" and "App " in t for c, _, t in rel(renamed))
+
+
+def _judged(out, bp):
+    c = out["coverage"].get(bp) or {"passed": 0, "failed": 0}
+    return c["passed"] + c["failed"]
+
+
+def test_RUL_5_not_applicable_is_not_counted_as_clear():
+    base = run()
+    snap = E.snapshot()
+    stopped = E.instance("i-stopped", "eu-west-1a", {"env": "prod"}, tokens="optional")
+    stopped["config"]["State"] = {"Name": "stopped"}
+    snap["resources"].append(stopped)
+    out = run(snap)
+    # IMDSv1 rule: a stopped instance is neither a hit nor a pass.
+    assert a("instance", "i-stopped") not in hits(out, "SEC-EC2-001")
+    assert _judged(out, "SEC06-BP02") == _judged(base, "SEC06-BP02")
+    # Settings rules judge only their own setting, and only in a Region with workloads.
+    unrelated = E.snapshot()
+    unrelated["resources"] = [r for r in unrelated["resources"] if r["type"] in ("setting", "vpc", "subnet")]
+    assert _judged(run(unrelated, nodes={}), "SEC08-BP02") == 0  # no instances or volumes: EBS default not judged

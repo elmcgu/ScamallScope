@@ -2,6 +2,8 @@
 
 Rules that need the inventory, often with another source. Each rule runs only when all its
 inputs are loaded; otherwise its BP is not covered by it. Rules apply to the resource types listed.
+A resource the rule does not apply to, or cannot judge, is not counted (spec 12, "Judged, passed
+or not applicable").
 
 | Rule | Applies to | Inputs | When | Severity | Pillar, BP |
 |---|---|---|---|---|---|
