@@ -1,0 +1,87 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CollectInventory",
+      "Effect": "Allow",
+      "Action": [
+        "acm:DescribeCertificate",
+        "acm:ListCertificates",
+        "autoscaling:DescribeAutoScalingGroups",
+        "backup:ListProtectedResources",
+        "cloudtrail:DescribeTrails",
+        "cloudtrail:GetTrailStatus",
+        "ec2:DescribeAddresses",
+        "ec2:DescribeFlowLogs",
+        "ec2:DescribeInstances",
+        "ec2:DescribeInternetGateways",
+        "ec2:DescribeNatGateways",
+        "ec2:DescribeNetworkAcls",
+        "ec2:DescribeRouteTables",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSnapshots",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeVpcEndpoints",
+        "ec2:DescribeVpcs",
+        "ec2:GetEbsEncryptionByDefault",
+        "elasticloadbalancing:DescribeListeners",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeSSLPolicies",
+        "elasticloadbalancing:DescribeTags",
+        "elasticloadbalancing:DescribeTargetGroups",
+        "elasticloadbalancing:DescribeTargetHealth",
+        "guardduty:GetDetector",
+        "guardduty:ListDetectors",
+        "iam:GenerateCredentialReport",
+        "iam:GetAccountAuthorizationDetails",
+        "iam:GetCredentialReport",
+        "lambda:ListFunctionUrlConfigs",
+        "lambda:ListFunctions",
+        "lambda:ListTags",
+        "rds:DescribeDBInstances",
+        "s3:GetAccountPublicAccessBlock",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation",
+        "s3:GetBucketPolicyStatus",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:GetBucketTagging",
+        "s3:GetBucketVersioning",
+        "s3:GetEncryptionConfiguration",
+        "s3:ListAllMyBuckets",
+        "ssm:DescribeInstanceInformation"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "FetchCloudWatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:GetMetricData"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "FetchCostExplorer",
+      "Effect": "Allow",
+      "Action": [
+        "ce:GetCostAndUsage",
+        "ce:GetCostAndUsageWithResources",
+        "ce:GetReservationCoverage",
+        "ce:GetSavingsPlansCoverage"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "FetchCostOptimizationHub",
+      "Effect": "Allow",
+      "Action": [
+        "compute-optimizer:GetEnrollmentStatus",
+        "cost-optimization-hub:ListEnrollmentStatuses",
+        "cost-optimization-hub:ListRecommendations"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

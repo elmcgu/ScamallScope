@@ -1,7 +1,6 @@
 """Application, Network and Gateway Load Balancers and their target groups (spec 10).
 
-Read-only: elasticloadbalancing:DescribeLoadBalancers, DescribeListeners, DescribeSSLPolicies,
-DescribeTargetGroups, DescribeTargetHealth, DescribeTags.
+Read-only. Permissions: infra/collector-read-only-policy.json.
 """
 
 from __future__ import annotations

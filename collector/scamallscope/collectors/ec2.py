@@ -1,10 +1,6 @@
 """EC2 networking, compute and storage (specs 10 and earlier).
 
-Read-only calls only: ec2:DescribeVpcs, ec2:DescribeSubnets,
-ec2:DescribeSecurityGroups, ec2:DescribeInstances, ec2:DescribeRouteTables,
-ec2:DescribeInternetGateways, ec2:DescribeNetworkAcls, ec2:DescribeVolumes,
-ec2:DescribeSnapshots, ec2:DescribeAddresses, ec2:DescribeNatGateways,
-ec2:DescribeVpcEndpoints, ec2:DescribeFlowLogs, ec2:GetEbsEncryptionByDefault.
+Read-only. Permissions: infra/collector-read-only-policy.json.
 """
 
 from __future__ import annotations

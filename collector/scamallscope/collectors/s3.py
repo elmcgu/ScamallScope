@@ -1,8 +1,6 @@
 """S3 buckets (global list, details per bucket).
 
-Read-only calls: s3:ListAllMyBuckets, s3:GetBucketLocation, s3:GetBucketPolicyStatus,
-s3:GetBucketPublicAccessBlock, s3:GetBucketAcl, s3:GetEncryptionConfiguration,
-s3:GetBucketVersioning, s3:GetBucketTagging, s3:GetAccountPublicAccessBlock.
+Read-only. Permissions: infra/collector-read-only-policy.json.
 
 Bucket policies themselves are not read: AWS's own GetBucketPolicyStatus says whether the
 policy makes the bucket public.

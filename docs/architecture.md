@@ -103,10 +103,8 @@ def fetch(...) -> dict: ...                                    # network; return
 
 ## Security design
 
-- **Least privilege per source.** AWS: the read-only actions in `collector/README.md` plus
-  `cloudwatch:GetMetricData`, `cloudwatch:DescribeAlarms`, `ce:GetCostAndUsage`,
-  `ce:GetCostAndUsageWithResources`, `ce:GetSavingsPlansCoverage`, `ce:GetReservationCoverage`,
-  `cost-optimization-hub:ListEnrollmentStatuses`, `cost-optimization-hub:ListRecommendations`, `compute-optimizer:GetEnrollmentStatus`. Wazuh: an API user with a read-only role for agents, and an
+- **Least privilege per source.** AWS: `infra/collector-read-only-policy.json`, one statement per
+  command (tested against the code: POL-1, POL-2). Wazuh: an API user with a read-only role for agents, and an
   indexer user with read on `wazuh-states-vulnerabilities-*`. GitHub: fine-grained token,
   "Deployments: read" and "Metadata: read" on the listed repos only [R20].
 - **Credentials** from environment variables only: `WAZUH_API_USER`, `WAZUH_API_PASSWORD`,

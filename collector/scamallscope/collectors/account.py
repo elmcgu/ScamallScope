@@ -1,9 +1,7 @@
 """Account controls: CloudTrail, IAM credential report, GuardDuty, AWS Backup, SSM, ACM (spec 10).
 
-Read-only: cloudtrail:DescribeTrails, cloudtrail:GetTrailStatus, iam:GenerateCredentialReport,
-iam:GetCredentialReport, guardduty:ListDetectors, guardduty:GetDetector,
-backup:ListProtectedResources, ssm:DescribeInstanceInformation, acm:ListCertificates,
-acm:DescribeCertificate. GenerateCredentialReport makes a report; it changes no IAM setting.
+Read-only. Permissions: infra/collector-read-only-policy.json.
+GenerateCredentialReport makes a report; it changes no IAM setting.
 """
 
 from __future__ import annotations

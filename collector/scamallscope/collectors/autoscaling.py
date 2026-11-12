@@ -1,4 +1,4 @@
-"""EC2 Auto Scaling groups (spec 10). Read-only: autoscaling:DescribeAutoScalingGroups."""
+"""EC2 Auto Scaling groups (spec 10). Read-only. Permissions: infra/collector-read-only-policy.json."""
 
 from __future__ import annotations
 

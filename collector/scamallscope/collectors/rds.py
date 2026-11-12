@@ -1,4 +1,4 @@
-"""RDS DB instances (spec 10). Read-only: rds:DescribeDBInstances."""
+"""RDS DB instances (spec 10). Read-only. Permissions: infra/collector-read-only-policy.json."""
 
 from __future__ import annotations
 

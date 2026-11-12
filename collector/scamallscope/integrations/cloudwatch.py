@@ -1,4 +1,4 @@
-"""CloudWatch EC2 CPU and alarms (spec 06). Read-only: GetMetricData, DescribeAlarms."""
+"""CloudWatch EC2 CPU and alarms (spec 06). Read-only. Permissions: infra/collector-read-only-policy.json."""
 
 from __future__ import annotations
 

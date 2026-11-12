@@ -39,37 +39,20 @@ collected, `2` = partial snapshot (see the `units` list for errors).
 
 ## Permissions
 
-Only these read-only actions:
+All AWS permissions are in one policy: [`infra/collector-read-only-policy.json`](../infra/collector-read-only-policy.json).
+It allows only `Describe`, `Get` and `List` actions, plus `iam:GenerateCredentialReport`, which
+makes the report and changes no IAM setting. A test (POL-1, POL-2) fails if a collector calls an
+API the policy does not allow, or if the policy allows an action nothing calls.
 
-- `sts:GetCallerIdentity`
-- `ec2:DescribeVpcs`, `ec2:DescribeSubnets`, `ec2:DescribeSecurityGroups`, `ec2:DescribeInstances`
-- `ec2:DescribeRouteTables`, `ec2:DescribeInternetGateways`, `ec2:DescribeNetworkAcls`
-- `ec2:DescribeVolumes`, `ec2:DescribeSnapshots` (own only), `ec2:DescribeAddresses`, `ec2:DescribeNatGateways`,
-  `ec2:DescribeVpcEndpoints`, `ec2:DescribeFlowLogs`, `ec2:GetEbsEncryptionByDefault`
-- `rds:DescribeDBInstances`
-- `elasticloadbalancing:DescribeLoadBalancers`, `elasticloadbalancing:DescribeListeners`,
-  `elasticloadbalancing:DescribeSSLPolicies`, `elasticloadbalancing:DescribeTargetGroups`,
-  `elasticloadbalancing:DescribeTargetHealth`, `elasticloadbalancing:DescribeTags`
-- `autoscaling:DescribeAutoScalingGroups`
-- `acm:ListCertificates`, `acm:DescribeCertificate`
-- `cloudtrail:DescribeTrails`, `cloudtrail:GetTrailStatus`
-- `iam:GenerateCredentialReport`, `iam:GetCredentialReport` (the report lists users, MFA and key dates; no secrets.
-  Generating it changes no IAM setting)
-- `guardduty:ListDetectors`, `guardduty:GetDetector`
-- `backup:ListProtectedResources`
-- `ssm:DescribeInstanceInformation`
-- `lambda:ListFunctions`, `lambda:ListFunctionUrlConfigs`, `lambda:ListTags`
-- `iam:GetAccountAuthorizationDetails` (returns policy documents; no passwords or access keys)
-- `s3:ListAllMyBuckets`, `s3:GetBucketLocation`, `s3:GetBucketPolicyStatus`, `s3:GetBucketPublicAccessBlock`,
-  `s3:GetBucketAcl`, `s3:GetEncryptionConfiguration`, `s3:GetBucketVersioning`, `s3:GetBucketTagging`,
-  `s3:GetAccountPublicAccessBlock`
+| Statement | Needed for | Notes |
+|---|---|---|
+| `CollectInventory` | `collect` | `iam:GetAccountAuthorizationDetails` returns policy documents, no passwords or access keys. The collector asks `ec2:DescribeSnapshots` for own snapshots only. `sts:GetCallerIdentity` needs no permission |
+| `FetchCloudWatch` | `fetch cloudwatch` | |
+| `FetchCostExplorer` | `fetch cost` | $0.01 per request, 5 per run |
+| `FetchCostOptimizationHub` | `fetch costhub` | No charge |
 
-For integrations (each only if you use it):
+Leave out the statements for sources you do not use. Other integrations:
 
-- CloudWatch: `cloudwatch:GetMetricData`, `cloudwatch:DescribeAlarms`
-- Cost Explorer: `ce:GetCostAndUsage`, `ce:GetCostAndUsageWithResources`, `ce:GetSavingsPlansCoverage`,
-  `ce:GetReservationCoverage` ($0.01 per request, 5 per run)
-- Cost Optimization Hub: `cost-optimization-hub:ListEnrollmentStatuses`, `cost-optimization-hub:ListRecommendations`, `compute-optimizer:GetEnrollmentStatus` (no charge)
 - Wazuh: an API user with read-only access to agents; an indexer user with read on `wazuh-states-vulnerabilities-*`
 - GitHub: fine-grained token, repository permission "Deployments: read", only the repos in `scamallscope:repo` tags
 

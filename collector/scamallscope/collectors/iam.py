@@ -1,6 +1,7 @@
 """IAM users, groups, roles and policies, from one paginated call.
 
-Read-only call: iam:GetAccountAuthorizationDetails. It returns policy documents (permissions,
+Read-only. Permissions: infra/collector-read-only-policy.json.
+GetAccountAuthorizationDetails returns policy documents (permissions,
 trust policies) but no secrets: no passwords and no access keys.
 """
 

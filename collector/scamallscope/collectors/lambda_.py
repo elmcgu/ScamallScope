@@ -1,6 +1,6 @@
 """Lambda functions (regional).
 
-Read-only calls: lambda:ListFunctions, lambda:ListFunctionUrlConfigs, lambda:ListTags.
+Read-only. Permissions: infra/collector-read-only-policy.json.
 
 Environment variable values often hold secrets. Only the variable names are kept;
 the values are dropped here, before anything is stored.

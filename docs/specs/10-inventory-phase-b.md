@@ -68,19 +68,11 @@ same three for key 2. `GenerateCredentialReport` makes a report; it changes no I
 The map shows the types it has icons for. Snapshots, settings, trails, the credential report and
 certificates are not drawn on the map; they feed rules and views.
 
-## Permissions added
+## Permissions
 
-`ec2:DescribeVolumes`, `ec2:DescribeSnapshots`, `ec2:DescribeAddresses`,
-`ec2:DescribeNatGateways`, `ec2:DescribeVpcEndpoints`, `ec2:DescribeFlowLogs`,
-`ec2:GetEbsEncryptionByDefault`, `rds:DescribeDBInstances`,
-`elasticloadbalancing:DescribeLoadBalancers`, `elasticloadbalancing:DescribeListeners`,
-`elasticloadbalancing:DescribeSSLPolicies`, `elasticloadbalancing:DescribeTargetGroups`,
-`elasticloadbalancing:DescribeTargetHealth`, `elasticloadbalancing:DescribeTags`,
-`autoscaling:DescribeAutoScalingGroups`,
-`acm:ListCertificates`, `acm:DescribeCertificate`, `cloudtrail:DescribeTrails`,
-`cloudtrail:GetTrailStatus`, `iam:GenerateCredentialReport`, `iam:GetCredentialReport`,
-`guardduty:ListDetectors`, `guardduty:GetDetector`, `backup:ListProtectedResources`,
-`ssm:DescribeInstanceInformation`.
+`infra/collector-read-only-policy.json` is the one list of AWS actions; the docs link to it.
+Phase B added the EC2 storage and network, RDS, ELB, Auto Scaling, ACM, CloudTrail, credential
+report, GuardDuty, Backup and SSM actions to its `CollectInventory` statement.
 
 ## Tests
 
@@ -107,3 +99,5 @@ moto for all calls except `backup:ListProtectedResources` and `ssm:DescribeInsta
 | INV-16 | Graph | New fields present; no `PublicIp` or `PrivateIpAddress` values |
 | INV-17 | Target group with targets registered as i-b then i-a | `TargetHealth` lists i-a first |
 | INV-18 | Multi-Region trail in eu-west-1, single-Region trail in us-east-1, both Regions collected | Two trails, each once, with their home Regions |
+| POL-1 | Every boto3 operation named in the collectors and AWS fetchers | Its IAM action is in the policy (`tests/test_policy.py`) |
+| POL-2 | Every action in the policy | Used by some operation, and `Describe`, `Get`, `List` or `GenerateCredentialReport` |

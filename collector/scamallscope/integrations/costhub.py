@@ -1,7 +1,6 @@
 """Cost Optimization Hub recommendations and Compute Optimizer status (spec 11, decision 0003).
 
-Read-only: cost-optimization-hub:ListEnrollmentStatuses, cost-optimization-hub:ListRecommendations,
-compute-optimizer:GetEnrollmentStatus.
+Read-only. Permissions: infra/collector-read-only-policy.json.
 
 State: "enabled", "not_enabled" (the account's enrollment status is not Active) or "access_denied"
 (a missing IAM permission). Any other error, ValidationException included, fails the fetch.
