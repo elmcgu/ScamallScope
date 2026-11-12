@@ -19,6 +19,7 @@ appear in the test names, so `uv run pytest -k PRW` runs one spec's tests.
 | [12 Security, cost and availability rules](12-rules-phase-b.md) | `collector/tests/test_rules_b.py` |
 | [13 Ranking and duplicates](13-ranking.md) | `collector/tests/test_rank.py` |
 | [14 Overview and Availability views](14-overview-and-availability.md) | `collector/tests/test_availability.py`, `frontend/tests/views.test.js` |
+| [15 One command for a whole run](15-run.md) | `collector/tests/test_run.py` |
 
 Fixtures in `collector/tests/fixtures/` are made up, in the shape of the real responses
 (cited in each spec). Account `123456789012` and names like `prod-web-1` are not real.

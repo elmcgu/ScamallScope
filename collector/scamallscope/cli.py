@@ -1,10 +1,11 @@
-"""Command line: scamallscope collect | graph | inventory | changes | history | fetch | enrich."""
+"""Command line: scamallscope collect | graph | inventory | changes | history | fetch | enrich | run."""
 
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -50,33 +51,59 @@ def main(argv: list[str] | None = None) -> int:
     h.add_argument("--arn", required=True)
     table_args(h)
 
+    def enrich_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--required-tags", default="owner,env", help="Comma-separated tags every resource needs")
+        p.add_argument("--env-tag", default=rules.DEFAULT_ENV_TAG,
+                       help="Tag key that holds the environment; prod, production or prd (or no tag) is prod (default env)")
+        p.add_argument("--app-tag", default=rules.DEFAULT_APP_TAG,
+                       help="Tag key that groups instances into one workload (default app)")
+        p.add_argument("--ansible-mode", choices=["check", "apply"], default="check",
+                       help="Was the Ansible run in check mode (default) or a real apply?")
+
     e = sub.add_parser("enrich", help="Build graph JSON v2 from a snapshot and integration files")
     e.add_argument("snapshot", type=Path, help="Snapshot file from 'collect'")
     e.add_argument("--integrations", type=Path, default=Path("integrations"),
                    help="Folder with raw integration files (default: integrations/)")
-    e.add_argument("--required-tags", default="owner,env", help="Comma-separated tags every resource needs")
-    e.add_argument("--env-tag", default=rules.DEFAULT_ENV_TAG,
-                   help="Tag key that holds the environment; prod, production or prd (or no tag) is prod (default env)")
-    e.add_argument("--app-tag", default=rules.DEFAULT_APP_TAG,
-                   help="Tag key that groups instances into one workload (default app)")
-    e.add_argument("--ansible-mode", choices=["check", "apply"], default="check",
-                   help="Was the Ansible run in check mode (default) or a real apply?")
+    enrich_args(e)
     e.add_argument("--output", type=Path, help="Output file (default: <snapshot>.graph.json)")
 
+    def fetch_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--ca-file", help="Extra CA certificate file for TLS (verification is always on)")
+        p.add_argument("--tag-key", default="env", help="cost: cost allocation tag to group by (default env)")
+
     f = sub.add_parser("fetch", help="Fetch raw data from an integration into integrations/<source>.json")
-    f.add_argument("source", choices=["wazuh", "github", "cloudwatch", "prometheus", "cost", "costhub"])
+    f.add_argument("source", choices=list(FETCHES))
     f.add_argument("--snapshot", type=Path, help="Snapshot (needed by github and cloudwatch)")
     f.add_argument("--url", help="wazuh: server API URL (https://host:55000); prometheus: base URL")
     f.add_argument("--indexer-url", help="wazuh: indexer URL (https://host:9200)")
-    f.add_argument("--ca-file", help="Extra CA certificate file for TLS (verification is always on)")
     f.add_argument("--profile", help="AWS profile (cloudwatch, cost, costhub)")
-    f.add_argument("--tag-key", default="env", help="cost: cost allocation tag to group by (default env)")
+    fetch_args(f)
     f.add_argument("--output-dir", type=Path, default=Path("integrations"))
 
+    r = sub.add_parser("run", help="collect, then every fetch that has its inputs, then enrich, into one folder")
+    r.add_argument("--profile", help="AWS profile (default: normal boto3 lookup)")
+    r.add_argument("--region", action="append", dest="regions",
+                   help="Region to collect; repeat for more (default: profile region)")
+    r.add_argument("--output-dir", type=Path, help="Folder for this run (default: runs/<account>-<UTC time>/)")
+    r.add_argument("--skip", default="", help=f"Comma-separated fetches to leave out ({', '.join(FETCHES)})")
+    r.add_argument("--wazuh-url", help="Wazuh server API URL; with --wazuh-indexer-url and WAZUH_* variables")
+    r.add_argument("--wazuh-indexer-url", help="Wazuh indexer URL")
+    r.add_argument("--prometheus-url", help="Prometheus base URL")
+    r.add_argument("--add", type=Path, action="append", default=[],
+                   help="Raw file to add as is (prowler*.json, ansible.json); repeat for more")
+    fetch_args(r)
+    enrich_args(r)
+
     args = parser.parse_args(argv)
-    commands = {"collect": _collect, "graph": _graph, "inventory": _inventory,
-                "changes": _changes, "history": _history, "enrich": _enrich, "fetch": _fetch}
+    commands = {"collect": _collect, "graph": _graph, "inventory": _inventory, "changes": _changes,
+                "history": _history, "enrich": _enrich, "fetch": _fetch, "run": _run}
     return commands[args.command](args)
+
+
+# source -> what it needs. AWS fetches use the run's profile; the others are used only when given.
+FETCHES = {"cloudwatch": "AWS", "cost": "AWS ($0.01 a request, 5 a run)", "costhub": "AWS",
+           "wazuh": "--wazuh-url, --wazuh-indexer-url and WAZUH_* variables",
+           "github": "resources tagged scamallscope:repo and GITHUB_TOKEN", "prometheus": "--prometheus-url"}
 
 
 def _table(args: argparse.Namespace) -> Any:
@@ -142,22 +169,33 @@ def _collect(args: argparse.Namespace) -> int:
         print("No region. Use --region or set one in your AWS profile.", file=sys.stderr)
         return 1
 
+    snap = _collect_snapshot(session, regions)
+    if snap is None:
+        return 1
+    out = args.output or Path("snapshots") / f"{snap['account_id']}-{_stamp()}.snapshot.json"
+    _write_snapshot(snap, out)
+    # Exit 2 on a partial snapshot so a scheduler can tell it apart from success.
+    return 0 if is_complete(snap) else 2
+
+
+def _stamp() -> str:
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def _collect_snapshot(session: Any, regions: list[str]) -> Any:
     try:
-        snap = snapshot.collect(session, regions)
+        return snapshot.collect(session, regions)
     except (ClientError, BotoCoreError) as exc:  # no or expired credentials: sts:GetCallerIdentity fails first
         print(f"Cannot identify the AWS account: {exc}", file=sys.stderr)
-        return 1
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out = args.output or Path("snapshots") / f"{snap['account_id']}-{stamp}.snapshot.json"
-    snapshot.write_json(snap, out)
+        return None
 
+
+def _write_snapshot(snap: Any, out: Path) -> None:
+    snapshot.write_json(snap, out)
     for u in snap["units"]:
         detail = f"{u['count']}" if u["status"] == "ok" else u["error"]
         print(f"{u['region']:<15} {u['service']}:{u['resource_type']:<15} {u['status']:<6} {detail}")
     print(f"{len(snap['resources'])} resources, {len(snap['links'])} links -> {out}")
-
-    # Exit 2 on a partial snapshot so a scheduler can tell it apart from success.
-    return 0 if is_complete(snap) else 2
 
 
 def _enrich(args: argparse.Namespace) -> int:
@@ -166,11 +204,14 @@ def _enrich(args: argparse.Namespace) -> int:
     except (OSError, json.JSONDecodeError) as exc:
         print(f"Cannot read snapshot: {exc}", file=sys.stderr)
         return 1
-    tags = tuple(t.strip() for t in args.required_tags.split(",") if t.strip())
-    g = enrich.build(snap, enrich.load_raw(args.integrations), tags, args.ansible_mode,
-                     env_tag=args.env_tag, app_tag=args.app_tag)
     name = args.snapshot.name.removesuffix(".json").removesuffix(".snapshot")
-    out = args.output or args.snapshot.with_name(f"{name}.graph.json")
+    return _build_graph(args, snap, args.integrations, args.output or args.snapshot.with_name(f"{name}.graph.json"))
+
+
+def _build_graph(args: argparse.Namespace, snap: Any, integrations: Path, out: Path) -> int:
+    tags = tuple(t.strip() for t in args.required_tags.split(",") if t.strip())
+    g = enrich.build(snap, enrich.load_raw(integrations), tags, args.ansible_mode,
+                     env_tag=args.env_tag, app_tag=args.app_tag)
     snapshot.write_json(g, out)
     for source, m in g["meta"]["integrations"].items():
         if m.get("loaded"):
@@ -193,42 +234,116 @@ def _env(name: str) -> str:
     return value
 
 
+class MissingInput(Exception):
+    """A fetch was asked for without what it needs."""
+
+
+def fetch_raw(source: str, snap: Any, session: Any, url: str | None, indexer_url: str | None,
+              ca_file: str | None, tag_key: str) -> dict[str, Any]:
+    """One integration's raw data. Raises MissingInput, or the source's own errors."""
+    if source in ("github", "cloudwatch") and snap is None:
+        raise MissingInput(f"{source} needs --snapshot")
+    if source == "wazuh":
+        if not url or not indexer_url:
+            raise MissingInput("wazuh needs --url and --indexer-url")
+        return wazuh.fetch(url, indexer_url, _env("WAZUH_API_USER"), _env("WAZUH_API_PASSWORD"),
+                           _env("WAZUH_INDEXER_USER"), _env("WAZUH_INDEXER_PASSWORD"), ca_file)
+    if source == "github":
+        repos = github.repos_from_snapshot(snap)
+        if not repos:
+            raise MissingInput(f"No resources tagged {github.REPO_TAG}; nothing to fetch")
+        return github.fetch(repos, _env("GITHUB_TOKEN"))
+    if source == "prometheus":
+        if not url:
+            raise MissingInput("prometheus needs --url")
+        return prometheus.fetch(url, os.environ.get("PROMETHEUS_BEARER_TOKEN"), ca_file)
+    if source == "cloudwatch":
+        return cloudwatch.fetch(session(), snap)
+    if source == "costhub":
+        return costhub.fetch(session())
+    return cost.fetch(session(), tag_key)
+
+
+FETCH_ERRORS = (httpjson.HttpError, ValueError, ClientError, BotoCoreError)
+
+
 def _fetch(args: argparse.Namespace) -> int:
     snap = json.loads(args.snapshot.read_text(encoding="utf-8")) if args.snapshot else None
-    if args.source in ("github", "cloudwatch") and snap is None:
-        print(f"{args.source} needs --snapshot", file=sys.stderr)
-        return 1
     try:
-        if args.source == "wazuh":
-            if not args.url or not args.indexer_url:
-                print("wazuh needs --url and --indexer-url", file=sys.stderr)
-                return 1
-            raw = wazuh.fetch(args.url, args.indexer_url, _env("WAZUH_API_USER"), _env("WAZUH_API_PASSWORD"),
-                              _env("WAZUH_INDEXER_USER"), _env("WAZUH_INDEXER_PASSWORD"), args.ca_file)
-        elif args.source == "github":
-            repos = github.repos_from_snapshot(snap)  # type: ignore[arg-type]
-            if not repos:
-                print(f"No resources tagged {github.REPO_TAG}; nothing to fetch", file=sys.stderr)
-                return 1
-            raw = github.fetch(repos, _env("GITHUB_TOKEN"))
-        elif args.source == "prometheus":
-            if not args.url:
-                print("prometheus needs --url", file=sys.stderr)
-                return 1
-            raw = prometheus.fetch(args.url, os.environ.get("PROMETHEUS_BEARER_TOKEN"), args.ca_file)
-        elif args.source == "cloudwatch":
-            raw = cloudwatch.fetch(boto3.Session(profile_name=args.profile), snap)  # type: ignore[arg-type]
-        elif args.source == "costhub":
-            raw = costhub.fetch(boto3.Session(profile_name=args.profile))
-        else:
-            raw = cost.fetch(boto3.Session(profile_name=args.profile), args.tag_key)
-    except (httpjson.HttpError, ValueError, ClientError, BotoCoreError) as exc:
+        raw = fetch_raw(args.source, snap, lambda: boto3.Session(profile_name=args.profile), args.url,
+                        args.indexer_url, args.ca_file, args.tag_key)
+    except MissingInput as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    except FETCH_ERRORS as exc:
         print(f"{args.source}: {exc}", file=sys.stderr)
         return 1
     out = args.output_dir / f"{args.source}.json"
     snapshot.write_json(raw, out)
     print(f"{args.source} -> {out}")
     return 0
+
+
+def _ready(source: str, args: argparse.Namespace, snap: Any) -> str | None:
+    """Why this fetch cannot run in this run, or None when it has its inputs."""
+    if source == "wazuh":
+        if not (args.wazuh_url and args.wazuh_indexer_url):
+            return "no --wazuh-url and --wazuh-indexer-url"
+        unset = [n for n in ("WAZUH_API_USER", "WAZUH_API_PASSWORD", "WAZUH_INDEXER_USER", "WAZUH_INDEXER_PASSWORD")
+                 if not os.environ.get(n)]
+        return f"{', '.join(unset)} not set" if unset else None
+    if source == "github":
+        if not github.repos_from_snapshot(snap):
+            return f"no resources tagged {github.REPO_TAG}"
+        return None if os.environ.get("GITHUB_TOKEN") else "GITHUB_TOKEN not set"
+    if source == "prometheus":
+        return None if args.prometheus_url else "no --prometheus-url"
+    return None
+
+
+def _run(args: argparse.Namespace) -> int:
+    """collect, every fetch that has its inputs, enrich. Exit 1 if collect fails; 2 if anything is partial."""
+    skip = {s.strip() for s in args.skip.split(",") if s.strip()}
+    unknown = skip - set(FETCHES)
+    if unknown:
+        print(f"--skip: unknown {', '.join(sorted(unknown))}; choose from {', '.join(FETCHES)}", file=sys.stderr)
+        return 1
+    session = boto3.Session(profile_name=args.profile)
+    regions = args.regions or ([session.region_name] if session.region_name else [])
+    if not regions:
+        print("No region. Use --region or set one in your AWS profile.", file=sys.stderr)
+        return 1
+    snap = _collect_snapshot(session, regions)
+    if snap is None:
+        return 1
+    folder = args.output_dir or Path("runs") / f"{snap['account_id']}-{_stamp()}"
+    _write_snapshot(snap, folder / "snapshot.json")
+    partial = not is_complete(snap)
+
+    raw_dir = folder / "integrations"
+    urls = {"wazuh": (args.wazuh_url, args.wazuh_indexer_url), "prometheus": (args.prometheus_url, None)}
+    for source in FETCHES:
+        why = "skipped (--skip)" if source in skip else _ready(source, args, snap)
+        if why:
+            print(f"{source:<11} not fetched: {why}")
+            continue
+        url, indexer = urls.get(source, (None, None))
+        try:
+            raw = fetch_raw(source, snap, lambda: session, url, indexer, args.ca_file, args.tag_key)
+        except (MissingInput, *FETCH_ERRORS) as exc:
+            print(f"{source:<11} FAILED: {exc}", file=sys.stderr)
+            partial = True
+            continue
+        snapshot.write_json(raw, raw_dir / f"{source}.json")
+        print(f"{source:<11} -> {raw_dir / f'{source}.json'}")
+    for extra in args.add:
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(extra, raw_dir / extra.name)
+        os.chmod(raw_dir / extra.name, 0o600)
+        print(f"{extra.name:<11} added")
+
+    code = _build_graph(args, snap, raw_dir, folder / "graph.json")
+    return 2 if partial or code else 0
 
 
 if __name__ == "__main__":

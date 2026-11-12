@@ -7,6 +7,7 @@ Read-only AWS collector. It writes a JSON snapshot of resources and the links be
 ```bash
 cd collector
 uv sync
+uv run scamallscope run --profile <read-only-profile> --region eu-west-1  # all steps -> runs/<account>-<time>/ (spec 15)
 uv run scamallscope collect --profile <read-only-profile> --region eu-west-1
 uv run scamallscope graph snapshots/<file>.snapshot.json   # -> <file>.graph.json
 uv run scamallscope inventory snapshots/<file>.snapshot.json --table scamallscope-inventory

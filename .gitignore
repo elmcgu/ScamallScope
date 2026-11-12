@@ -229,6 +229,8 @@ prowler-output/
 # Raw integration files (decision 0002): real data, never commit. samples/integrations/ is made up.
 /collector/integrations/
 /integrations/
+# scamallscope run: snapshot, raw files and graph of a real account
+runs/
 
 # Frontend
 node_modules/
