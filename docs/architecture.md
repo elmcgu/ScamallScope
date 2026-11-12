@@ -42,7 +42,7 @@ frontend/src/
    1. `graph.to_graph(snapshot)`: nodes, edges, exposure, admin (unchanged).
    2. For each raw file present: `integrations/<source>.parse(raw, index)` returns
       `{"findings": [...], "resources": {arn: {...}}, "coverage": {...}, "unmatched": [...]}`.
-   3. `hygiene.run(snapshot, graph nodes, loaded sources)` adds findings from rules.
+   3. `rules.run(snapshot, graph nodes, loaded sources)` adds findings from rules.
    4. Exposure and admin results become findings too, so all issues are in one list.
    5. `posture.scorecard(findings, coverage)` builds the per-pillar table.
    6. `rank.apply(findings, nodes)` marks duplicates (same resource, pillar and a shared BP), sets

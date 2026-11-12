@@ -6,15 +6,15 @@ from datetime import date
 from typing import Any
 
 from .findings import Finding
-from .hygiene import DEFAULT_APP_TAG, DEFAULT_ENV_TAG, Ctx, _az, _name, _running, backed_up, needs_backup
 from .model import Resource, Snapshot
+from .rules import DEFAULT_APP_TAG, DEFAULT_ENV_TAG, Ctx, az_of, backed_up, is_running, name_of, needs_backup
 
 
 def _groups(ctx: Ctx) -> list[dict[str, Any]]:
     """Each running instance belongs to one workload: its app tag, else its ASG, else its target group, else itself."""
     taken: set[str] = set()
     out: list[dict[str, Any]] = []
-    running = [i for i in ctx.by_type["instance"] if _running(i)]
+    running = [i for i in ctx.by_type["instance"] if is_running(i)]
 
     apps: dict[tuple[str, str, str], list[Resource]] = {}
     for i in running:
@@ -25,18 +25,18 @@ def _groups(ctx: Ctx) -> list[dict[str, Any]]:
         taken |= {m["arn"] for m in members}
     for kind, rtype, link_type in (("asg", "autoscaling-group", "manages"), ("target-group", "target-group", "targets")):
         for g in ctx.by_type[rtype]:
-            members = [ctx.res[a] for a in sorted(ctx.linked(link_type, g["arn"])) if a in ctx.res and _running(ctx.res[a])
+            members = [ctx.res[a] for a in sorted(ctx.linked(link_type, g["arn"])) if a in ctx.res and is_running(ctx.res[a])
                        and a not in taken]
             if members:
-                out.append({"kind": kind, "name": _name(g), "region": g["region"], "vpc": ctx.vpc_of(members[0]) or "",
+                out.append({"kind": kind, "name": name_of(g), "region": g["region"], "vpc": ctx.vpc_of(members[0]) or "",
                             "members": members, "anchor": g})
                 taken |= {m["arn"] for m in members}
     for i in running:
         if i["arn"] not in taken:
-            out.append({"kind": "instance", "name": _name(i), "region": i["region"], "vpc": ctx.vpc_of(i) or "",
+            out.append({"kind": "instance", "name": name_of(i), "region": i["region"], "vpc": ctx.vpc_of(i) or "",
                         "members": [i], "anchor": i})
     for db in ctx.by_type["db-instance"]:
-        out.append({"kind": "database", "name": _name(db), "region": db["region"], "vpc": ctx.vpc_of(db) or "",
+        out.append({"kind": "database", "name": name_of(db), "region": db["region"], "vpc": ctx.vpc_of(db) or "",
                     "members": [db], "anchor": db})
     return out
 
@@ -93,13 +93,13 @@ def workloads(snapshot: Snapshot, nodes: dict[str, dict[str, Any]], sources: dic
     for w in _groups(ctx):
         arns = {m["arn"] for m in w["members"]} | ({w["anchor"]["arn"]} if w["anchor"] else set())
         arns |= {v for m in w["members"] for v in ctx.linking("attached", m["arn"])}
-        vpc_name = _name(ctx.res[w["vpc"]]) if w["vpc"] in ctx.res else ""
+        vpc_name = name_of(ctx.res[w["vpc"]]) if w["vpc"] in ctx.res else ""
         group_label = f"{w['name']} ({vpc_name or 'no VPC'})"
         count = sum(1 for f in rel if f["resource"] in arns or (w["kind"] == "app" and f["resource_name"] == group_label))
         rows.append({
             "id": w["anchor"]["arn"] if w["anchor"] else f"{w['region']}|{w['vpc']}|{w['name']}",
             "name": w["name"], "kind": w["kind"], "region": w["region"], "vpc": vpc_name,
-            "azs": sorted({a for m in w["members"] if (a := _az(m))}),
+            "azs": sorted({a for m in w["members"] if (a := az_of(m))}),
             "members": [m["arn"] for m in w["members"]], "prod": any(ctx.is_prod(m) for m in w["members"]),
             "healing": _healing(ctx, w), "backup": _backup(ctx, w), "monitoring": _monitoring(ctx, w), "findings": count,
         })

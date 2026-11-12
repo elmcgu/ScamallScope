@@ -1,6 +1,6 @@
 """Spec 14: workloads for the Availability view."""
 
-from scamallscope import availability, hygiene
+from scamallscope import availability, rules
 
 import estate_b as E
 from estate_b import ec2arn as a
@@ -9,7 +9,7 @@ from estate_b import ec2arn as a
 def rows(snap=None, sources=None):
     snap = snap or E.snapshot()
     sources = sources if sources is not None else {}
-    found = hygiene.run(snap, E.NODES, sources, today=E.TODAY)["findings"]
+    found = rules.run(snap, E.NODES, sources, today=E.TODAY)["findings"]
     for f in found:
         f["duplicate_of"] = None
     return {r["name"]: r for r in availability.workloads(snap, E.NODES, sources, found, E.TODAY)}

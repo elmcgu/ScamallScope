@@ -13,7 +13,7 @@ from typing import Any
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
-from . import enrich, graph, httpjson, hygiene, inventory, snapshot
+from . import enrich, graph, httpjson, inventory, rules, snapshot
 from .integrations import cloudwatch, cost, costhub, github, prometheus, wazuh
 from .model import is_complete
 
@@ -55,9 +55,9 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--integrations", type=Path, default=Path("integrations"),
                    help="Folder with raw integration files (default: integrations/)")
     e.add_argument("--required-tags", default="owner,env", help="Comma-separated tags every resource needs")
-    e.add_argument("--env-tag", default=hygiene.DEFAULT_ENV_TAG,
+    e.add_argument("--env-tag", default=rules.DEFAULT_ENV_TAG,
                    help="Tag key that holds the environment; prod, production or prd (or no tag) is prod (default env)")
-    e.add_argument("--app-tag", default=hygiene.DEFAULT_APP_TAG,
+    e.add_argument("--app-tag", default=rules.DEFAULT_APP_TAG,
                    help="Tag key that groups instances into one workload (default app)")
     e.add_argument("--ansible-mode", choices=["check", "apply"], default="check",
                    help="Was the Ansible run in check mode (default) or a real apply?")

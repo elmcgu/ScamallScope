@@ -1,6 +1,6 @@
 # 12 Security, cost and availability rules
 
-Rules in `hygiene.py`, same engine as spec 08: a rule runs only when its inputs are loaded, and
+Rules in `collector/scamallscope/rules/` (`security.py`, `cost.py`, `availability.py`; engine in `engine.py`), same engine as spec 08: a rule runs only when its inputs are loaded, and
 covers its best practice only when it checked at least one resource. A rule can also name the
 snapshot units it needs (for example `ssm`/`setting` in the resource's Region): if that unit
 failed or is missing, the rule checks nothing there. Account-wide rules (credential report, trails,
@@ -40,7 +40,7 @@ has no `env` tag (decision by Ellis, 2026-11-10: unknown is treated as prod). Ru
 
 ## Cost
 
-Prices: `PRICES` in `hygiene.py`, `PRICES_AS_OF = "2026-11-10"`, from the worked examples on
+Prices: `EBS_GB_MONTH`, `SNAPSHOT_GB_MONTH` and `PUBLIC_IPV4_HOUR` in `rules/cost.py`, `PRICES_AS_OF = "2026-11-10"`, from the worked examples on
 the EBS pricing page and the VPC pricing page [R55, R59]. They are not Region-specific; the UI
 says "estimate".
 

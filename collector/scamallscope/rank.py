@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from .findings import Finding
-from .hygiene import DEFAULT_ENV_TAG, prod_tags
+from .rules import DEFAULT_ENV_TAG, prod_tags
 
 WEIGHT = {"critical": 100, "high": 70, "medium": 40, "low": 15, "info": 5}
 OWN_RULES = ("inventory", "hygiene")

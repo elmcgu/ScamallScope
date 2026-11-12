@@ -601,8 +601,8 @@ def main() -> None:
         sev[f["severity"]] = sev.get(f["severity"], 0) + 1
     print(f"{len(result['findings'])} findings {sev}")
     print(f"summary {result['summary']}")
-    from scamallscope import hygiene
-    rule_ids = {r.id for r in hygiene.rules(hygiene.DEFAULT_REQUIRED_TAGS)}
+    from scamallscope import rules
+    rule_ids = {r.id for r in rules.all_rules(rules.DEFAULT_REQUIRED_TAGS)}
     missing = sorted(rule_ids - {f["check_id"] for f in result["findings"]} - {"HYG-EC2-002"})
     print(f"rules with no example in the demo: {missing or 'none'} (HYG-EC2-002 is off: the hub is loaded)")
     for pillar, p in result["posture"].items():

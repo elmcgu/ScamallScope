@@ -1,12 +1,12 @@
-from scamallscope import hygiene
+from scamallscope import rules
 
 import estate
 
 WEB, APP, DB, OLD = (estate.iarn(i) for i in ("i-0web1", "i-0app1", "i-0db1", "i-0old1"))
 
 
-def run(nodes=None, sources=None, tags=hygiene.DEFAULT_REQUIRED_TAGS, snap=None):
-    return hygiene.run(snap or estate.snapshot(), nodes or {}, sources or {}, tags)
+def run(nodes=None, sources=None, tags=rules.DEFAULT_REQUIRED_TAGS, snap=None):
+    return rules.run(snap or estate.snapshot(), nodes or {}, sources or {}, tags)
 
 
 def hits(out, rule, arn=None):

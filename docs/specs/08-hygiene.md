@@ -1,6 +1,7 @@
 # 08 Hygiene rules
 
-Rules that need the inventory, often with another source. Each rule runs only when all its
+Rules that need the inventory, often with another source, in `collector/scamallscope/rules/spec08.py`
+(engine in `rules/engine.py`). Each rule runs only when all its
 inputs are loaded; otherwise its BP is not covered by it. Rules apply to the resource types listed.
 A resource the rule does not apply to, or cannot judge, is not counted (spec 12, "Judged, passed
 or not applicable").
@@ -26,7 +27,7 @@ Deprecated Lambda runtimes (from [R38], 2026-11-04): `python3.10`, `provided.al2
 `go1.x`, `provided`, `ruby2.7`, `nodejs14.x`, `python3.7`, `dotnetcore3.1`, `nodejs12.x`,
 `python3.6`, `dotnet5.0`, `dotnetcore2.1`, `nodejs10.x`, `ruby2.5`, `python2.7`, `nodejs8.10`,
 `nodejs4.3`, `nodejs4.3-edge`, `nodejs6.10`, `dotnetcore1.0`, `dotnetcore2.0`, `nodejs`. Update
-this list when AWS deprecates more; the date is in `hygiene.py`.
+this list when AWS deprecates more; the list and its date are in `rules/spec08.py`.
 
 Thresholds (5% average, 20% peak, 14 days) are a starting point, not an AWS number. AWS Compute
 Optimizer [R8] gives better rightsizing advice and could replace HYG-EC2-002 later.

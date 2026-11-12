@@ -2,7 +2,7 @@
 
 import pytest
 
-from scamallscope import hygiene
+from scamallscope import rules
 from scamallscope.model import make_resource
 
 import estate_b as E
@@ -10,7 +10,7 @@ from estate_b import ec2arn as a
 
 
 def run(snap=None, sources=None, extras=None, nodes=None):
-    return hygiene.run(snap or E.snapshot(), E.NODES if nodes is None else nodes,
+    return rules.run(snap or E.snapshot(), E.NODES if nodes is None else nodes,
                        {"cost": {}} if sources is None else sources,
                        extras={"cost_coverage": E.COVERAGE} if extras is None else extras, today=E.TODAY)
 
@@ -172,7 +172,7 @@ def test_RUL_4_every_finding_has_remediation_and_cost_has_savings_key(out):
 
 
 def test_every_rule_in_spec_has_a_case():
-    ids = {r.id for r in hygiene.rules(hygiene.DEFAULT_REQUIRED_TAGS)}
+    ids = {r.id for r in rules.all_rules(rules.DEFAULT_REQUIRED_TAGS)}
     new = {i for i in ids if i.split("-")[0] in ("SEC", "COST", "REL")}
     assert new == {c[0] for c in CASES}
 
@@ -181,8 +181,8 @@ def test_env_and_app_tag_keys_can_be_set():
     snap = E.snapshot()
     for r in snap["resources"]:  # same estate, tagged with other keys
         r["tags"] = {{"env": "environment", "app": "service"}.get(k, k): v for k, v in r["tags"].items()}
-    default = hygiene.run(E.snapshot(), E.NODES, {}, today=E.TODAY)["findings"]
-    renamed = hygiene.run(snap, E.NODES, {}, today=E.TODAY, env_tag="environment", app_tag="service")["findings"]
+    default = rules.run(E.snapshot(), E.NODES, {}, today=E.TODAY)["findings"]
+    renamed = rules.run(snap, E.NODES, {}, today=E.TODAY, env_tag="environment", app_tag="service")["findings"]
 
     def rel(found):
         return sorted((f["check_id"], f["severity"], f["title"]) for f in found if f["pillar"] == "reliability")

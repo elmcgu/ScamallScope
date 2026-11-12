@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from . import availability, graph, hosts, hygiene, posture, rank
+from . import availability, graph, hosts, posture, rank, rules
 from .findings import Coverage, Finding, Parsed, counts
 from .integrations import ansible, cloudwatch, cost, costhub, github, prometheus, prowler, wazuh
 from .model import Snapshot
@@ -61,9 +61,9 @@ def _parse(source: str, value: Any, snap: Snapshot, index: hosts.Index, known: s
     raise ValueError(source)
 
 
-def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = hygiene.DEFAULT_REQUIRED_TAGS,
+def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = rules.DEFAULT_REQUIRED_TAGS,
           ansible_mode: ansible.Mode = "check", today: date | None = None,
-          env_tag: str = hygiene.DEFAULT_ENV_TAG, app_tag: str = hygiene.DEFAULT_APP_TAG) -> dict[str, Any]:
+          env_tag: str = rules.DEFAULT_ENV_TAG, app_tag: str = rules.DEFAULT_APP_TAG) -> dict[str, Any]:
     g = graph.to_graph(snap)
     nodes = {e["data"]["id"]: e["data"] for e in g["elements"] if e["group"] == "nodes"}
     index = hosts.build(snap)
@@ -100,9 +100,9 @@ def build(snap: Snapshot, raw: dict[str, Any], required_tags: tuple[str, ...] = 
     if "cost" in per_source:
         rule_sources["cost"] = {}
     extras = {"cost_coverage": (cost_summary or {}).get("coverage")}
-    rules = hygiene.run(snap, nodes, rule_sources, required_tags, extras, today, env_tag, app_tag)
-    findings.extend(rules["findings"])
-    coverage["hygiene"] = rules["coverage"]
+    ruled = rules.run(snap, nodes, rule_sources, required_tags, extras, today, env_tag, app_tag)
+    findings.extend(ruled["findings"])
+    coverage["hygiene"] = ruled["coverage"]
 
     # One finding per id (a source may report the same thing twice).
     unique: dict[str, Finding] = {}
