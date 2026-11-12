@@ -7,39 +7,52 @@ How ScamallScope is built. What it does and why: [PROJECT.md](PROJECT.md). Behav
 
 ```
 collector/scamallscope/
-  collectors/        AWS read-only collectors (EC2, Lambda, IAM, S3)          existing
+  cli.py             commands: collect, graph, inventory, changes, history, fetch, enrich, run
+  model.py           Resource, Link, Snapshot shapes; ARNs and settings
+  snapshot.py        run every collector -> snapshot dict; one unit per API listing
+  collectors/        AWS read-only collectors, one module per service family
     base.py          Context, Result and the shared list helper
-    rds.py elbv2.py autoscaling.py account.py                                 Phase B (spec 10)
-  snapshot.py        run collectors -> snapshot dict                          existing
-  exposure.py        internet exposure                                        existing
-  iam_analysis.py    admin principals                                         existing
-  inventory.py       DynamoDB current state + change log                      existing
-  graph.py           snapshot -> graph elements                               existing
-  findings.py        Finding shape, severity, Well-Architected catalogue      new
-  hosts.py           match host names to EC2 instances                        new
-  integrations/      one module per source: parse() pure, fetch() network     new
-    prowler.py  wazuh.py  github.py  ansible.py  cloudwatch.py  prometheus.py  cost.py
-  httpjson.py        small JSON-over-HTTPS client (urllib, TLS verified)      new
-  hygiene.py         cross-source rules -> findings                           new
-  posture.py         Well-Architected scorecard                               new
-  enrich.py          snapshot + raw files -> graph v2                         new
-  data/well_architected.json   177 SEC, REL and COST best practices           new
-  integrations/costhub.py      Cost Optimization Hub, Compute Optimizer       Phase B (spec 11)
-  hygiene.py         + 32 security, cost and availability rules, rule context Phase B (spec 12)
-  rank.py            duplicates, priority, summary totals                     Phase B (spec 13)
-  availability.py    workloads for the Availability view                      Phase B (spec 14)
+    ec2.py           VPCs, subnets, security groups, instances, route tables, gateways, ACLs,
+                     volumes, snapshots, Elastic IPs, NAT gateways, endpoints, flow logs
+    lambda_.py iam.py s3.py rds.py elbv2.py autoscaling.py
+    account.py       CloudTrail, credential report, GuardDuty, Backup, SSM, ACM
+  exposure.py        internet exposure of instances, buckets and functions
+  network_acl.py     network ACL evaluation for exposure
+  iam_analysis.py    admin principals
+  graph.py           snapshot -> graph elements for the map
+  inventory.py       DynamoDB current state + change log
+  findings.py        Finding shape, severity, Well-Architected catalogue
+  data/well_architected.json   177 SEC, REL and COST best practices
+  hosts.py           match host names from other tools to EC2 instances
+  httpjson.py        small JSON-over-HTTPS client (urllib, TLS verified, no redirects)
+  integrations/      one module per source: parse() pure, fetch() network
+    prowler.py wazuh.py github.py ansible.py cloudwatch.py prometheus.py cost.py costhub.py
+  rules/             rules over the inventory and loaded sources -> findings
+    engine.py        Ctx, Rule, GroupRule, NA and helpers
+    spec08.py security.py cost.py availability.py   one group of rules each
+  rank.py            duplicates, priority, summary totals
+  availability.py    workloads for the Availability view
+  posture.py         Well-Architected scorecard
+  enrich.py          snapshot + raw files -> graph v2
+infra/
+  collector-read-only-policy.json   every AWS permission the collector needs
+  inventory-table.yaml              DynamoDB table for the inventory
 frontend/src/
-  model.js           graph data logic for the map                             existing
+  model.js           graph data logic for the map
   views.js           data logic for Overview, Findings, Hosts, Cost, Availability, Well-Architected
-  main.js            DOM and Cytoscape                                        extended
+  layout.js          map layout options
+  icons.js           AWS Architecture Icons per node kind (optional files)
+  main.js            DOM and Cytoscape
 ```
 
 ## Data flow
 
-1. `collect` writes `snapshot.json` (unchanged).
+`run` does steps 1 to 3 into one folder (spec 15); each step is also its own command.
+
+1. `collect` writes `snapshot.json`.
 2. `fetch <source>` writes `integrations/<source>.json`: `{"fetched_at": ..., ...raw response...}`.
 3. `enrich` does, in order:
-   1. `graph.to_graph(snapshot)`: nodes, edges, exposure, admin (unchanged).
+   1. `graph.to_graph(snapshot)`: nodes, edges, exposure, admin.
    2. For each raw file present: `integrations/<source>.parse(raw, index)` returns
       `{"findings": [...], "resources": {arn: {...}}, "coverage": {...}, "unmatched": [...]}`.
    3. `rules.run(snapshot, graph nodes, loaded sources)` adds findings from rules.
@@ -67,7 +80,7 @@ Version 1 plus these top-level keys. The UI accepts 1 and 2.
       "config_run": { "ok": 12, "changed": 1, "failures": 0, "unreachable": 0, "mode": "check" },
       "metrics":    { "cpu_avg": 1.8, "cpu_max": 9.0, "days": 14, "alarms": 0, "prom_up": 1 },
       "cost":       { "monthly_usd": 41.2, "basis": "last 14 days x 30/14" } } } ],
-  "findings": [ /* Finding, see spec 01; Phase B adds savings_usd, priority, duplicate_of, also_reported_by */ ],
+  "findings": [ /* Finding, see spec 01, with savings_usd, priority, duplicate_of, also_reported_by (specs 12, 13) */ ],
   "posture":  { "security": { "best_practices": [ { "id": "SEC06-BP01", "title": "...", "url": "...", "status": "issues", "findings": 3, "checked_by": ["wazuh", "hygiene"] } ], "summary": { "issues": 4, "clear": 6, "not_checked": 47 } }, "reliability": {}, "cost": {} },
   "summary":  { "open": { "critical": 1, "high": 4, "medium": 9, "low": 6, "info": 0 }, "by_pillar": { "security": 8, "cost": 6, "reliability": 6 }, "savings_usd": 78.79, "savings_estimated": true, "single_points_of_failure": 3 },
   "workloads": [ { "id": "...", "name": "app shop-web", "kind": "app", "region": "eu-west-1", "vpc": "prod", "azs": ["eu-west-1a"], "members": ["arn:..."], "prod": true, "healing": "none", "backup": "n/a", "monitoring": "alarm", "findings": 2 } ],
