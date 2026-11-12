@@ -11,6 +11,13 @@ Writes graph schema version 2 (architecture.md). Exit codes: `0` all good, `2` s
 or a raw file could not be parsed (graph still written), `1` snapshot unreadable.
 Prints one line per source: loaded or not, findings, matched, unmatched.
 
+## Sample
+
+`collector/scripts/make_sample.py` writes `samples/` (made-up data only). It is repeatable: moto is
+seeded through its `moto-api/seed` endpoint (in a fresh process: moto makes default resources on first use), values moto stamps with the real clock become the
+sample's `collected_at`, boto3 client tokens are replaced, and the Lambda zip has a fixed file date.
+A rebuild on any day gives the same files; commit `samples/` only when its content changes.
+
 ## UI
 
 A view switch in the header: **Map**, **Findings**, **Hosts**, **Cost**, **Well-Architected**.
@@ -38,6 +45,7 @@ All text is set with `textContent`. Links: only `https://` URLs, `rel="noopener 
 | ENR-5 | `finding_counts` | Matches findings for that resource |
 | ENR-6 | Graph JSON | No IP addresses (no `PrivateIpAddress`, no dotted-quad values except CIDRs in rules) |
 | ENR-7 | `idle_monthly_usd` | Sum of cost of instances with HYG-EC2-002 |
+| SMP-1 | Build the sample into a temporary folder | Every file equals the committed `samples/` file |
 | VIEW-1 | `filterFindings` by pillar and severity | Only matching rows |
 | VIEW-2 | `sortFindings` | critical before high; then pillar, title |
 | VIEW-3 | `hostRows` | One row per instance, with OS and vulns from `wazuh` |

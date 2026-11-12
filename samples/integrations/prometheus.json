@@ -8,7 +8,7 @@
           "metric": {
             "__name__": "up",
             "instance": "prod-web-1:9100",
-            "instance_id": "i-c9c2a76f0671ff3a0",
+            "instance_id": "i-f0560391c16efc8ba",
             "job": "node"
           },
           "value": [
@@ -20,7 +20,7 @@
           "metric": {
             "__name__": "up",
             "instance": "prod-app-1:9100",
-            "instance_id": "i-aa05b2afaa59dc8b7",
+            "instance_id": "i-ffed100faaa49d4b3",
             "job": "node"
           },
           "value": [
@@ -43,7 +43,7 @@
           "metric": {
             "__name__": "up",
             "instance": "prod-db-1:9100",
-            "instance_id": "i-023584a260f4a538f",
+            "instance_id": "i-b57d0e7e7df31ad52",
             "job": "node"
           },
           "value": [

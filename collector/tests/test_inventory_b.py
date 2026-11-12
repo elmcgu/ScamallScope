@@ -322,3 +322,21 @@ def test_INV_14_backup_and_ssm_with_stubber():
                           {"InstanceInformationList": [{"InstanceId": "i-0abc", "PingStatus": "Online"}]}, {})
         (r,), _ = account_collector.collect_ssm_managed(ssm, ctx)
     assert r["config"] == {"Instances": [{"InstanceId": "i-0abc", "PingStatus": "Online"}]}
+
+
+def test_INV_17_target_health_sorted():
+    import boto3
+
+    from scamallscope.collectors import base, elbv2
+
+    client = boto3.client("elbv2", region_name=REGION)
+    tg_arn = f"arn:aws:elasticloadbalancing:{REGION}:{ACCOUNT}:targetgroup/web/1"
+    with Stubber(client) as stub:
+        stub.add_response("describe_target_groups", {"TargetGroups": [
+            {"TargetGroupArn": tg_arn, "TargetGroupName": "web", "TargetType": "instance"}]})
+        stub.add_response("describe_tags", {"TagDescriptions": []})
+        stub.add_response("describe_target_health", {"TargetHealthDescriptions": [
+            {"Target": {"Id": "i-b", "Port": 80}, "TargetHealth": {"State": "healthy"}},
+            {"Target": {"Id": "i-a", "Port": 80}, "TargetHealth": {"State": "healthy"}}]})
+        (tg,), _ = elbv2.collect_target_groups(client, base.context("aws", ACCOUNT, REGION))
+    assert [t["Id"] for t in tg["config"]["TargetHealth"]] == ["i-a", "i-b"]

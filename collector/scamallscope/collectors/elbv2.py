@@ -71,6 +71,8 @@ def collect_target_groups(client: Any, ctx: Context) -> Result:
                                    "State": (d.get("TargetHealth") or {}).get("State"),
                                    "Reason": (d.get("TargetHealth") or {}).get("Reason")}
                                   for d in client.describe_target_health(TargetGroupArn=g_arn).get("TargetHealthDescriptions", [])]
+        # AWS gives no order; sorted, so an unchanged group hashes the same in the inventory.
+        config["TargetHealth"].sort(key=lambda t: (str(t["Id"]), t["Port"] or 0))
         t = tags.get(g_arn, {})
         r = make_resource(g_arn, ctx["account_id"], ctx["region"], "elasticloadbalancing", "target-group",
                           g["TargetGroupName"], t, config, name=t.get("Name") or g["TargetGroupName"])

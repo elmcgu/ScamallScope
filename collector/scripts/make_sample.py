@@ -16,8 +16,9 @@ import io
 import json
 import os
 import zipfile
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Any
 from urllib.parse import unquote
 
 for key in ("AWS_PROFILE", "AWS_DEFAULT_PROFILE", "AWS_SESSION_TOKEN"):
@@ -27,6 +28,7 @@ os.environ.update(AWS_ACCESS_KEY_ID="testing", AWS_SECRET_ACCESS_KEY="testing",
                   MOTO_IAM_LOAD_MANAGED_POLICIES="true")
 
 import boto3  # noqa: E402
+import requests  # noqa: E402  (a moto dependency)
 from moto import mock_aws  # noqa: E402
 
 from scamallscope import enrich, snapshot  # noqa: E402
@@ -125,7 +127,8 @@ def build_s3(session: boto3.Session) -> None:
 def zipped() -> bytes:
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w") as z:
-        z.writestr("index.py", "def handler(event, context):\n    return 'ok'\n")
+        # A fixed file date, so the zip (and its CodeSha256) is the same on every build.
+        z.writestr(zipfile.ZipInfo("index.py", date_time=(2026, 1, 1, 0, 0, 0)), "def handler(event, context):\n    return 'ok'\n")
     return buf.getvalue()
 
 
@@ -540,20 +543,56 @@ def write(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def main() -> None:
+SEED = 42  # moto's IDs come from one random generator; a fixed seed gives the same sample every time
+
+
+COLLECTED_AT = "2026-11-04T06:00:00+00:00"
+
+
+def pin_moto_clock(value: Any, today: str | None = None) -> Any:
+    """Moto stamps resources with the real clock and boto3 adds random client tokens. Pin both, so a rebuild
+    on another day gives the same files: any string from today becomes COLLECTED_AT."""
+    today = today or datetime.now(timezone.utc).date().isoformat()
+    if isinstance(value, dict):
+        for k, v in value.items():
+            if k == "ClientToken":
+                value[k] = "made-up-client-token"
+            elif isinstance(v, str) and v.startswith(today):
+                value[k] = COLLECTED_AT
+            elif isinstance(v, str) and "(" + today in v:  # StateTransitionReason "User initiated (2026-...)"
+                value[k] = v.split("(")[0] + f"({COLLECTED_AT[:10]} 06:00:00 GMT)"
+            else:
+                pin_moto_clock(v, today)
+    elif isinstance(value, list):
+        for v in value:
+            pin_moto_clock(v, today)
+    return value
+
+
+def build_sample(root: Path = SAMPLES) -> dict[str, Any]:
+    """Write every sample file under root and return the graph. Same input, same files: the seed fixes moto's IDs."""
     no_ssm_or_backup_in_moto()
     with mock_aws():
+        # Moto's seeding endpoint, answered in-process while the mock is active.
+        requests.post(f"http://motoapi.amazonaws.com/moto-api/seed?a={SEED}", timeout=5)
         session = boto3.Session(region_name="eu-west-1")
         build(session)
         stand_in_for_list_function_url_configs(session)
         snap = snapshot.collect(session, REGIONS)
-    snap["collected_at"] = "2026-11-04T06:00:00+00:00"
+    snap["collected_at"] = COLLECTED_AT
+    pin_moto_clock(snap)
     phase_b_after_collect(snap)
-    write(SAMPLES / "demo.snapshot.json", snap)
+    write(root / "demo.snapshot.json", snap)
+    raw = root / RAW.relative_to(SAMPLES)
     for name, data in fake_integrations(snap).items():
-        write(RAW / name, data)
-    result = enrich.build(snap, enrich.load_raw(RAW), today=date(2026, 11, 4))
-    write(OUT, result)
+        write(raw / name, data)
+    result = enrich.build(snap, enrich.load_raw(raw), today=date(2026, 11, 4))
+    write(root / OUT.relative_to(SAMPLES), result)
+    return result
+
+
+def main() -> None:
+    result = build_sample()
 
     for source, m in result["meta"]["integrations"].items():
         print(f"{source:<11} loaded={m['loaded']} findings={m.get('findings')} unmatched={m.get('unmatched')} {m.get('error', '')}")

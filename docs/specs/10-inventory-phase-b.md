@@ -25,7 +25,8 @@ unit (`units` in the snapshot): a failed unit means "unknown", never "nothing th
 Listeners are kept in the load balancer's `config.Listeners`, each with `SslProtocols` from
 `DescribeSslPolicies` for its policy, so the TLS rule uses AWS's own list of protocols per
 policy instead of a list of policy names in our code. Target health is kept in the target group's
-`config.TargetHealth`.
+`config.TargetHealth`, sorted by target `Id` then `Port` (AWS gives no order; sorting keeps the
+inventory hash steady).
 
 ## Settings (one `setting` resource per Region and setting)
 
@@ -104,3 +105,4 @@ moto for all calls except `backup:ListProtectedResources` and `ssm:DescribeInsta
 | INV-14 | Stubbed Backup and SSM responses | Settings `backup-protected` and `ssm-managed` |
 | INV-15 | A new unit raises AccessDenied | Unit `error`; other units `ok`; snapshot partial |
 | INV-16 | Graph | New fields present; no `PublicIp` or `PrivateIpAddress` values |
+| INV-17 | Target group with targets registered as i-b then i-a | `TargetHealth` lists i-a first |

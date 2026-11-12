@@ -9,7 +9,7 @@
           "Dimensions": [
             {
               "Name": "InstanceId",
-              "Value": "i-c9c2a76f0671ff3a0"
+              "Value": "i-f0560391c16efc8ba"
             }
           ]
         },
@@ -18,20 +18,20 @@
           "Dimensions": [
             {
               "Name": "InstanceId",
-              "Value": "i-023584a260f4a538f"
+              "Value": "i-b57d0e7e7df31ad52"
             }
           ]
         }
       ],
       "queries": {
-        "q0_avg": "i-023584a260f4a538f|avg",
-        "q0_max": "i-023584a260f4a538f|max",
-        "q1_avg": "i-aa05b2afaa59dc8b7|avg",
-        "q1_max": "i-aa05b2afaa59dc8b7|max",
-        "q2_avg": "i-c698c5057873c80ca|avg",
-        "q2_max": "i-c698c5057873c80ca|max",
-        "q3_avg": "i-c9c2a76f0671ff3a0|avg",
-        "q3_max": "i-c9c2a76f0671ff3a0|max"
+        "q0_avg": "i-b57d0e7e7df31ad52|avg",
+        "q0_max": "i-b57d0e7e7df31ad52|max",
+        "q1_avg": "i-d1844b2e076712a32|avg",
+        "q1_max": "i-d1844b2e076712a32|max",
+        "q2_avg": "i-f0560391c16efc8ba|avg",
+        "q2_max": "i-f0560391c16efc8ba|max",
+        "q3_avg": "i-ffed100faaa49d4b3|avg",
+        "q3_max": "i-ffed100faaa49d4b3|max"
       },
       "results": [
         {
@@ -60,33 +60,12 @@
           "StatusCode": "Complete",
           "Timestamps": [],
           "Values": [
-            2.1,
-            1.4,
-            2.6
-          ]
-        },
-        {
-          "Id": "q1_max",
-          "Label": "CPUUtilization",
-          "StatusCode": "Complete",
-          "Timestamps": [],
-          "Values": [
-            8.0,
-            11.5
-          ]
-        },
-        {
-          "Id": "q2_avg",
-          "Label": "CPUUtilization",
-          "StatusCode": "Complete",
-          "Timestamps": [],
-          "Values": [
             0.9,
             1.1
           ]
         },
         {
-          "Id": "q2_max",
+          "Id": "q1_max",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -96,7 +75,7 @@
           ]
         },
         {
-          "Id": "q3_avg",
+          "Id": "q2_avg",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -107,7 +86,7 @@
           ]
         },
         {
-          "Id": "q3_max",
+          "Id": "q2_max",
           "Label": "CPUUtilization",
           "StatusCode": "Complete",
           "Timestamps": [],
@@ -115,14 +94,35 @@
             92.0,
             77.0
           ]
+        },
+        {
+          "Id": "q3_avg",
+          "Label": "CPUUtilization",
+          "StatusCode": "Complete",
+          "Timestamps": [],
+          "Values": [
+            2.1,
+            1.4,
+            2.6
+          ]
+        },
+        {
+          "Id": "q3_max",
+          "Label": "CPUUtilization",
+          "StatusCode": "Complete",
+          "Timestamps": [],
+          "Values": [
+            8.0,
+            11.5
+          ]
         }
       ]
     },
     "us-east-1": {
       "alarms": [],
       "queries": {
-        "q0_avg": "i-756ef80e7c9cd11fb|avg",
-        "q0_max": "i-756ef80e7c9cd11fb|max"
+        "q0_avg": "i-8c0dcbef398a10dba|avg",
+        "q0_max": "i-8c0dcbef398a10dba|max"
       },
       "results": [
         {
