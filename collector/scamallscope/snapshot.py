@@ -54,9 +54,9 @@ def collect(session: boto3.Session, regions: list[str], include_global: bool = T
               lambda: {"bucket": s3.collect_buckets(s3_client, s3control, partition, account_id)})
         _unit(snap, "iam", ["credential-report"], GLOBAL,
               lambda: {"credential-report": account.collect_credential_report(iam_client, partition, account_id)})
-        home = regions[0] if regions else (session.region_name or "us-east-1")
+        trail_regions = list(regions) or [session.region_name or "us-east-1"]
         _unit(snap, "cloudtrail", ["trail"], GLOBAL, lambda: {"trail": account.collect_trails(
-            lambda r: session.client("cloudtrail", region_name=r), home, partition, account_id)})
+            lambda r: session.client("cloudtrail", region_name=r), trail_regions, partition, account_id)})
 
     snap["links"].extend(_instance_role_links(snap))
     return snap

@@ -18,7 +18,7 @@ unit (`units` in the snapshot): a failed unit means "unknown", never "nothing th
 | `target-group` | elbv2 | `DescribeTargetGroups`, `DescribeTargetHealth` | region | target-group `targets` instance |
 | `autoscaling-group` | autoscaling | `DescribeAutoScalingGroups` | region | asg `manages` instance; asg `registers` target group |
 | `certificate` | acm | `ListCertificates`, `DescribeCertificate` | region | |
-| `trail` | cloudtrail | `DescribeTrails` (`includeShadowTrails`), `GetTrailStatus` in the trail's home Region | global | |
+| `trail` | cloudtrail | `DescribeTrails` (`includeShadowTrails`) in every collected Region, one per trail ARN (a single-Region trail is listed only in its home Region); `GetTrailStatus` in the trail's home Region | global | |
 | `credential-report` | iam | `GenerateCredentialReport`, `GetCredentialReport` | global | |
 | `setting` | ec2, guardduty, backup, ssm | see below | region | |
 
@@ -106,3 +106,4 @@ moto for all calls except `backup:ListProtectedResources` and `ssm:DescribeInsta
 | INV-15 | A new unit raises AccessDenied | Unit `error`; other units `ok`; snapshot partial |
 | INV-16 | Graph | New fields present; no `PublicIp` or `PrivateIpAddress` values |
 | INV-17 | Target group with targets registered as i-b then i-a | `TargetHealth` lists i-a first |
+| INV-18 | Multi-Region trail in eu-west-1, single-Region trail in us-east-1, both Regions collected | Two trails, each once, with their home Regions |

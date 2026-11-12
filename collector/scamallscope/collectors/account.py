@@ -27,15 +27,20 @@ REPORT_COLUMNS = (
 REPORT_TRIES, REPORT_WAIT_S = 10, 2.0
 
 
-def collect_trails(client_for: Callable[[str], Any], home: str, partition: str, account_id: str) -> Result:
-    """All trails visible from one Region, with status read in each trail's home Region."""
+def collect_trails(client_for: Callable[[str], Any], regions: list[str], partition: str, account_id: str) -> Result:
+    """Trails listed from every collected Region (a single-Region trail is visible only in its home
+    Region), one per trail ARN, with status read in each trail's home Region."""
+    trails: dict[str, dict[str, Any]] = {}
+    for region in regions:
+        for t in client_for(region).describe_trails(includeShadowTrails=True).get("trailList", []):
+            trails.setdefault(t["TrailARN"], {**t, "HomeRegion": t.get("HomeRegion") or region})
     resources: list[Resource] = []
-    for t in client_for(home).describe_trails(includeShadowTrails=True).get("trailList", []):
-        status = client_for(t.get("HomeRegion") or home).get_trail_status(Name=t["TrailARN"])
+    for arn, t in sorted(trails.items()):
+        status = client_for(t["HomeRegion"]).get_trail_status(Name=arn)
         config = {k: t.get(k) for k in ("Name", "TrailARN", "HomeRegion", "IsMultiRegionTrail",
                                          "IsOrganizationTrail", "LogFileValidationEnabled", "KmsKeyId")}
         config["IsLogging"] = bool(status.get("IsLogging"))
-        resources.append(make_resource(t["TrailARN"], account_id, GLOBAL, "cloudtrail", "trail", t["Name"],
+        resources.append(make_resource(arn, account_id, GLOBAL, "cloudtrail", "trail", t["Name"],
                                        {}, config, name=t["Name"]))
     return resources, []
 

@@ -252,6 +252,22 @@ def test_INV_11_multi_region_trail(session, estate):
     assert t["config"]["IsMultiRegionTrail"] is True and t["config"]["IsLogging"] is True
 
 
+def test_INV_18_trails_from_every_region_once(session, estate):
+    for region, name, multi in (("eu-west-1", "org", True), ("us-east-1", "local-us", False)):
+        bucket = f"example-trail-{region}"
+        s3 = session.client("s3", region_name=region)
+        s3.create_bucket(Bucket=bucket, **({"CreateBucketConfiguration": {"LocationConstraint": region}}
+                                            if region != "us-east-1" else {}))
+        ct = session.client("cloudtrail", region_name=region)
+        ct.create_trail(Name=name, S3BucketName=bucket, IsMultiRegionTrail=multi)
+        ct.start_logging(Name=name)
+
+    snap = snapshot.collect(session, ["eu-west-1", "us-east-1"])
+    trails = [r for r in snap["resources"] if r["type"] == "trail"]
+    assert sorted(t["id"] for t in trails) == ["local-us", "org"]  # the multi-Region trail once, the us-east-1 one seen
+    assert {t["id"]: t["config"]["HomeRegion"] for t in trails} == {"org": "eu-west-1", "local-us": "us-east-1"}
+
+
 def test_INV_12_credential_report(session, estate):
     iam = session.client("iam")
     iam.create_user(UserName="ci-deployer")
