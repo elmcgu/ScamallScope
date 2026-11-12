@@ -190,6 +190,17 @@ def test_second_interface_with_public_ip_is_checked():
     assert {p["security_group"] for p in result["ports"]} == {"sg-open"}
 
 
+def test_elastic_ip_on_a_secondary_private_address_counts():
+    eni = {"SubnetId": "subnet-pub", "Attachment": {"DeviceIndex": 1}, "Groups": [{"GroupId": "sg-open"}],
+           "PrivateIpAddresses": [{"Primary": True, "PrivateIpAddress": "10.0.1.10"},
+                                  {"Primary": False, "PrivateIpAddress": "10.0.1.11",
+                                   "Association": {"PublicIp": "198.51.100.8"}}]}
+    assert exposure.interfaces({"NetworkInterfaces": [eni]})[0]["public_ipv4"] == "198.51.100.8"
+    assert graph.FIELDS["instance"]({"NetworkInterfaces": [eni]})["has_public_ip"] is True
+    eni["PrivateIpAddresses"][1].pop("Association")
+    assert exposure.interfaces({"NetworkInterfaces": [eni]})[0]["public_ipv4"] is None
+
+
 def use_custom_acl(session, ids, entries):
     """Give the subnet its own network ACL with the given inbound entries."""
     ec2 = session.client("ec2", region_name=REGION)

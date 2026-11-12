@@ -144,6 +144,15 @@ def _result(exposure: str, reason: str, ports: list[dict[str, Any]] | None = Non
     return {"exposure": exposure, "reason": reason, "ports": ports or []}
 
 
+def _public_ipv4(eni: dict[str, Any]) -> str | None:
+    """The interface's public IPv4: on the interface, or an Elastic IP on any of its private addresses
+    (a secondary private address can carry its own Elastic IP)."""
+    for assoc in [eni.get("Association")] + [p.get("Association") for p in eni.get("PrivateIpAddresses") or []]:
+        if ip := (assoc or {}).get("PublicIp"):
+            return ip
+    return None
+
+
 def interfaces(c: dict[str, Any]) -> list[dict[str, Any]]:
     """The instance's network interfaces as (subnet, public IPv4, has IPv6, security groups).
 
@@ -161,7 +170,7 @@ def interfaces(c: dict[str, Any]) -> list[dict[str, Any]]:
         }]
     return [{
         "subnet_id": n.get("SubnetId") or c.get("SubnetId"),
-        "public_ipv4": (n.get("Association") or {}).get("PublicIp")
+        "public_ipv4": _public_ipv4(n)
                        or (c.get("PublicIpAddress") if n.get("Attachment", {}).get("DeviceIndex", 0) == 0 else None),
         "ipv6": bool(n.get("Ipv6Addresses")),
         "groups": [g["GroupId"] for g in n.get("Groups", [])],

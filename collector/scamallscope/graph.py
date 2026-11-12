@@ -55,7 +55,7 @@ def _instance(c: dict[str, Any]) -> dict[str, Any]:
         "instance_type": c.get("InstanceType"),
         "state": c.get("State", {}).get("Name"),
         # Only whether it has one: the address itself is not needed to draw the map.
-        "has_public_ip": bool(c.get("PublicIpAddress")),
+        "has_public_ip": any(i["public_ipv4"] for i in exposure.interfaces(c)),
         "availability_zone": (c.get("Placement") or {}).get("AvailabilityZone"),
         "imds_v2_required": (c.get("MetadataOptions") or {}).get("HttpTokens") == "required",
         "auto_recovery": (c.get("MaintenanceOptions") or {}).get("AutoRecovery", "default"),

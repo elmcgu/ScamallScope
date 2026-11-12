@@ -107,7 +107,8 @@ resource that is not in the snapshot are dropped and counted in `meta.dropped_ed
 Each instance node in the graph has `exposure` (`exposed`, `not_exposed` or `unknown`),
 `exposure_reason` and `exposed_ports`. A port is exposed when, on the same network interface:
 
-1. the interface has a public IPv4 or IPv6 address,
+1. the interface has a public IPv4 or IPv6 address (a public IP or Elastic IP on the interface,
+   or an Elastic IP on any of its secondary private addresses),
 2. its subnet's route table (or the VPC main table) has `0.0.0.0/0` or `::/0` to an
    internet gateway attached to the VPC, and
 3. one of its security groups allows inbound traffic from `0.0.0.0/0` or `::/0`, and
